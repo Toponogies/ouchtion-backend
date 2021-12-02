@@ -1,9 +1,9 @@
-title: Token
+title: acToken
 description: Schema for access Token.
 type: object
 properties:
-  token:
+  acToken:
     type: string
     description: The access token of the User.
 required:
-  - token
+  - acToken
