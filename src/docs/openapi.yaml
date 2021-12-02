@@ -41,12 +41,10 @@ security:
   - accessAuth: []
   - refreshAuth: []   
 paths:
-  /auth/login:
-    $ref: "./resources/auth/login.yaml"
+  /auth/:
+    $ref: "./resources/auth/_index.yaml"
   /auth/register:
     $ref: "./resources/auth/register.yaml"
-  /auth/reset-email:
-    $ref: "./resources/auth/reset-email.yaml"
   /auth/reset:
     $ref: "./resources/auth/reset.yaml"
   /auth/verify:

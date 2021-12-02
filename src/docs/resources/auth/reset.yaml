@@ -1,3 +1,16 @@
+post:
+  operationId: SendResetPasswordEmail
+  summary: Sends reset password email.
+  security: []
+  parameters:
+    - $ref: "../../parameters/query/email.yaml"
+  responses:
+    "204":
+      description: Sends reset email.
+    "500":
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - auth
 put:
   operationId: ResetPassword
   summary: Resets password for a User.
