@@ -13,7 +13,7 @@ post:
       content:
         application/json:
           schema:
-            $ref: "../../schemas/AccessToken.yaml"
+            $ref: "../../schemas/Token.yaml"
     "401":
       $ref: "../../responses/Error.yaml"
   tags:
