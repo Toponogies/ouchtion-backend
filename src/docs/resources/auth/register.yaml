@@ -1,0 +1,21 @@
+post:
+  operationId: Register
+  summary: Registers a User.
+  security: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../schemas/Register.yaml"
+  responses:
+    "204":
+      description: Creates a User and waits for email verification.
+    "409":
+      $ref: "../../responses/Error.yaml"
+    "422":
+      $ref: "../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - auth

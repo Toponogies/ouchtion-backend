@@ -2,5 +2,7 @@
 id:
   $ref: "./path/id.yaml"
 # Query params
-postId:
-  $ref: "./query/postId.yaml"
+email:
+  $ref: "./query/email.yaml"
+token:
+  $ref: "./query/token.yaml"

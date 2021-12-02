@@ -1,0 +1,12 @@
+type: object
+title: ValidationError
+description: Schema for a validation error.
+allOf:
+  - $ref: "./Error.yaml"
+  - type: object
+    properties:
+      field:
+        type: string
+        description: The field causes the error.
+    required:
+      - field

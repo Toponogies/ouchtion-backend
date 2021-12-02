@@ -1,0 +1,21 @@
+type: object
+title: Register
+description: Schema for a register request.
+properties:
+  email:
+    type: string
+    description: The email of a User.
+  password:
+    type: string
+    description: The password of a User.
+  name:
+    type: string
+    description: The name of a User.
+  address:
+    type: string
+    description: The address of a User.
+required:
+  - email
+  - password
+  - name
+  - address

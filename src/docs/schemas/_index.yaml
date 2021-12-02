@@ -1,12 +1,18 @@
+AccessToken:
+  $ref: "./AccessToken.yaml"
 Error:
   $ref: "./Error.yaml"
-Tokens:
-  $ref: "./Tokens.yaml"
 Login:
   $ref: "./Login.yaml"
-Token:
-  $ref: "./Token.yaml"
+RefreshToken:
+  $ref: "./RefreshToken.yaml"
+Register:
+  $ref: "./Register.yaml"
+ResetPassword:
+  $ref: "./ResetPassword.yaml"
+Tokens:
+  $ref: "./Tokens.yaml"
 User:
   $ref: "./User.yaml"
-ResetPass:
-  $ref: "./ResetPass.yaml"
+ValidationError:
+  $ref: "./ValidationError.yaml"

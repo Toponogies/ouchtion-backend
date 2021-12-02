@@ -1,0 +1,16 @@
+post:
+  operationId: VerifyEmail
+  summary: Verifies email for a User.
+  security:
+    - tokenAuth: []
+  parameters:
+    - $ref: "../../parameters/query/token.yaml"
+  responses:
+    "204":
+      description: Checks token and verifies email.
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - auth

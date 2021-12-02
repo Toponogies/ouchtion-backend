@@ -16,24 +16,51 @@ servers:
           - "3000"
         default: "3000"
       basePath:
-        default: v0
+        default: api
 components:
+  securitySchemes:
+    accessAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    refreshAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT   
+    tokenAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT   
   schemas:
     $ref: "./schemas/_index.yaml"
   parameters:
     $ref: "./parameters/_index.yaml"
   responses:
     $ref: "./responses/_index.yaml"
+security:
+  - accessAuth: []
+  - refreshAuth: []   
 paths:
-  /auths/login:
-    $ref: "./resources/auths/login.yaml"
-  /auths/refreshToken:
-    $ref: "./resources/auths/refreshToken.yaml"
-  /users:
-    $ref: "./resources/users/_index.yaml"
-  /users/{Id}:
-    $ref: "./resources/users/userId/_index.yaml"
-  /users/{Id}/resetPass:
-    $ref: "./resources/users/userId/resetPass.yaml"
-  /users/{Id}/forgotPass:
-    $ref: "./resources/users/userId/forgotPass.yaml"
+  /auth/login:
+    $ref: "./resources/auth/login.yaml"
+  /auth/register:
+    $ref: "./resources/auth/register.yaml"
+  /auth/reset-email:
+    $ref: "./resources/auth/reset-email.yaml"
+  /auth/reset:
+    $ref: "./resources/auth/reset.yaml"
+  /auth/verify:
+    $ref: "./resources/auth/verify.yaml"
+  /auth/logout:
+    $ref: "./resources/auth/logout.yaml"
+  /auth/refresh:
+    $ref: "./resources/auth/refresh.yaml"
+
+  # /users:
+  #   $ref: "./resources/users/_index.yaml"
+  # /users/{Id}:
+  #   $ref: "./resources/users/userId/_index.yaml"
+  # /users/{Id}/resetPass:
+  #   $ref: "./resources/users/userId/resetPass.yaml"
+  # /users/{Id}/forgotPass:
+  #   $ref: "./resources/users/userId/forgotPass.yaml"

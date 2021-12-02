@@ -1,0 +1,22 @@
+put:
+  operationId: ResetPassword
+  summary: Resets password for a User.
+  security:
+    - tokenAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../schemas/ResetPassword.yaml"
+  responses:
+    "204":
+      description: Checks token and changes password.
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "422":
+      $ref: "../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - auth
