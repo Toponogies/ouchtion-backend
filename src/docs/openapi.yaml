@@ -25,13 +25,15 @@ components:
   responses:
     $ref: "./responses/_index.yaml"
 paths:
-  /posts:
-    $ref: "./resources/posts/_index.yaml"
-  /posts/{id}:
-    $ref: "./resources/posts/postId/_index.yaml"
-  /posts/{id}/comments:
-    $ref: "./resources/posts/postId/comments.yaml"
-  /comments:
-    $ref: "./resources/comments/_index.yaml"
+  /auths/login:
+    $ref: "./resources/auths/login.yaml"
+  /auths/refreshToken:
+    $ref: "./resources/auths/refreshToken.yaml"
   /users:
     $ref: "./resources/users/_index.yaml"
+  /users/{Id}:
+    $ref: "./resources/users/userId/_index.yaml"
+  /users/{Id}/resetPass:
+    $ref: "./resources/users/userId/resetPass.yaml"
+  /users/{Id}/forgotPass:
+    $ref: "./resources/users/userId/forgotPass.yaml"

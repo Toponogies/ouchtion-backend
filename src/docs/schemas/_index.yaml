@@ -1,8 +1,12 @@
-Comment:
-  $ref: "./Comment.yaml"
 Error:
   $ref: "./Error.yaml"
-Post:
-  $ref: "./Post.yaml"
+Tokens:
+  $ref: "./Tokens.yaml"
+Login:
+  $ref: "./Login.yaml"
+Token:
+  $ref: "./Token.yaml"
 User:
   $ref: "./User.yaml"
+ResetPass:
+  $ref: "./ResetPass.yaml"

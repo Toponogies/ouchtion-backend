@@ -26,19 +26,13 @@ post:
         schema:
           $ref: "../../schemas/User.yaml"
   responses:
-    "201":
+    "200":
       description: Added a User.
       content:
         application/json:
           schema:
             $ref: "../../schemas/User.yaml"
-    "409":
-      $ref: "../../responses/Error.yaml"
-    "422":
-      $ref: "../../responses/Error.yaml"
-    "500":
-      $ref: "../../responses/Error.yaml"
-    default:
+    "401":
       $ref: "../../responses/Error.yaml"
   tags:
     - users

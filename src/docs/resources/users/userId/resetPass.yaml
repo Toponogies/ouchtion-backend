@@ -1,0 +1,18 @@
+post:
+  operationId: resetPassUser
+  summary: reset password a user.
+  parameters:
+    - $ref: "../../../parameters/path/id.yaml"
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../../schemas/ResetPass.yaml"
+  responses:
+    "200":
+      description: Reset success.
+    "400":
+      $ref: "../../../responses/Error.yaml"
+  tags:
+    - users

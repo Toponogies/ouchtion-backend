@@ -1,0 +1,12 @@
+post:
+  operationId: forgotPassUser
+  summary: Sending email to user.
+  parameters:
+    - $ref: "../../../parameters/path/id.yaml"
+  responses:
+    "200":
+      description: Email send.
+    "400":
+      $ref: "../../../responses/Error.yaml"
+  tags:
+    - users

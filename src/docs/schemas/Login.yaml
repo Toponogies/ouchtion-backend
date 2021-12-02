@@ -1,0 +1,13 @@
+title: Login
+description: Schema for Login.
+type: object
+properties:
+  username:
+    type: string
+    description: The username of the User.
+  password:
+    type: string
+    description: The password of the User.
+required:
+  - username
+  - password
