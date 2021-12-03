@@ -8,6 +8,11 @@ export const NOTFOUND_ERROR = {
     detail: 'Resource is not available.'
 };
 
+export const LOGIN_ERROR = {
+    title: 'UNAUTHORIZED.',
+    detail: 'Enter a invaild email or password .'
+};
+
 export const DB_QUERY_ERROR = {
     title: 'CONFLICT.',
     detail: 'Conflict database query'

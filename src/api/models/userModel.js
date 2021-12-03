@@ -3,7 +3,7 @@ import generate from './generic.model.js';
 
 let userModel = generate('user', 'id');
 userModel.findByEmail = async function (email) {
-    const row = await db('user').where('username', email);
+    const row = await db('user').where('email', email);
     if (row.length == 0) {
         return null;
     }

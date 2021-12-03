@@ -1,9 +1,10 @@
 import httpStatus from 'http-status-codes';
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv';
+import bcrypt from 'bcrypt'
 dotenv.config();
 
-import { DB_QUERY_ERROR, EXPIRED_ACCESSTOKEN, EXPIRED_REFRESHTOKEN, EXPIRED_VERIFYTOKEN, INVAILD_ACCESSTOKEN, INVAILD_REFRESHTOKEN, INVAILD_VERIFYTOKEN, LOGIN_ERROR } from '../helpers/constants/Errors';
+import { DB_QUERY_ERROR, EXPIRED_ACCESSTOKEN, EXPIRED_REFRESHTOKEN, EXPIRED_VERIFYTOKEN, INVAILD_ACCESSTOKEN, INVAILD_REFRESHTOKEN, INVAILD_VERIFYTOKEN, LOGIN_ERROR, UNEXPECTED_ERROR } from '../helpers/constants/Errors';
 import { redisClient } from '../helpers/constants/redisClient';
 import userModel from './userModel';
 import sendEmail from '../helpers/constants/sendEmail';
@@ -40,8 +41,9 @@ export default {
             const refreshToken = jwt.sign(payloadRefreshToken, process.env.SERET_KEY, optsRefresh);
             
             // redis save refresh_token
-            redisClient.set(userId, JSON.stringify({
-                refresh_token: refresh_token,
+            await redisClient.connect()
+            await redisClient.set(''+user.id, JSON.stringify({ // redis key must be string
+                refreshToken: refreshToken,
             }),
             redisClient.print
             );
@@ -51,7 +53,7 @@ export default {
                 refreshToken
         });
         }catch (err) {
-            // console.log(err);
+            //console.log(err);
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
         }
     },
@@ -70,10 +72,12 @@ export default {
             return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_REFRESHTOKEN)
         }
 
-        const value = await redisClient.get(_userId);
-        console.log("redis:",value);
+        //connect redis and get value of userID
+        await redisClient.connect()
+        var value = await redisClient.get(""+_userId); // redis key must be string
+        value = JSON.parse(value);
         
-        if (value.refresh !== refreshToken)
+        if (value.refreshToken !== refreshToken)
         {
             return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_REFRESHTOKEN)
         }
@@ -88,7 +92,7 @@ export default {
         }
 
         // create new access token
-        const payload = { userId };
+        const payload = { _userId };
         const new_accessToken = jwt.sign(payload, process.env.SERET_KEY, optsAccess);
         return res.json({
             accessToken: new_accessToken,
@@ -102,14 +106,14 @@ export default {
         };
         try {
             const { userId } = jwt.verify(accessToken, process.env.SERET_KEY, opts);
-            redis.del(userId);
+            redis.del(""+userId); // redis key must be string
             return res.status(httpStatus.NO_CONTENT).send()
         } catch (err) {
             return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_REFRESHTOKEN)
         }
     },
     register: async(req, res) =>{
-        console.log(process.env.SERET_KEY)
+        req.body.password = bcrypt.hashSync(req.body.password, 10);
         var user = null
         try {
             user = await userModel.add(req.body)
@@ -120,8 +124,6 @@ export default {
         const payloadVerifyToken = {
             userId: user[0]
         };
-
-        console.log(payloadVerifyToken)
 
         const verifyToken = jwt.sign(payloadVerifyToken, process.env.SERET_KEY, optsVerify);
         sendEmail(req.body.email,verifyToken)
