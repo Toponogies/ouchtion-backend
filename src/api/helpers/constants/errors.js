@@ -3,9 +3,19 @@ export const UNEXPECTED_ERROR = {
     detail: 'Something is wrong.'
 };
 
+export const REDIS_SERVER_ERROR = {
+    title: 'Redis server error.',
+    detail: 'Server redis is wrong.'
+};
+
+export const NOTFOUND_REDIS = {
+    title: 'Not found redis.',
+    detail: 'Redis data is not available.'
+};
+
 export const NOTFOUND_ERROR = {
     title: 'Not found.',
-    detail: 'Resource is not available.'
+    detail: 'Endpoint is not available.'
 };
 
 export const LOGIN_ERROR = {
