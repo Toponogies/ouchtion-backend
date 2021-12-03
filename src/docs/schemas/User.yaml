@@ -8,6 +8,9 @@ properties:
   username:
     type: string
     description: The username of the User.
+  password:
+    type: string
+    description: The password of the User.
   name:
     type: string
     description: The name of the User.
@@ -15,9 +18,10 @@ properties:
     type: string
     format: date
     description: The date of birth of the User.
-  create_at:
-    type: integer
-    format: int64
-    description: The creating time of the User (epoch time in milliseconds).
+  email:
+    type: string
+    description: The email of the User.
 required:
   - username
+  - password
+  - email

@@ -1,8 +1,18 @@
-Comment:
-  $ref: "./Comment.yaml"
+AccessToken:
+  $ref: "./AccessToken.yaml"
 Error:
   $ref: "./Error.yaml"
-Post:
-  $ref: "./Post.yaml"
+Login:
+  $ref: "./Login.yaml"
+RefreshToken:
+  $ref: "./RefreshToken.yaml"
+Register:
+  $ref: "./Register.yaml"
+ResetPassword:
+  $ref: "./ResetPassword.yaml"
+Tokens:
+  $ref: "./Tokens.yaml"
 User:
   $ref: "./User.yaml"
+ValidationError:
+  $ref: "./ValidationError.yaml"

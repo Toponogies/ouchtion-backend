@@ -1,5 +1,5 @@
 type: object
-description: Schema for generic error.
+description: Schema for a generic error.
 properties:
   title:
     type: string

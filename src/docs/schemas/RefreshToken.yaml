@@ -1,0 +1,10 @@
+type: object
+title: RefreshToken
+description: Schema for a refresh token.
+properties:
+  refreshToken:
+    type: string
+    description: The refresh token.
+required:
+  - refreshToken
+# May be deleted in the future

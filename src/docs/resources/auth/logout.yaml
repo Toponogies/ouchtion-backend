@@ -1,0 +1,20 @@
+delete:
+  operationId: Logout
+  summary: Logs a User out.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../schemas/Tokens.yaml"
+  responses:
+    "204":
+      description: Revokes tokens.
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "422":
+      $ref: "../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - auth

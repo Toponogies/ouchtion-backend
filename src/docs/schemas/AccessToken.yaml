@@ -1,0 +1,10 @@
+type: object
+title: AccessToken
+description: Schema for an access token.
+properties:
+  accessToken:
+    type: string
+    description: The access token.
+required:
+  - accessToken
+# May be deleted in the future

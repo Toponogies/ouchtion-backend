@@ -1,0 +1,6 @@
+in: query
+name: email
+description: The email of a User.
+schema:
+  type: string
+required: true

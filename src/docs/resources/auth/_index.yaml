@@ -1,0 +1,25 @@
+post:
+  operationId: Login
+  summary: Logs a User in.
+  security: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../schemas/Login.yaml"
+  responses:
+    "200":
+      description: Returns valid tokens.
+      content:
+        application/json:
+          schema:
+            $ref: "../../schemas/Tokens.yaml"
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "422":
+      $ref: "../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - auth

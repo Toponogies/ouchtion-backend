@@ -1,0 +1,6 @@
+type: object
+title: Tokens
+description: Schema for Tokens.
+allOf:
+  - $ref: "./AccessToken.yaml"
+  - $ref: "./RefreshToken.yaml"

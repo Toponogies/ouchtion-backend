@@ -1,0 +1,6 @@
+in: query
+name: token
+description: The token from email.
+schema:
+  type: string
+required: true

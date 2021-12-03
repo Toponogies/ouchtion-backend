@@ -1,2 +1,4 @@
 Error:
   $ref: "./Error.yaml"
+ValidationError:
+  $ref: "./ValidationError.yaml"
