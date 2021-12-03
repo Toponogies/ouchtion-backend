@@ -8,13 +8,18 @@ export const NOTFOUND_ERROR = {
     detail: 'Resource is not available.'
 };
 
+export const DB_QUERY_ERROR = {
+    title: 'CONFLICT.',
+    detail: 'Conflict database query'
+};
+
 export const INVAILD_ACCESSTOKEN = {
-    title: "Error token",
-    detail: "Invalid refresh token."
+    title: "Invalid access token.",
+    detail: "Invalid access token."
 };
 
 export const INVAILD_REFRESHTOKEN = {
-    title: "Error token",
+    title: "Invalid refresh token.",
     detail: "Invalid refresh token."
 };
 
@@ -29,7 +34,7 @@ export const EXPIRED_REFRESHTOKEN = {
 };
 
 export const INVAILD_VERIFYTOKEN = {
-    title: "Error token",
+    title: "Invalid verify token.",
     detail: "Invalid verify token."
 };
 

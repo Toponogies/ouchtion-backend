@@ -1,20 +1,21 @@
 import httpStatus from 'http-status-codes';
+import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { INVAILD_ACCESSTOKEN, INVAILD_REFRESHTOKEN, LOGIN_ERROR } from '../helpers/constants/Errors';
+import { DB_QUERY_ERROR, EXPIRED_ACCESSTOKEN, EXPIRED_REFRESHTOKEN, EXPIRED_VERIFYTOKEN, INVAILD_ACCESSTOKEN, INVAILD_REFRESHTOKEN, INVAILD_VERIFYTOKEN, LOGIN_ERROR } from '../helpers/constants/Errors';
 import { redisClient } from '../helpers/constants/redisClient';
 import userModel from './userModel';
 import sendEmail from '../helpers/constants/sendEmail';
 
 const optsAccess = {
-    expiresIn: process.env.EXPIRES_ACCESSTOKEN
+    expiresIn: process.env.EXPIRED_ACCESSTOKEN
 };
 const optsVerify = {
-    expiresIn: process.env.EXPIRES_VERIFYTOKEN
+    expiresIn: process.env.EXPIRED_VERIFYTOKEN
 };
 const optsRefresh = {
-    expiresIn: process.env.EXPIRES_REFRESHTOKEN
+    expiresIn: process.env.EXPIRED_REFRESHTOKEN
 };
 
 export default {
@@ -81,7 +82,7 @@ export default {
             const { userId, userEmail } = jwt.verify(refreshToken, process.env.SERET_KEY, opts);
         } catch (err) {
             if (error.name === "TokenExpiredError")
-                return res.status(httpStatus.UNAUTHORIZED).send(EXPIRES_REFRESHTOKEN)
+                return res.status(httpStatus.UNAUTHORIZED).send(EXPIRED_REFRESHTOKEN)
             else
                 return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_REFRESHTOKEN)
         }
@@ -108,25 +109,35 @@ export default {
         }
     },
     register: async(req, res) =>{
-        const user = await userModel.add(req.body)
-        
+        console.log(process.env.SERET_KEY)
+        var user = null
+        try {
+            user = await userModel.add(req.body)
+        } catch (error) {
+            return res.status(httpStatus.CONFLICT).send(DB_QUERY_ERROR)
+        }
+
         const payloadVerifyToken = {
-            userId: user.id
+            userId: user[0]
         };
 
+        console.log(payloadVerifyToken)
+
         const verifyToken = jwt.sign(payloadVerifyToken, process.env.SERET_KEY, optsVerify);
-        sendEmail(req.body.email,accessToken)
+        sendEmail(req.body.email,verifyToken)
+        return res.status(httpStatus.NO_CONTENT).send()
     },
     verify: async(req, res) =>{
-        const verifyToken = req.params.token
+        const verifyToken = req.query.token
         try {
-            const { userId } = jwt.verify(verifyToken, process.env.SERET_KEY, optsVerify);
+            const { userId } = jwt.verify(verifyToken, process.env.SERET_KEY);
             await userModel.patch(userId, {
                 active: true
             });
+            return res.status(httpStatus.NO_CONTENT).send()
         } catch (err) {
-            if (error.name === "TokenExpiredError")
-                return res.status(httpStatus.UNAUTHORIZED).send(EXPIRES_VERIFYTOKEN)
+            if (err.name === "TokenExpiredError")
+                return res.status(httpStatus.UNAUTHORIZED).send(EXPIRED_VERIFYTOKEN)
             else
                 return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_VERIFYTOKEN)
         }
