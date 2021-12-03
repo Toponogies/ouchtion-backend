@@ -1,1 +1,2 @@
-// export { default as Example } from './example';
+export { default as authModel } from './authModel';
+export { default as userModel } from './userModel';
