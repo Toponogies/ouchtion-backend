@@ -54,8 +54,8 @@ DROP TABLE IF EXISTS `bidding_permissions`;
 CREATE TABLE `bidding_permissions` (
   `user_id` int NOT NULL,
   `product_id` int NOT NULL,
-  `type` varchar(45) NOT NULL,
-  `reason` varchar(200) DEFAULT NULL,
+  `type` enum('APPROVE','DENY') NOT NULL,
+  `reason` varchar(200) NOT NULL,
   PRIMARY KEY (`user_id`,`product_id`),
   KEY `BINDDINGPERMISS_PRODUCT_idx` (`product_id`),
   CONSTRAINT `BINDDINGPERMISS_PRODUCT` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`),
@@ -197,9 +197,9 @@ CREATE TABLE `products` (
   `name` varchar(100) NOT NULL,
   `avatar` varchar(100) DEFAULT NULL,
   `start_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `end_at` timestamp NULL DEFAULT NULL,
+  `end_at` timestamp NOT NULL,
   `init_price` bigint unsigned DEFAULT NULL,
-  `step_price` bigint unsigned DEFAULT NULL,
+  `step_price` bigint unsigned NOT NULL DEFAULT '0',
   `buyer_id` int DEFAULT NULL,
   `is_sold` tinyint NOT NULL,
   PRIMARY KEY (`product_id`)
@@ -225,12 +225,13 @@ DROP TABLE IF EXISTS `rates`;
 CREATE TABLE `rates` (
   `rate_id` int NOT NULL AUTO_INCREMENT,
   `product_id` int NOT NULL,
-  `type` varchar(45) NOT NULL,
+  `type` enum('BUYER-SELLER','SELLER-BUYER') NOT NULL,
   `rate` int NOT NULL,
   `comment` varchar(300) NOT NULL,
   PRIMARY KEY (`rate_id`),
   KEY `RATE_PRODUCT_idx` (`product_id`),
-  CONSTRAINT `RATE_PRODUCT` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`)
+  CONSTRAINT `RATE_PRODUCT` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`),
+  CONSTRAINT `rates_chk_1` CHECK (((`rate` = 1) or (`rate` = -(1))))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -258,7 +259,7 @@ CREATE TABLE `users` (
   `address` varchar(100) DEFAULT NULL,
   `dob` datetime DEFAULT NULL,
   `is_active` tinyint NOT NULL DEFAULT '0',
-  `role` varchar(45) NOT NULL,
+  `role` enum('bidder','seller','admin') NOT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `email_UNIQUE` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -316,4 +317,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-12-04 14:09:12
+-- Dump completed on 2021-12-04 15:28:40
