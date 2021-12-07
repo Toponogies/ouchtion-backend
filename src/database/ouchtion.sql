@@ -41,6 +41,7 @@ CREATE TABLE `bidding_approval_requests` (
 
 LOCK TABLES `bidding_approval_requests` WRITE;
 /*!40000 ALTER TABLE `bidding_approval_requests` DISABLE KEYS */;
+INSERT INTO `bidding_approval_requests` VALUES (1,1,1),(1,2,1),(1,3,1),(1,4,1),(1,5,0),(5,1,1),(5,2,1),(5,3,0),(6,1,1),(6,3,0),(6,12,1),(7,17,1),(7,18,0),(7,19,0),(8,5,1),(8,6,1),(8,7,0);
 /*!40000 ALTER TABLE `bidding_approval_requests` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -69,6 +70,7 @@ CREATE TABLE `bidding_permissions` (
 
 LOCK TABLES `bidding_permissions` WRITE;
 /*!40000 ALTER TABLE `bidding_permissions` DISABLE KEYS */;
+INSERT INTO `bidding_permissions` VALUES (1,1,'APPROVE','accept'),(1,2,'DENY','bad rating'),(1,3,'APPROVE','accept'),(1,4,'DENY','bad rating'),(5,1,'APPROVE','accept'),(5,2,'DENY','bad rating'),(6,1,'APPROVE','accept'),(6,12,'DENY','bad rating'),(7,17,'APPROVE','accept'),(8,5,'DENY','bad rating'),(8,6,'DENY','bad rating');
 /*!40000 ALTER TABLE `bidding_permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -238,7 +240,7 @@ CREATE TABLE `rates` (
   KEY `RATE_PRODUCT_idx` (`product_id`),
   CONSTRAINT `RATE_PRODUCT` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`),
   CONSTRAINT `rates_chk_1` CHECK (((`rate` = 1) or (`rate` = -(1))))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -247,6 +249,7 @@ CREATE TABLE `rates` (
 
 LOCK TABLES `rates` WRITE;
 /*!40000 ALTER TABLE `rates` DISABLE KEYS */;
+INSERT INTO `rates` VALUES (1,1,'SELLER-BUYER',1,'good user'),(2,1,'BUYER-SELLER',1,'good product'),(3,2,'BUYER-SELLER',-1,'product is broken'),(4,3,'BUYER-SELLER',1,'good product'),(5,4,'BUYER-SELLER',1,'good product'),(6,5,'SELLER-BUYER',-1,'Người thắng không thanh toán'),(7,6,'BUYER-SELLER',1,'good product'),(8,7,'BUYER-SELLER',1,'good product'),(9,8,'BUYER-SELLER',1,'good product'),(10,9,'BUYER-SELLER',-1,'product is broken'),(11,10,'BUYER-SELLER',1,'good product'),(12,11,'BUYER-SELLER',1,'good product'),(13,12,'BUYER-SELLER',1,'good product'),(14,13,'SELLER-BUYER',-1,'Người thắng không thanh toán'),(15,14,'SELLER-BUYER',-1,'Người thắng không thanh toán'),(16,15,'BUYER-SELLER',1,'good product'),(17,16,'BUYER-SELLER',1,'good product'),(18,17,'BUYER-SELLER',-1,'product is broken'),(19,18,'BUYER-SELLER',1,'good product'),(20,19,'BUYER-SELLER',1,'good product'),(21,20,'BUYER-SELLER',1,'good product');
 /*!40000 ALTER TABLE `rates` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -304,6 +307,7 @@ CREATE TABLE `watchlists` (
 
 LOCK TABLES `watchlists` WRITE;
 /*!40000 ALTER TABLE `watchlists` DISABLE KEYS */;
+INSERT INTO `watchlists` VALUES (1,1),(1,2),(5,2),(6,2),(7,2),(1,3),(5,3),(7,3),(1,4),(5,4),(7,4),(7,5),(6,12),(6,13),(8,16),(8,17),(8,18);
 /*!40000 ALTER TABLE `watchlists` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -324,4 +328,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-12-05 15:06:16
+-- Dump completed on 2021-12-07 14:06:26
