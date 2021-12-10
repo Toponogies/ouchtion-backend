@@ -1,0 +1,19 @@
+delete:
+  operationId: deleteBiddingPermission
+  summary: Delete a bidding permission.
+  parameters:
+    - $ref: "../../../parameters/header/accessToken.yaml"
+    - $ref: "../../../parameters/path/id.yaml"
+  responses:
+    "204":
+      description: Deleted a bidding permission.
+    "401":
+      $ref: "../../../responses/Error.yaml"
+    "404":
+      $ref: "../../../responses/Error.yaml"
+    "500":
+      $ref: "../../../responses/Error.yaml"
+    default:
+      $ref: "../../../responses/Error.yaml"
+  tags:
+    - biddings

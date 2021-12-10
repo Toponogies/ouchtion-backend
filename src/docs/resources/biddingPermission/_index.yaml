@@ -1,17 +1,30 @@
 get:
-  operationId: getBiddings
-  summary: Get all Biddings.
+  operationId: getBiddingPermissionProduct
+  summary: Get all Biddings permission of one product.
   parameters:
     - $ref: "../../parameters/header/accessToken.yaml"
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          description: Schema bidding for an product id.
+          properties:
+            product_id:
+              type: string
+              description: The product id.
+          required:
+            - product_id
   responses:
     "200":
-      description: An array of Biddings.
+      description: An array of Biddings permission.
       content:
         application/json:
           schema:
             type: array
             items:
-              $ref: "../../schemas/Bidding.yaml"
+              $ref: "../../schemas/BiddingPermission.yaml"
     "401":
       $ref: "../../responses/Error.yaml"
     "500":
@@ -21,8 +34,8 @@ get:
   tags:
     - biddings
 post:
-  operationId: addBidding
-  summary: Add a bidding.
+  operationId: addBiddingPermission
+  summary: Add a bidding permission.
   parameters:
     - $ref: "../../parameters/header/accessToken.yaml"
   requestBody:
@@ -30,14 +43,14 @@ post:
     content:
       application/json:
         schema:
-          $ref: "../../schemas/Bidding.yaml"
+          $ref: "../../schemas/BiddingPermission.yaml"
   responses:
     "200":
       description: Added a bidding.
       content:
         application/json:
           schema:
-            $ref: "../../schemas/Bidding.yaml"
+            $ref: "../../schemas/BiddingPermission.yaml"
     "401":
       $ref: "../../responses/Error.yaml"
     "422":
