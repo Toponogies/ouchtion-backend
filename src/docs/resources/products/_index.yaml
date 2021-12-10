@@ -1,0 +1,44 @@
+get:
+  operationId: getProducts
+  summary: Get all Products.
+  parameters:
+    - $ref: "../../parameters/header/accessToken.yaml"
+    - $ref: "../../parameters/path/id.yaml"
+  responses:
+    "200":
+      description: An array of Products.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../schemas/Product.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+    default:
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - products
+post:
+  operationId: addProduct
+  summary: Add a Product.
+  parameters:
+    - $ref: "../../parameters/header/accessToken.yaml"
+    - $ref: "../../parameters/path/id.yaml"
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../schemas/ProductPost.yaml"
+  responses:
+    "200":
+      description: Added a productr.
+      content:
+        application/json:
+          schema:
+            $ref: "../../schemas/Product.yaml"
+    "401":
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - products

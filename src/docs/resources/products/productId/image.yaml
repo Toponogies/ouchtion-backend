@@ -1,0 +1,24 @@
+post:
+  operationId: addProductImage
+  summary: Add a image to product.
+  parameters:
+    - $ref: "../../../parameters/header/accessToken.yaml"
+    - $ref: "../../../parameters/path/id.yaml"
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          title: ProductImage
+          description: Schema for a product image.
+          properties:
+            file:
+              $ref: "../../../schemas/FileHtml.yaml"
+  responses:
+    "200":
+      description: Added a product image.
+    "401":
+      $ref: "../../../responses/Error.yaml"
+  tags:
+    - products

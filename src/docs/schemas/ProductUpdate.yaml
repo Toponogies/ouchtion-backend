@@ -1,0 +1,15 @@
+type: object
+title: Product
+description: Schema for a product request.
+properties:
+  category_id:
+    type: string
+    description: The password of a category.
+  name:
+    type: string
+    description: The name of a product.
+  end_at:
+    type: string
+    description: The timestamp end bidding product.
+  avatar:
+    $ref: "./FileHtml.yaml"

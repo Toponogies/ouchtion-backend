@@ -1,0 +1,27 @@
+type: object
+description: Base file in html
+properties:
+  fieldname:
+    type: string
+    description: Fieldname of file
+  originalname:
+    type: string
+    description: originalname of file
+  encoding:
+    type: string
+    description: encoding of file
+  mimetype:
+    type: string
+    description: mimetype of file
+  destination:
+    type: string
+    description: destination of file
+  filename:
+    type: string
+    description: filename of file
+  path:
+    type: string
+    description: path of file
+  size:
+    type: integer
+    description: size of file

@@ -1,0 +1,7 @@
+type: object
+title: addProductDescription
+description: Schema for a product description.
+properties:
+  description:
+    type: string
+    description: The description of a product.

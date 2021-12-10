@@ -1,0 +1,9 @@
+type: object
+title: Image
+description: Schema for a image request.
+properties:
+  path:
+    type: string
+    description: The path of a image.
+required:
+  - path

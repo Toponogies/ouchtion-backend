@@ -1,0 +1,21 @@
+post:
+  operationId: getImage
+  summary: get a image.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+            $ref: "../../schemas/Image.yaml"
+  responses:
+    "200":
+      description: get a image file.
+      content:
+        application/json:
+          schema:
+            type: string
+            description: Source image.
+    "401":
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - images

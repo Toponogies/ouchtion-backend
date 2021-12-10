@@ -58,7 +58,15 @@ paths:
   #   $ref: "./resources/users/_index.yaml"
   # /users/{Id}:
   #   $ref: "./resources/users/userId/_index.yaml"
-  # /users/{Id}/resetPass:
-  #   $ref: "./resources/users/userId/resetPass.yaml"
-  # /users/{Id}/forgotPass:
-  #   $ref: "./resources/users/userId/forgotPass.yaml"
+
+  /products:
+    $ref: "./resources/products/_index.yaml"
+  /products/{Id}:
+    $ref: "./resources/products/productId/_index.yaml"
+  /products/{Id}/image:
+    $ref: "./resources/products/productId/image.yaml"
+  /products/{Id}/description:
+    $ref: "./resources/products/productId/description.yaml"
+  
+  # /images:
+  #   $ref: "./resources/images/_index.yaml"
