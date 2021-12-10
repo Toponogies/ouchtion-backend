@@ -3,7 +3,6 @@ get:
   summary: Get all Products.
   parameters:
     - $ref: "../../parameters/header/accessToken.yaml"
-    - $ref: "../../parameters/path/id.yaml"
   responses:
     "200":
       description: An array of Products.
@@ -26,7 +25,6 @@ post:
   summary: Add a Product.
   parameters:
     - $ref: "../../parameters/header/accessToken.yaml"
-    - $ref: "../../parameters/path/id.yaml"
   requestBody:
     required: true
     content:
