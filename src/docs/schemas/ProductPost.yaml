@@ -46,6 +46,5 @@ required:
   - category_id
   - seller_id
   - name
-  - start_at
   - end_at
   - init_price
