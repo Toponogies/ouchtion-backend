@@ -1,0 +1,46 @@
+get:
+  operationId: getBiddings
+  summary: Get all Biddings.
+  parameters:
+    - $ref: "../../parameters/header/accessToken.yaml"
+  responses:
+    "200":
+      description: An array of Biddings.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../schemas/Bidding.yaml"
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+    default:
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - biddings
+post:
+  operationId: addBidding
+  summary: Add a bidding.
+  parameters:
+    - $ref: "../../parameters/header/accessToken.yaml"
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../schemas/Bidding.yaml"
+  responses:
+    "200":
+      description: Added a bidding.
+      content:
+        application/json:
+          schema:
+            $ref: "../../schemas/Bidding.yaml"
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "422":
+      $ref: "../../responses/ValidationError.yaml"
+  tags:
+    - biddings

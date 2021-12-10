@@ -62,3 +62,12 @@ paths:
   #   $ref: "./resources/users/userId/resetPass.yaml"
   # /users/{Id}/forgotPass:
   #   $ref: "./resources/users/userId/forgotPass.yaml"
+
+  /bidding:
+    $ref: "./resources/bidding/_index.yaml"
+  /bidding/product:
+    $ref: "./resources/bidding/product.yaml"
+  /bidding/user:
+    $ref: "./resources/bidding/user.yaml"
+  /bidding/{Id}:
+    $ref: "./resources/bidding/biddingId/_index.yaml"

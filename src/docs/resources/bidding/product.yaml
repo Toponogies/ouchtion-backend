@@ -1,0 +1,35 @@
+get:
+  operationId: getBiddingProduct
+  summary: Get all Biddings of product.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          description: Schema bidding for an product id.
+          properties:
+            product_id:
+              type: string
+              description: The product id.
+          required:
+            - product_id
+  parameters:
+    - $ref: "../../parameters/header/accessToken.yaml"
+  responses:
+    "200":
+      description: An array of Biddings.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../schemas/Bidding.yaml"
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+    default:
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - biddings

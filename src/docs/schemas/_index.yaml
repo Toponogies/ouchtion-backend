@@ -16,3 +16,5 @@ User:
   $ref: "./User.yaml"
 ValidationError:
   $ref: "./ValidationError.yaml"
+bidding:
+  $ref: "./Bidding.yaml"
