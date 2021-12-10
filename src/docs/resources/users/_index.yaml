@@ -15,8 +15,8 @@ get:
               $ref: "../../schemas/User.yaml"
     "500":
       $ref: "../../responses/Error.yaml"
-    "422":
-      $ref: "../../responses/ValidationError.yaml"
+    "401":
+      $ref: "../../responses/Error.yaml"
     default:
       $ref: "../../responses/Error.yaml"
   tags:
@@ -39,6 +39,8 @@ post:
             $ref: "../../schemas/User.yaml"
     "401":
       $ref: "../../responses/Error.yaml"
+    "422":
+      $ref: "../../responses/ValidationError.yaml"
     $ref: "../../responses/ValidationError.yaml"
   tags:
     - users

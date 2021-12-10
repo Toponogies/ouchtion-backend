@@ -13,8 +13,8 @@ get:
             $ref: "../../../schemas/User.yaml"
     "400":
       $ref: "../../../responses/Error.yaml"
-    "422":
-      $ref: "../../../responses/ValidationError.yaml"
+    "401":
+      $ref: "../../../responses/Error.yaml"
   tags:
     - users
 put:
@@ -36,6 +36,8 @@ put:
         application/json:
           schema:
             $ref: "../../../schemas/User.yaml"
+    "401":
+      $ref: "../../../responses/Error.yaml"
     "404":
       $ref: "../../../responses/Error.yaml"
     "422":
@@ -53,10 +55,10 @@ delete:
   responses:
     "204":
       description: Deleted a user.
+    "401":
+      $ref: "../../../responses/Error.yaml"
     "404":
       $ref: "../../../responses/Error.yaml"
-    "422":
-      $ref: "../../../responses/ValidationError.yaml"
     "500":
       $ref: "../../../responses/Error.yaml"
     default:
