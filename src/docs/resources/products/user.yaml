@@ -1,0 +1,35 @@
+get:
+  operationId: getProductByUser
+  summary: Get all product's seller.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          description: Schema product for an seller id.
+          properties:
+            user_id:
+              type: string
+              description: The user id.
+          required:
+            - user_id
+  parameters:
+    - $ref: "../../parameters/header/accessToken.yaml"
+  responses:
+    "200":
+      description: An array of products.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../schemas/Product.yaml"
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+    default:
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - products

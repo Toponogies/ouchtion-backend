@@ -61,6 +61,8 @@ paths:
 
   /products:
     $ref: "./resources/products/_index.yaml"
+  /products/user:
+    $ref: "./resources/products/user.yaml"
   /products/{Id}:
     $ref: "./resources/products/productId/_index.yaml"
   /products/{Id}/image:
