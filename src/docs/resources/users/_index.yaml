@@ -1,6 +1,9 @@
 get:
   operationId: getUsers
   summary: Get all Users.
+  parameters:
+    - $ref: "../../parameters/header/accessToken.yaml"
+    - $ref: "../../parameters/path/id.yaml"
   responses:
     "200":
       description: An array of Users.
@@ -12,6 +15,8 @@ get:
               $ref: "../../schemas/User.yaml"
     "500":
       $ref: "../../responses/Error.yaml"
+    "422":
+      $ref: "../../responses/ValidationError.yaml"
     default:
       $ref: "../../responses/Error.yaml"
   tags:
@@ -34,5 +39,6 @@ post:
             $ref: "../../schemas/User.yaml"
     "401":
       $ref: "../../responses/Error.yaml"
+    $ref: "../../responses/ValidationError.yaml"
   tags:
     - users

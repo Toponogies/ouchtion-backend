@@ -14,5 +14,7 @@ Tokens:
   $ref: "./Tokens.yaml"
 User:
   $ref: "./User.yaml"
+UserUpdate:
+  $ref: "./UserUpdate.yaml"
 ValidationError:
   $ref: "./ValidationError.yaml"
