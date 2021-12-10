@@ -268,7 +268,7 @@ CREATE TABLE `users` (
   `address` varchar(100) DEFAULT NULL,
   `dob` datetime DEFAULT NULL,
   `is_active` tinyint NOT NULL DEFAULT '0',
-  `role` enum('bidder','seller','admin') NOT NULL,
+  `role` enum('bidder','seller','admin') NOT NULL DEFAULT 'bidder',
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `email_UNIQUE` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -328,4 +328,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-12-07 14:06:26
+-- Dump completed on 2021-12-10 17:25:00
