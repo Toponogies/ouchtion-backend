@@ -20,3 +20,5 @@ bidding:
   $ref: "./Bidding.yaml"
 BiddingPermission:
   $ref: "./BiddingPermission.yaml"
+BiddingRequest:
+  $ref: "./BiddingRequest.yaml"

@@ -75,3 +75,7 @@ paths:
     $ref: "./resources/biddingPermission/_index.yaml"
   /bidding/permission/{Id}:
     $ref: "./resources/biddingPermission/biddingPermissionId/_index.yaml"
+  /bidding/request:
+    $ref: "./resources/biddingRequest/_index.yaml"
+  /bidding/request/unaccept:
+    $ref: "./resources/biddingRequest/unaccept.yaml"

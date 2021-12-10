@@ -1,0 +1,37 @@
+post:
+  operationId: UnprocessBiddingRequest
+  summary: Unprocess a bidding request.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          description: Schema for bidding approval request.
+          properties:
+            user_id:
+              type: string
+              description: The product id.
+            product_id:
+              type: string
+              description: The product id.
+          required:
+            - product_id
+            - user_id
+  parameters:
+    - $ref: "../../parameters/header/accessToken.yaml"
+  responses:
+    "200":
+      description: Unprocess a bidding request.
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "404":
+      $ref: "../../responses/Error.yaml"
+    "422":
+      $ref: "../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+    default:
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - biddings
