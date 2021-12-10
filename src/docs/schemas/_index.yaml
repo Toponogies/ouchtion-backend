@@ -18,3 +18,5 @@ UserUpdate:
   $ref: "./UserUpdate.yaml"
 ValidationError:
   $ref: "./ValidationError.yaml"
+watchlist:
+  $ref: "./Watch.yaml"

@@ -1,0 +1,13 @@
+title: Watchlist
+description: Schema for watchlist.
+type: object
+properties:
+  user_id:
+    type: string
+    description: The ID of the User.
+  product_id:
+    type: string
+    description: The ID of the Product.
+required:
+  - user_id
+  - product_id
