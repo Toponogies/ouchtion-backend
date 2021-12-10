@@ -20,5 +20,7 @@ post:
       description: Added a product image.
     "401":
       $ref: "../../../responses/Error.yaml"
+    "422":
+      $ref: "../../../responses/ValidationError.yaml"
   tags:
     - products

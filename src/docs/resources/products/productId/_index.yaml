@@ -13,6 +13,8 @@ get:
             $ref: "../../../schemas/ProductWithImage.yaml"
     "400":
       $ref: "../../../responses/Error.yaml"
+    "401":
+      $ref: "../../../responses/Error.yaml"
   tags:
     - products
 put:
@@ -36,6 +38,10 @@ put:
             $ref: "../../../schemas/Product.yaml"
     "404":
       $ref: "../../../responses/Error.yaml"
+    "422":
+      $ref: "../../../responses/ValidationError.yaml"
+    "401":
+      $ref: "../../../responses/Error.yaml"
     default:
       $ref: "../../../responses/Error.yaml"
   tags:
@@ -49,8 +55,12 @@ delete:
   responses:
     "204":
       description: Deleted a prodcut.
+    "401":
+      $ref: "../../../responses/Error.yaml"
     "404":
       $ref: "../../../responses/Error.yaml"
+    "422":
+      $ref: "../../../responses/ValidationError.yaml"
     "500":
       $ref: "../../../responses/Error.yaml"
     default:
