@@ -35,10 +35,12 @@ export default {
 
             // create access token and refresh token
             const payloadAccessToken = {
-                userId: user.id
+                userId: user.id,
+                role: user.role
             };
             const payloadRefreshToken = {
                 userId: user.id,
+                role: user.role,
                 userEmail: user.email
             };
             const accessToken = jwt.sign(payloadAccessToken, process.env.SERET_KEY, optsAccess);
@@ -70,11 +72,13 @@ export default {
         };
 
         var _userId = -1
+        var _role = -1
 
         // verify token and get user id
         try {
-            const { userId } = jwt.verify(accessToken, process.env.SERET_KEY, opts);
+            const { userId,role } = jwt.verify(accessToken, process.env.SERET_KEY, opts);
             _userId = userId;
+            _role = role
         } catch (err) {
             return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_REFRESHTOKEN)
         }
@@ -99,7 +103,7 @@ export default {
 
         // check expired and valid of refresh token
         try {
-            const { userId, userEmail } = jwt.verify(refreshToken, process.env.SERET_KEY, opts);
+            const { userId, role, userEmail } = jwt.verify(refreshToken, process.env.SERET_KEY, opts);
         } catch (err) {
             if (error.name === "TokenExpiredError")
                 return res.status(httpStatus.UNAUTHORIZED).send(EXPIRED_REFRESHTOKEN)
@@ -108,7 +112,7 @@ export default {
         }
 
         // create new access token
-        const payload = { _userId };
+        const payload = { _userId,_role };
         const new_accessToken = jwt.sign(payload, process.env.SERET_KEY, optsAccess);
         
         // return new access token and refresh token
@@ -123,7 +127,7 @@ export default {
             ignoreExpiration: true
         };
         try {
-            const { userId } = jwt.verify(accessToken, process.env.SERET_KEY, opts);
+            const { userId,role } = jwt.verify(accessToken, process.env.SERET_KEY, opts);
             
             // delete data of user have userId in redis
             try{
@@ -145,7 +149,9 @@ export default {
         //add user
         try {
             user = await userModel.add(req.body)
+            console.log(user)
         } catch (error) {
+            console.log(error);
             return res.status(httpStatus.CONFLICT).send(DB_QUERY_ERROR)
         }
 
@@ -158,10 +164,11 @@ export default {
         
         // save verifyToken in redis
         try{
-            await setRedis(user.id,{ 
+            await setRedis(user[0],{ 
                 verifyToken: verifyToken,
             })
         }catch(err){
+            console.log(err)
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(REDIS_SERVER_ERROR);
         }
 
@@ -173,40 +180,44 @@ export default {
     verify: async(req, res) =>{
         const verifyToken = req.query.token
 
-        // get value and del value from redis
-        var value = null;
-        try{
-            // get value
-            value = await getRedis(_userId);
-            if (!value)
-            {
-                return res.status(httpStatus.NOT_FOUND).send(NOTFOUND_REDIS);
-            }
-
-            // del value redis
-            await delRedis(_userId)
-        }catch(err){
-            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(REDIS_SERVER_ERROR);
-        }
-
-        // check verifytoken with value in redis
-        if (value.verifyToken !== verifyToken){
-            return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_VERIFYTOKEN);
-        }
-
-        // check vaild and update new password
+        var _userId = -1
+        // check vaild
         try {
-            const { userId } = jwt.verify(verifyToken, process.env.SERET_KEY);
-            await userModel.patch(userId, {
-                active: true
-            });
-            return res.status(httpStatus.NO_CONTENT).send()
+            const { userId} = jwt.verify(verifyToken, process.env.SERET_KEY);
+            _userId = userId
         } catch (err) {
             if (err.name === "TokenExpiredError")
                 return res.status(httpStatus.UNAUTHORIZED).send(EXPIRED_VERIFYTOKEN)
             else
                 return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_VERIFYTOKEN)
         }
+
+        // get value and del value from redis
+        try{
+            // get value
+            var value = await getRedis(_userId);
+            if (!value)
+            {
+                return res.status(httpStatus.NOT_FOUND).send(NOTFOUND_REDIS);
+            }
+
+            // check verifytoken with value in redis
+            if (value.verifyToken !== verifyToken){
+                return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_VERIFYTOKEN);
+            }
+
+            // del value redis
+            await delRedis(_userId)
+        }catch(err){
+            console.log(err)
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(REDIS_SERVER_ERROR);
+        }
+
+        // update new password
+        await userModel.patch(_userId, {
+            is_active: true
+        });
+        return res.status(httpStatus.NO_CONTENT).send()
     },
     resetByEmail: async(req, res) =>{
         const email = req.query.email
@@ -214,19 +225,19 @@ export default {
         
         // check user exist
         if (user === null) {
-            return res.status(httpStatus.UNAUTHORIZED).send(LOGIN_ERROR)
+            return res.status(httpStatus.NOT_FOUND).send(LOGIN_ERROR)
         }
 
         // create verify token
         const payloadVerifyToken = {
-            userId: user.id
+            userId: user.user_id
         };
 
         const verifyToken = jwt.sign(payloadVerifyToken, process.env.SERET_KEY, optsVerify);
         
         // save verifyToken in redis
         try{
-            await setRedis(user.id,{ 
+            await setRedis(user.user_id,{ 
                 verifyToken: verifyToken,
             })
         }catch(err){
@@ -239,6 +250,7 @@ export default {
         return res.status(httpStatus.NO_CONTENT).send()
     },
     resetPass: async(req,res) =>{
+        req.body.password = bcrypt.hashSync(req.body.password, 10);
         const {password, token} = req.body
         var _userId = -1;
 
@@ -254,25 +266,23 @@ export default {
         }
 
         // get value and del value from redis
-        var value = null;
         try{
             // get value
-            value = await getRedis(_userId);
+            var value = await getRedis(_userId);
             if (!value)
             {
                 return res.status(httpStatus.NOT_FOUND).send(NOTFOUND_REDIS);
             }
 
+            // check verifytoken with value in redis
+            if (value.verifyToken !== token){
+                return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_VERIFYTOKEN);
+            }
             // del value redis
             await delRedis(_userId)
         }catch(err){
             console.log(err)
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(REDIS_SERVER_ERROR);
-        }
-
-        // check verifytoken with value in redis
-        if (value.verifyToken !== token){
-            return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_VERIFYTOKEN);
         }
 
         await userModel.patch(_userId, {

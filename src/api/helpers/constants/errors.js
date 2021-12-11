@@ -33,6 +33,11 @@ export const INVAILD_ACCESSTOKEN = {
     detail: "Invalid access token."
 };
 
+export const NOTFOUND_ACCESSTOKEN = {
+    title: "Not found access token.",
+    detail: "Not found access token."
+};
+
 export const INVAILD_REFRESHTOKEN = {
     title: "Invalid refresh token.",
     detail: "Invalid refresh token."
@@ -57,3 +62,11 @@ export const EXPIRED_VERIFYTOKEN = {
     title: "Exprired verify token",
     detail: "Verify token is expried"
 };
+
+export function VALIDATION_ERROR(validate_err){
+    return {
+        title: "VALIDATION_ERROR",
+        detail: "Can't validation this request",
+        field: validate_err
+    };
+}
