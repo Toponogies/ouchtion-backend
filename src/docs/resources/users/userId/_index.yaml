@@ -42,6 +42,8 @@ put:
       $ref: "../../../responses/Error.yaml"
     "422":
       $ref: "../../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../../responses/Error.yaml"
     default:
       $ref: "../../../responses/Error.yaml"
   tags:

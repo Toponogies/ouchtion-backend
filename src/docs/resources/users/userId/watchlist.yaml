@@ -16,6 +16,34 @@ get:
       $ref: "../../../responses/Error.yaml"
     "401":
       $ref: "../../../responses/Error.yaml"
+    "500":
+      $ref: "../../../responses/Error.yaml"
+  tags:
+    - users
+post:
+  operationId: addUserWatch
+  summary: Add a watch of User.
+  parameters:
+    - $ref: "../../../parameters/header/accessToken.yaml"
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../../schemas/Watch.yaml"
+  responses:
+    "200":
+      description: Added a watch of a user.
+      content:
+        application/json:
+          schema:
+            $ref: "../../../schemas/User.yaml"
+    "401":
+      $ref: "../../../responses/Error.yaml"
+    "422":
+      $ref: "../../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../../responses/Error.yaml"
   tags:
     - users
 delete:
