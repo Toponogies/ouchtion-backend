@@ -15,6 +15,8 @@ get:
       $ref: "../../../responses/Error.yaml"
     "401":
       $ref: "../../../responses/Error.yaml"
+    "500":
+      $ref: "../../../responses/Error.yaml"
   tags:
     - products
 put:
@@ -41,6 +43,8 @@ put:
     "422":
       $ref: "../../../responses/ValidationError.yaml"
     "401":
+      $ref: "../../../responses/Error.yaml"
+    "500":
       $ref: "../../../responses/Error.yaml"
     default:
       $ref: "../../../responses/Error.yaml"

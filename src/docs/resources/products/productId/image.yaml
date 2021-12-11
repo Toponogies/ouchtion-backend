@@ -7,14 +7,9 @@ post:
   requestBody:
     required: true
     content:
-      application/json:
+      multipart/form-data:
         schema:
-          type: object
-          title: ProductImage
-          description: Schema for a product image.
-          properties:
-            file:
-              $ref: "../../../schemas/FileHtml.yaml"
+          - $ref: "../../../schemas/ProductImagePost.yaml"
   responses:
     "200":
       description: Added a product image.
@@ -22,5 +17,7 @@ post:
       $ref: "../../../responses/Error.yaml"
     "422":
       $ref: "../../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../../responses/Error.yaml"
   tags:
     - products

@@ -65,10 +65,12 @@ paths:
     $ref: "./resources/products/user.yaml"
   /products/{Id}:
     $ref: "./resources/products/productId/_index.yaml"
+  /products/{Id}/avatar:
+    $ref: "./resources/products/productId/avatar.yaml"
   /products/{Id}/image:
     $ref: "./resources/products/productId/image.yaml"
   /products/{Id}/description:
     $ref: "./resources/products/productId/description.yaml"
   
-  # /images:
-  #   $ref: "./resources/images/_index.yaml"
+  /images:
+    $ref: "./resources/images/_index.yaml"

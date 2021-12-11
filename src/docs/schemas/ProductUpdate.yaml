@@ -11,5 +11,3 @@ properties:
   end_at:
     type: string
     description: The timestamp end bidding product.
-  avatar:
-    $ref: "./FileHtml.yaml"

@@ -26,9 +26,9 @@ productWithImage:
   $ref: "./ProductWithImage.yaml"
 ProductImage:
   $ref: "./ProductImage.yaml"
+ProductImagePost:
+  $ref: "./ProductImagePost.yaml"
 ProductDescription:
   $ref: "./ProductDescription.yaml"
-FileHtml:
-  $ref: "./FileHtml.yaml"
 images:
   $ref: "./Image.yaml"
