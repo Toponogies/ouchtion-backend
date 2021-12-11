@@ -9,7 +9,7 @@ post:
     content:
       multipart/form-data:
         schema:
-          - $ref: "../../../schemas/ProductImagePost.yaml"
+          $ref: "../../../schemas/ProductImagePost.yaml"
   responses:
     "200":
       description: Added a product image.

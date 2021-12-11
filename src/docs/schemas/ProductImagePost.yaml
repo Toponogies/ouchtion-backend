@@ -1,6 +1,6 @@
 type: object
-title: ProductImage
-description: Schema for a product image.
+title: ProductImagePost
+description: Schema for a product image post.
 properties:
   file:
     type: string
