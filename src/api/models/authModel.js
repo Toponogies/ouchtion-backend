@@ -4,8 +4,8 @@ import dotenv from 'dotenv';
 import bcrypt from 'bcrypt'
 dotenv.config();
 
-import { DB_QUERY_ERROR, EXPIRED_ACCESSTOKEN, EXPIRED_REFRESHTOKEN, EXPIRED_VERIFYTOKEN, INVAILD_ACCESSTOKEN, INVAILD_REFRESHTOKEN, INVAILD_VERIFYTOKEN, LOGIN_ERROR, NOTFOUND_REDIS, REDIS_SERVER_ERROR, UNEXPECTED_ERROR } from '../helpers/constants/Errors';
-import { setRedis,getRedis, delRedis } from '../helpers/constants/redisClient';
+import { DB_QUERY_ERROR, EXPIRED_REFRESHTOKEN, EXPIRED_VERIFYTOKEN, INVAILD_REFRESHTOKEN, INVAILD_VERIFYTOKEN, LOGIN_ERROR, NOTFOUND_REDIS, UNEXPECTED_ERROR } from '../helpers/constants/Errors';
+import { setRedis,getRedis, delRedis, setExRedis } from '../helpers/constants/redisClient';
 import userModel from './userModel';
 import sendEmail from '../helpers/constants/sendEmail';
 
@@ -47,13 +47,9 @@ export default {
             const refreshToken = jwt.sign(payloadRefreshToken, process.env.SERET_KEY, optsRefresh);
             
             // set value from redis
-            try{
-                await setRedis(user.id,{ 
-                    refreshToken: refreshToken,
-                })
-            }catch(err){
-                return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(REDIS_SERVER_ERROR);
-            }
+            await setExRedis(user.id,process.env.REDIS_EXPIRED_SECOND,{ 
+                refreshToken: refreshToken,
+            })
 
             // return access token and refresh token
             return res.json({
@@ -88,11 +84,11 @@ export default {
         try{
             value = await getRedis(_userId);
         }catch(err){
-            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(REDIS_SERVER_ERROR);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
         }
         if (!value)
         {
-            return res.status(httpStatus.NOT_FOUND).send(NOTFOUND_REDIS);
+            return res.status(httpStatus.UNAUTHORIZED).send(NOTFOUND_REDIS);
         }
 
         // check refresh token and redis refresh token
@@ -130,11 +126,7 @@ export default {
             const { userId,role } = jwt.verify(accessToken, process.env.SERET_KEY, opts);
             
             // delete data of user have userId in redis
-            try{
-                await delRedis(userId);
-            }catch(err){
-                return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(REDIS_SERVER_ERROR);
-            }
+            await delRedis(userId);
 
             return res.status(httpStatus.NO_CONTENT).send()
         } catch (err) {
@@ -149,10 +141,11 @@ export default {
         //add user
         try {
             user = await userModel.add(req.body)
-            console.log(user)
         } catch (error) {
             console.log(error);
-            return res.status(httpStatus.CONFLICT).send(DB_QUERY_ERROR)
+            if (error.sqlState === '23000')
+                return res.status(httpStatus.CONFLICT).send(DB_QUERY_ERROR)
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR)
         }
 
         // create access token and refresh token
@@ -164,12 +157,12 @@ export default {
         
         // save verifyToken in redis
         try{
-            await setRedis(user[0],{ 
+            await setExRedis(user[0],process.env.REDIS_EXPIRED_SECOND,{ 
                 verifyToken: verifyToken,
             })
         }catch(err){
             console.log(err)
-            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(REDIS_SERVER_ERROR);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
         }
 
         // send email to user
@@ -198,7 +191,7 @@ export default {
             var value = await getRedis(_userId);
             if (!value)
             {
-                return res.status(httpStatus.NOT_FOUND).send(NOTFOUND_REDIS);
+                return res.status(httpStatus.UNAUTHORIZED).send(NOTFOUND_REDIS);
             }
 
             // check verifytoken with value in redis
@@ -210,7 +203,7 @@ export default {
             await delRedis(_userId)
         }catch(err){
             console.log(err)
-            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(REDIS_SERVER_ERROR);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
         }
 
         // update new password
@@ -225,7 +218,7 @@ export default {
         
         // check user exist
         if (user === null) {
-            return res.status(httpStatus.NOT_FOUND).send(LOGIN_ERROR)
+            return res.status(httpStatus.UNAUTHORIZED).send(LOGIN_ERROR)
         }
 
         // create verify token
@@ -237,11 +230,11 @@ export default {
         
         // save verifyToken in redis
         try{
-            await setRedis(user.user_id,{ 
+            await setExRedis(user.user_id,process.env.REDIS_EXPIRED_SECOND,{ 
                 verifyToken: verifyToken,
             })
         }catch(err){
-            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(REDIS_SERVER_ERROR);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
         }
         
         // send email to yser
@@ -271,7 +264,7 @@ export default {
             var value = await getRedis(_userId);
             if (!value)
             {
-                return res.status(httpStatus.NOT_FOUND).send(NOTFOUND_REDIS);
+                return res.status(httpStatus.UNAUTHORIZED).send(NOTFOUND_REDIS);
             }
 
             // check verifytoken with value in redis
@@ -282,7 +275,7 @@ export default {
             await delRedis(_userId)
         }catch(err){
             console.log(err)
-            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(REDIS_SERVER_ERROR);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
         }
 
         await userModel.patch(_userId, {
