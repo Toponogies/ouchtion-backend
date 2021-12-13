@@ -63,6 +63,11 @@ export const EXPIRED_VERIFYTOKEN = {
     detail: "Verify token is expried"
 };
 
+export const ACCOUNT_NOT_ACTIVE = {
+    title: "Account not active",
+    detail: "Account not active"
+};
+
 export function VALIDATION_ERROR(validate_err){
     return {
         title: "VALIDATION_ERROR",

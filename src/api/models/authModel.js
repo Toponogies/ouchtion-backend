@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import bcrypt from 'bcrypt'
 dotenv.config();
 
-import { DB_QUERY_ERROR, EXPIRED_REFRESHTOKEN, EXPIRED_VERIFYTOKEN, INVAILD_REFRESHTOKEN, INVAILD_VERIFYTOKEN, LOGIN_ERROR, NOTFOUND_REDIS, UNEXPECTED_ERROR } from '../helpers/constants/Errors';
+import { ACCOUNT_NOT_ACTIVE, DB_QUERY_ERROR, EXPIRED_REFRESHTOKEN, EXPIRED_VERIFYTOKEN, INVAILD_REFRESHTOKEN, INVAILD_VERIFYTOKEN, LOGIN_ERROR, NOTFOUND_REDIS, UNEXPECTED_ERROR } from '../helpers/constants/Errors';
 import { setRedis,getRedis, delRedis, setExRedis } from '../helpers/constants/redisClient';
 import userModel from './userModel';
 import sendEmail from '../helpers/constants/sendEmail';
@@ -26,6 +26,10 @@ export default {
             const user = await userModel.findByEmail(req.body.email);
             if (user === null) {
                 return res.status(httpStatus.UNAUTHORIZED).send(LOGIN_ERROR)
+            }
+            //check account user active
+            if (!user.is_active){
+                return res.status(httpStatus.UNAUTHORIZED).send(ACCOUNT_NOT_ACTIVE)
             }
             
             // check password
