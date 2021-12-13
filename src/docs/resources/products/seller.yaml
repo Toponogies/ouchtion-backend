@@ -9,11 +9,11 @@ get:
           type: object
           description: Schema product for an seller id.
           properties:
-            user_id:
+            seller_id:
               type: string
               description: The user id.
           required:
-            - user_id
+            - seller_id
   parameters:
     - $ref: "../../parameters/header/accessToken.yaml"
   responses:

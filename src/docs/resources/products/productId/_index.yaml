@@ -63,8 +63,6 @@ delete:
       $ref: "../../../responses/Error.yaml"
     "404":
       $ref: "../../../responses/Error.yaml"
-    "422":
-      $ref: "../../../responses/ValidationError.yaml"
     "500":
       $ref: "../../../responses/Error.yaml"
     default:
