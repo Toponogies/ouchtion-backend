@@ -17,5 +17,5 @@ properties:
 required:
   - email
   - password
-  - name
+  - full_name
   - address
