@@ -1,5 +1,7 @@
 import httpStatus from 'http-status-codes';
-import { NOT_FOUND_PRODUCT, NOT_PERMISSION, UNEXPECTED_ERROR } from '../helpers/constants/Errors';
+import path from 'path';
+import multer from 'multer';
+import { NOT_FOUND_FILE, NOT_FOUND_PRODUCT, NOT_PERMISSION, UNEXPECTED_ERROR } from '../helpers/constants/Errors';
 import { productModel } from "../models";
 export default {
     getAllProduct: async (req, res) => {
@@ -23,7 +25,7 @@ export default {
     getProduct: async (req, res) => {
         try {
             const product = await productModel.findById(req.params.id);
-            if (product === null){
+            if (product === null) {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
             }
             product.images = await productModel.getImages(product.product_id);
@@ -48,35 +50,83 @@ export default {
     updateProduct: async (req, res) => {
         try {
             const product = await productModel.findById(req.params.id);
-            if (req.accessTokenPayload.id !== product.seller_id)
-            {
+            if (product === null) {
+                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
+            }
+            if (req.accessTokenPayload.id !== product.seller_id) {
                 return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
             }
 
-            const n = await productModel.patch(req.params.id,req.body);
-            if (n === 0)
-            {
+            const n = await productModel.patch(req.params.id, req.body);
+            if (n === 0) {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
             }
-            const result = await productModel.findById(req.params.id);
-            return res.json(result);
+            return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
             console.log(err);
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
         }
     },
-    deleteProduct: async (req, res) =>{
+    deleteProduct: async (req, res) => {
         try {
-            if (req.accessTokenPayload.role !== "admin")
-            {
+            const product = await productModel.findById(req.params.id);
+            if (product === null) {
+                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
+            }
+
+            if (req.accessTokenPayload.role !== "admin") {
                 return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
             }
             const n = await productModel.removeById(req.params.id);
-            if (n === 0)
-            {
+            if (n === 0) {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
             }
             return res.status(httpStatus.NO_CONTENT).send();
+        } catch (err) {
+            console.log(err);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+        }
+    },
+    uploadAvatar: async (req, res) => {
+        try {
+            const product = await productModel.findById(req.params.id);
+            if (product === null) {
+                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
+            }
+            var storage = multer.diskStorage({
+                destination: function (req, file, cb) {
+                    cb(null, 'localdata/product_avatar');
+                },
+                filename: function (req, file, cb) {
+                    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+                    cb(null, uniqueSuffix + path.extname(file.originalname))
+                }
+            });
+            var upload = multer({ storage: storage }).single('file');
+            upload(req, res, async (err) => {
+                if (err) {
+                    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+                }
+                const file = req.file;
+                if (!file) {
+                    return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_FILE);
+                }
+                const index = file.path.indexOf('\\');
+                const path = file.path.substring(index + 1);
+                try {
+                    const n = await productModel.patch(req.params.id, {
+                        avatar: path
+                    })
+                    if (n === 0) {
+                        return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
+                    }
+                }
+                catch (err) {
+                    console.log(err);
+                    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+                }
+                return res.status(httpStatus.NO_CONTENT).send();
+            });
         } catch (err) {
             console.log(err);
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);

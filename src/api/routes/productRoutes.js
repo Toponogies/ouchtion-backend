@@ -8,5 +8,6 @@ router.get('/user',productController.getAllProductBySellerId);
 router.get('/:id',productController.getProduct);
 router.put('/:id',productController.updateProduct);
 router.delete('/:id',productController.deleteProduct);
+router.post('/:id/avatar',productController.uploadAvatar);
 
 export default router;
