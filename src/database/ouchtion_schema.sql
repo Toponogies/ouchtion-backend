@@ -104,7 +104,7 @@ DROP TABLE IF EXISTS `product_descriptions`;
 CREATE TABLE `product_descriptions` (
   `product_description_id` int NOT NULL AUTO_INCREMENT,
   `product_id` int NOT NULL,
-  `description` varchar(1000) NOT NULL,
+  `description` varchar(10000) NOT NULL,
   `upload_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `is_init` tinyint DEFAULT '1',
   PRIMARY KEY (`product_description_id`)
@@ -220,4 +220,4 @@ CREATE TABLE `watchlists` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-12-12 12:40:36
+-- Dump completed on 2021-12-13 14:38:03
