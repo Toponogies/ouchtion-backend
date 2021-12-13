@@ -22,8 +22,8 @@ productUpdate:
   $ref: "./ProductPost.yaml"
 productPost:
   $ref: "./ProductUpdate.yaml"
-productWithImage:
-  $ref: "./ProductWithImage.yaml"
+productFull:
+  $ref: "./ProductFull.yaml"
 ProductImage:
   $ref: "./ProductImage.yaml"
 ProductImagePost:

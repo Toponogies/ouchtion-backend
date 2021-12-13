@@ -10,7 +10,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: "../../../schemas/ProductWithImage.yaml"
+            $ref: "../../../schemas/ProductFull.yaml"
     "404":
       $ref: "../../../responses/Error.yaml"
     "401":

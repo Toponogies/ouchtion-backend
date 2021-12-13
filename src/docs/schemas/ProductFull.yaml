@@ -45,6 +45,11 @@ properties:
     description: Array image of product.
     items: 
       $ref: "./ProductImage.yaml"
+  descriptions:
+    type: array
+    description: Array description of product.
+    items: 
+      $ref: "./ProductDescriptionFull.yaml"
 required:
   - category_id
   - seller_id
