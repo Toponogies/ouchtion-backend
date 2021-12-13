@@ -22,7 +22,23 @@ export default {
     },
     getProduct: async (req, res) => {
         try {
-            const products = await productModel.findById(req.params.id);
+            const product = await productModel.findById(req.params.id);
+            if (product === null){
+                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
+            }
+            product.images = await productModel.getImages(product.product_id);
+            product.descriptions = await productModel.getDescriptions(product.product_id);
+            return res.json(product);
+        } catch (err) {
+            console.log(err);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+        }
+    },
+    postProduct: async (req, res) => {
+        try {
+            const row = await productModel.add(req.body);
+            const id = row[0];
+            const product = await productModel.findById(id);
             return res.json(products);
         } catch (err) {
             console.log(err);
