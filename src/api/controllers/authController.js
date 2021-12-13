@@ -6,7 +6,7 @@ dotenv.config();
 
 import { ACCOUNT_NOT_ACTIVE, DB_QUERY_ERROR, EXPIRED_REFRESHTOKEN, EXPIRED_VERIFYTOKEN, INVAILD_REFRESHTOKEN, INVAILD_VERIFYTOKEN, LOGIN_ERROR, NOTFOUND_REDIS, UNEXPECTED_ERROR } from '../helpers/constants/Errors';
 import { setRedis,getRedis, delRedis, setExRedis } from '../helpers/constants/redisClient';
-import userModel from './userModel';
+import userModel from '../models/userModel';
 import sendEmail from '../helpers/constants/sendEmail';
 
 const optsAccess = {
