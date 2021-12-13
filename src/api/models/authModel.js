@@ -47,7 +47,7 @@ export default {
             const refreshToken = jwt.sign(payloadRefreshToken, process.env.SERET_KEY, optsRefresh);
             
             // set value from redis
-            await setExRedis(user.id,process.env.REDIS_EXPIRED_SECOND,{ 
+            await setExRedis(user.id,process.env.REDIS_EXPIRED_REFRESHTOKEN_SECOND,{ 
                 refreshToken: refreshToken,
             })
 
@@ -157,7 +157,7 @@ export default {
         
         // save verifyToken in redis
         try{
-            await setExRedis(user[0],process.env.REDIS_EXPIRED_SECOND,{ 
+            await setExRedis(user[0],process.env.REDIS_EXPIRED_VERIFYTOKEN_SECOND,{ 
                 verifyToken: verifyToken,
             })
         }catch(err){
@@ -165,8 +165,16 @@ export default {
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
         }
 
+        // mail option
+        let mailOptions = {
+            from: 'norely@gmail.com', 
+            to: req.body.email, 
+            subject: 'Verify token',
+            text: `Link verify token : http://localhost:3000/verify?token=${verifyToken}`
+        };
+
         // send email to user
-        sendEmail(req.body.email,verifyToken)
+        sendEmail(mailOptions)
 
         return res.status(httpStatus.NO_CONTENT).send()
     },
@@ -230,15 +238,21 @@ export default {
         
         // save verifyToken in redis
         try{
-            await setExRedis(user.user_id,process.env.REDIS_EXPIRED_SECOND,{ 
+            await setExRedis(user.user_id,process.env.REDIS_EXPIRED_VERIFYTOKEN_SECOND,{ 
                 verifyToken: verifyToken,
             })
         }catch(err){
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
         }
-        
+        // 
+        let mailOptions = {
+            from: 'norely@gmail.com', 
+            to: email, 
+            subject: 'Reset pass token',
+            text: `Link reset pass token : http://localhost:3000/reset?token=${verifyToken}`
+        };
         // send email to yser
-        sendEmail(email,verifyToken)
+        sendEmail(mailOptions)
 
         return res.status(httpStatus.NO_CONTENT).send()
     },
