@@ -11,7 +11,7 @@ get:
         application/json:
           schema:
             $ref: "../../../schemas/ProductWithImage.yaml"
-    "400":
+    "404":
       $ref: "../../../responses/Error.yaml"
     "401":
       $ref: "../../../responses/Error.yaml"
