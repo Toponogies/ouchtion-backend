@@ -32,12 +32,8 @@ put:
         schema:
           $ref: "../../../schemas/ProductUpdate.yaml"
   responses:
-    "200":
+    "204":
       description: Updated a product.
-      content:
-        application/json:
-          schema:
-            $ref: "../../../schemas/Product.yaml"
     "404":
       $ref: "../../../responses/Error.yaml"
     "422":

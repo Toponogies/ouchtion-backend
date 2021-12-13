@@ -11,8 +11,8 @@ post:
         schema:
           $ref: "../../../schemas/ProductDescription.yaml"
   responses:
-    "200":
-      description: Added a product image.
+    "204":
+      description: Added a product description.
     "401":
       $ref: "../../../responses/Error.yaml"
     "404":

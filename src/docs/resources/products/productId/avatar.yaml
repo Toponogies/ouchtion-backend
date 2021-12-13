@@ -18,7 +18,7 @@ post:
               format: binary
               description: avatar of the product
   responses:
-    "200":
+    "204":
       description: Added a product avatar.
     "401":
       $ref: "../../../responses/Error.yaml"
@@ -50,7 +50,7 @@ put:
               format: binary
               description: avatar of the product
   responses:
-    "200":
+    "204":
       description: Updated a product avatar.
     "401":
       $ref: "../../../responses/Error.yaml"
