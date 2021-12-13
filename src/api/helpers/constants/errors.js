@@ -68,6 +68,11 @@ export const ACCOUNT_NOT_ACTIVE = {
     detail: "Account not active"
 };
 
+export const NOT_PERMISSION = {
+    title: "Not permission access endpoint",
+    detail: "Not permission access endpoint"
+};
+
 export function VALIDATION_ERROR(validate_err){
     return {
         title: "VALIDATION_ERROR",
@@ -75,3 +80,8 @@ export function VALIDATION_ERROR(validate_err){
         field: validate_err
     };
 }
+
+export const NOT_FOUND_PRODUCT = {
+    title: "Not found product",
+    detail: "Not found product"
+};
