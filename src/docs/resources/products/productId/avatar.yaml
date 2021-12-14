@@ -2,7 +2,6 @@ post:
   operationId: addProductAvatar
   summary: Add a avatar to product.
   parameters:
-    - $ref: "../../../parameters/header/accessToken.yaml"
     - $ref: "../../../parameters/path/id.yaml"
   requestBody:
     required: true

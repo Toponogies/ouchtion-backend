@@ -1,8 +1,6 @@
 get:
   operationId: getProducts
   summary: Get all Products.
-  parameters:
-    - $ref: "../../parameters/header/accessToken.yaml"
   responses:
     "200":
       description: An array of Products.
@@ -23,8 +21,6 @@ get:
 post:
   operationId: addProduct
   summary: Add a Product.
-  parameters:
-    - $ref: "../../parameters/header/accessToken.yaml"
   requestBody:
     required: true
     content:

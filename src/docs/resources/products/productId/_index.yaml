@@ -2,7 +2,6 @@ get:
   operationId: getproduct
   summary: Get a product.
   parameters:
-    - $ref: "../../../parameters/header/accessToken.yaml"
     - $ref: "../../../parameters/path/id.yaml"
   responses:
     "200":
@@ -23,7 +22,6 @@ put:
   operationId: updateproduct
   summary: Update a product.
   parameters:
-    - $ref: "../../../parameters/header/accessToken.yaml"
     - $ref: "../../../parameters/path/id.yaml"
   requestBody:
     required: true
@@ -47,14 +45,13 @@ put:
   tags:
     - products
 delete:
-  operationId: deletprodcut
-  summary: Delete a prodcut.
+  operationId: deletproduct
+  summary: Delete a product.
   parameters:
-    - $ref: "../../../parameters/header/accessToken.yaml"
     - $ref: "../../../parameters/path/id.yaml"
   responses:
     "204":
-      description: Deleted a prodcut.
+      description: Deleted a product.
     "401":
       $ref: "../../../responses/Error.yaml"
     "404":

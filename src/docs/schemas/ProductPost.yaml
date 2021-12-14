@@ -1,5 +1,5 @@
 type: object
-title: Product
+title: ProductPost
 description: Schema for a product request.
 properties:
   product_id:

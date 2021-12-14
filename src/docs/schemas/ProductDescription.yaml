@@ -1,5 +1,5 @@
 type: object
-title: addProductDescription
+title: ProductDescription
 description: Schema for a product description.
 properties:
   description:
@@ -9,6 +9,3 @@ properties:
     type: string
     format: date-time
     description: The date upload this description.
-  is_init:
-    type: boolean
-    description: Check init this description

@@ -2,7 +2,6 @@ post:
   operationId: addProductDescription
   summary: Add a description to product.
   parameters:
-    - $ref: "../../../parameters/header/accessToken.yaml"
     - $ref: "../../../parameters/path/id.yaml"
   requestBody:
     required: true

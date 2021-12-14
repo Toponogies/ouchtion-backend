@@ -16,13 +16,13 @@ User:
   $ref: "./User.yaml"
 ValidationError:
   $ref: "./ValidationError.yaml"
-product:
+Product:
   $ref: "./Product.yaml"
-productUpdate:
+ProductUpdate:
   $ref: "./ProductPost.yaml"
-productPost:
+ProductPost:
   $ref: "./ProductUpdate.yaml"
-productFull:
+ProductFull:
   $ref: "./ProductFull.yaml"
 ProductImage:
   $ref: "./ProductImage.yaml"

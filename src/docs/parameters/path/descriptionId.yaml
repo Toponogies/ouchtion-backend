@@ -1,0 +1,8 @@
+name: descriptionId
+in: path
+required: true
+description: The ID of the prodcut description.
+schema:
+  type: integer
+  format: int64
+  minimum: 1

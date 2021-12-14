@@ -1,6 +1,0 @@
-name: x-access-token
-in: header
-required: true
-description: The access token of user.
-schema:
-  type: string

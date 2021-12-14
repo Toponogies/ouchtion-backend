@@ -14,8 +14,6 @@ get:
               description: The user id.
           required:
             - seller_id
-  parameters:
-    - $ref: "../../parameters/header/accessToken.yaml"
   responses:
     "200":
       description: An array of products.

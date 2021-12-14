@@ -1,5 +1,5 @@
 type: object
-title: Product
+title: ProductUpdate
 description: Schema for a product request.
 properties:
   category_id:
