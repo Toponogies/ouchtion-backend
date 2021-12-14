@@ -1,9 +1,8 @@
 export const schema = {
     type: "object",
     properties: {
-      description: {type: "string",maxLength: 9000},
-      is_init: {type: "string"}
+      description: {type: "string",maxLength: 9000}
     },
-    required: ["email","password","full_name","address"],
+    required: ["description"],
     additionalProperties: false,
 }

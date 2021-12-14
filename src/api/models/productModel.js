@@ -6,12 +6,18 @@ productModel.findBySellerId = async function (seller_id) {
     const row = await db('products').where('seller_id', seller_id);
     return row;
 }
+productModel.removeProduct = async function (product_id) {
+    await db('product_images').where('product_id', product_id).del();
+    await db('product_descriptions').where('product_id', product_id).del();
+    await db('products').where('seller_id', seller_id);
+    return row;
+}
 productModel.getImages = async function (product_id) {
     const row = await db('product_images').where('product_id', product_id).select("path","is_primary");
     return row;
 }
 productModel.getDescriptions = async function (product_id) {
-    const row = await db('product_descriptions').where('product_id', product_id).select("description","upload_date","is_init");
+    const row = await db('product_descriptions').where('product_id', product_id).select("description","upload_date");
     return row;
 }
 productModel.addImage = async function (product_id,path_image,is_primary) {
@@ -28,9 +34,10 @@ productModel.addImage = async function (product_id,path_image,is_primary) {
 productModel.addDescription = async function (entity) {
     return db("product_descriptions").insert(entity);
 }
-productModel.updateDescription = async function (product_id,entity) {
+productModel.updateDescription = async function (product_id,description_id,entity) {
     return db("product_descriptions")
     .where("product_id", product_id)
+    .where("description_id", description_id)
     .update(entity);
 }
 export default productModel;
