@@ -30,5 +30,7 @@ ProductImagePost:
   $ref: "./ProductImagePost.yaml"
 ProductDescription:
   $ref: "./ProductDescription.yaml"
+ProductDescriptionPost:
+  $ref: "./ProductDescriptionPost.yaml"
 images:
   $ref: "./Image.yaml"

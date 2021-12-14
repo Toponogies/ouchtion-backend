@@ -19,9 +19,11 @@ properties:
     description: The path of a image in server.
   start_at:
     type: string
+    format: date-time
     description: The timestamp create product.
   end_at:
     type: string
+    format: date-time
     description: The timestamp end bidding product.
   init_price:
     type: integer

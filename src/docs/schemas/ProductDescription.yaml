@@ -5,3 +5,10 @@ properties:
   description:
     type: string
     description: The description of a product.
+  upload_date:
+    type: string
+    format: date-time
+    description: The date upload this description.
+  is_init:
+    type: boolean
+    description: Check init this description

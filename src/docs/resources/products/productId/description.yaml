@@ -9,7 +9,7 @@ post:
     content:
       application/json:
         schema:
-          $ref: "../../../schemas/ProductDescription.yaml"
+          $ref: "../../../schemas/ProductDescriptionPost.yaml"
   responses:
     "204":
       description: Added a product description.
