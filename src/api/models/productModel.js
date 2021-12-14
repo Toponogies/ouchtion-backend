@@ -9,8 +9,7 @@ productModel.findBySellerId = async function (seller_id) {
 productModel.removeProduct = async function (product_id) {
     await db('product_images').where('product_id', product_id).del();
     await db('product_descriptions').where('product_id', product_id).del();
-    await db('products').where('seller_id', seller_id);
-    return row;
+    await db('products').where('product_id', product_id).del();
 }
 productModel.getImages = async function (product_id) {
     const row = await db('product_images').where('product_id', product_id).select("path","is_primary");

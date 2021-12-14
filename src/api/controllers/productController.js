@@ -100,7 +100,7 @@ export default {
             }
 
             // remove product
-            const n = await productModel.removeById(req.params.id);
+            const n = await productModel.removeProduct(req.params.id);
             if (n === 0) {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
             }
