@@ -18,5 +18,9 @@ UserUpdate:
   $ref: "./UserUpdate.yaml"
 ValidationError:
   $ref: "./ValidationError.yaml"
-watchlist:
+Watch:
   $ref: "./Watch.yaml"
+WatchPost:
+  $ref: "./WatchPost.yaml"
+Role:
+  $ref: "./Role.yaml"

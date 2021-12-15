@@ -2,7 +2,6 @@ get:
   operationId: getuser
   summary: Get a user.
   parameters:
-    - $ref: "../../../parameters/header/accessToken.yaml"
     - $ref: "../../../parameters/path/id.yaml"
   responses:
     "200":
@@ -11,9 +10,11 @@ get:
         application/json:
           schema:
             $ref: "../../../schemas/User.yaml"
-    "400":
-      $ref: "../../../responses/Error.yaml"
     "401":
+      $ref: "../../../responses/Error.yaml"
+    "500":
+      $ref: "../../../responses/Error.yaml"
+    default:
       $ref: "../../../responses/Error.yaml"
   tags:
     - users
@@ -21,7 +22,6 @@ put:
   operationId: updateuser
   summary: Update a user.
   parameters:
-    - $ref: "../../../parameters/header/accessToken.yaml"
     - $ref: "../../../parameters/path/id.yaml"
   requestBody:
     required: true
@@ -30,12 +30,8 @@ put:
         schema:
           $ref: "../../../schemas/UserUpdate.yaml"
   responses:
-    "200":
+    "204":
       description: Updated a user.
-      content:
-        application/json:
-          schema:
-            $ref: "../../../schemas/User.yaml"
     "401":
       $ref: "../../../responses/Error.yaml"
     "404":
@@ -52,7 +48,6 @@ delete:
   operationId: deleteuser
   summary: Delete a user.
   parameters:
-    - $ref: "../../../parameters/header/accessToken.yaml"
     - $ref: "../../../parameters/path/id.yaml"
   responses:
     "204":

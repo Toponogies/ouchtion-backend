@@ -1,8 +1,6 @@
 get:
   operationId: getUsers
   summary: Get all Users.
-  parameters:
-    - $ref: "../../parameters/header/accessToken.yaml"
   responses:
     "200":
       description: An array of Users.
@@ -17,32 +15,6 @@ get:
     "500":
       $ref: "../../responses/Error.yaml"
     default:
-      $ref: "../../responses/Error.yaml"
-  tags:
-    - users
-post:
-  operationId: addUser
-  summary: Add a User.
-  parameters:
-    - $ref: "../../parameters/header/accessToken.yaml"
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          $ref: "../../schemas/User.yaml"
-  responses:
-    "200":
-      description: Added a User.
-      content:
-        application/json:
-          schema:
-            $ref: "../../schemas/User.yaml"
-    "401":
-      $ref: "../../responses/Error.yaml"
-    "422":
-      $ref: "../../responses/ValidationError.yaml"
-    "500":
       $ref: "../../responses/Error.yaml"
   tags:
     - users

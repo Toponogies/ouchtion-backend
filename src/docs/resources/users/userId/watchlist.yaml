@@ -2,7 +2,7 @@ get:
   operationId: getWatchList
   summary: Get watchlist of user.
   parameters:
-    - $ref: "../../../parameters/header/accessToken.yaml"
+    - $ref: "../../../parameters/path/id.yaml"
   responses:
     "200":
       description: get a watchlist.
@@ -12,8 +12,6 @@ get:
             type: array
             items:
               $ref: "../../../schemas/Watch.yaml"
-    "400":
-      $ref: "../../../responses/Error.yaml"
     "401":
       $ref: "../../../responses/Error.yaml"
     "500":
@@ -24,21 +22,19 @@ post:
   operationId: addUserWatch
   summary: Add a watch of User.
   parameters:
-    - $ref: "../../../parameters/header/accessToken.yaml"
+    - $ref: "../../../parameters/path/id.yaml"
   requestBody:
     required: true
     content:
       application/json:
         schema:
-          $ref: "../../../schemas/Watch.yaml"
+          $ref: "../../../schemas/WatchPost.yaml"
   responses:
-    "200":
+    "204":
       description: Added a watch of a user.
-      content:
-        application/json:
-          schema:
-            $ref: "../../../schemas/User.yaml"
     "401":
+      $ref: "../../../responses/Error.yaml"
+    "404":
       $ref: "../../../responses/Error.yaml"
     "422":
       $ref: "../../../responses/ValidationError.yaml"
@@ -62,7 +58,6 @@ delete:
               type: string
               description: The ID of the product.
   parameters:
-    - $ref: "../../../parameters/header/accessToken.yaml"
     - $ref: "../../../parameters/path/id.yaml"
   responses:
     "204":

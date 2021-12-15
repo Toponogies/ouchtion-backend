@@ -1,0 +1,10 @@
+title: Role
+description: Schema for role.
+type: object
+properties:
+  role:
+    type: string
+    description: The role of the User.
+    default: "bidder"
+required:
+  - role
