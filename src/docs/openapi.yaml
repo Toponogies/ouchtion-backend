@@ -60,5 +60,7 @@ paths:
     $ref: "./resources/users/userId/_index.yaml"
   /users/{Id}/role:
     $ref: "./resources/users/userId/role.yaml"
+  /users/{Id}/newEmail:
+    $ref: "./resources/users/userId/email.yaml"
   /users/{Id}/watchlist:
     $ref: "./resources/users/userId/watchlist.yaml"

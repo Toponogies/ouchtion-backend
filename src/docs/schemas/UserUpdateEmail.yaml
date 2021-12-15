@@ -1,0 +1,7 @@
+title: UserUpdate
+description: Schema for UserUpdate.
+type: object
+properties:
+  token:
+    type: string
+    description: The token use change email of the User.

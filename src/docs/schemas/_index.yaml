@@ -16,6 +16,8 @@ User:
   $ref: "./User.yaml"
 UserUpdate:
   $ref: "./UserUpdate.yaml"
+UserUpdateEmail:
+  $ref: "./UserUpdateEmail.yaml"
 ValidationError:
   $ref: "./ValidationError.yaml"
 Watch:

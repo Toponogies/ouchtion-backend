@@ -1,0 +1,22 @@
+put:
+  operationId: NewEmail
+  summary: Update new email for a User.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../../schemas/UserUpdateEmail.yaml"
+  responses:
+    "204":
+      description: Checks token and changes email.
+    "401":
+      $ref: "../../../responses/Error.yaml"
+    "404":
+      $ref: "../../../responses/Error.yaml"
+    "422":
+      $ref: "../../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../../responses/Error.yaml"
+  tags:
+    - users

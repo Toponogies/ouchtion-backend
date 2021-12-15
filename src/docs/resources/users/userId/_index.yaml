@@ -20,7 +20,7 @@ get:
     - users
 put:
   operationId: updateuser
-  summary: Update a user.
+  summary: Update a user. If update email send one token to this email
   parameters:
     - $ref: "../../../parameters/path/id.yaml"
   requestBody:
