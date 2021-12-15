@@ -1,6 +1,7 @@
 import httpStatus from 'http-status-codes';
 import path from 'path';
 import multer from 'multer';
+import fs from 'fs';
 import { NOT_FOUND_FILE, NOT_FOUND_PRODUCT, NOT_PERMISSION, UNEXPECTED_ERROR } from '../helpers/constants/Errors';
 import { productModel } from "../models";
 export default {
@@ -71,7 +72,7 @@ export default {
             }
 
             // check role
-            if (req.accessTokenPayload.id !== product.seller_id) {
+            if (req.accessTokenPayload.userId !== product.seller_id) {
                 return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
             }
 
@@ -121,7 +122,7 @@ export default {
             }
 
             // check product of this seller
-            if (req.accessTokenPayload.id !== product.seller_id) {
+            if (req.accessTokenPayload.userId !== product.seller_id) {
                 return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
             }
 
@@ -185,13 +186,20 @@ export default {
             }
 
             // check product of this seller
-            if (req.accessTokenPayload.id !== product.seller_id) {
+            if (req.accessTokenPayload.userId !== product.seller_id) {
                 return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
             }
 
             // create multer
             var storage = multer.diskStorage({
                 destination: function (req, file, cb) {
+                    if (!fs.existsSync(`localdata/product_image/${req.params.id}`)) {
+                        fs.mkdir(`localdata/product_image/${req.params.id}`, { recursive: true }, (err) => {
+                            if (err){
+                                console.log("Can't create directory");
+                            }
+                        });
+                    }
                     cb(null, `localdata/product_image/${req.params.id}`);
                 },
                 filename: function (req, file, cb) {
@@ -242,7 +250,7 @@ export default {
             }
 
             // check product of this seller
-            if (req.accessTokenPayload.id !== product.seller_id) {
+            if (req.accessTokenPayload.userId !== product.seller_id) {
                 return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
             }
 
@@ -250,12 +258,69 @@ export default {
             const entity = {
                 product_id:req.params.id,
                 description:req.body.description,
-                is_init:req.body.is_init
             }
 
             // add description
             await productModel.addDescription(entity)
             
+            return res.status(httpStatus.NO_CONTENT).send();
+        } catch (err) {
+            console.log(err);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+        }
+    },
+    deleteDescription : async (req, res) => {
+        try {
+            const product_id = req.params.id;
+            const description_id = req.params.descriptionId;
+
+            // get product by id
+            const product = await productModel.findById(product_id);
+
+            // check product exist
+            if (product === null) {
+                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
+            }
+
+            // check product of this seller
+            if (req.accessTokenPayload.userId !== product.seller_id) {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            }
+
+            const n = await productModel.deleteDescription(product_id,description_id);
+            // not found this product
+            if (n === 0) {
+                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
+            }
+            return res.status(httpStatus.NO_CONTENT).send();
+        } catch (err) {
+            console.log(err);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+        }
+    },
+    deleteImage : async (req, res) => {
+        try {
+            const product_id = req.params.id;
+            const image_id = req.params.imageId;
+
+            // get product by id
+            const product = await productModel.findById(product_id);
+
+            // check product exist
+            if (product === null) {
+                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
+            }
+
+            // check product of this seller
+            if (req.accessTokenPayload.userId !== product.seller_id) {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            }
+
+            const n = await productModel.deleteImage(product_id,image_id);
+            // not found this product
+            if (n === 0) {
+                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
+            }
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
             console.log(err);

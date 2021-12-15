@@ -12,11 +12,11 @@ productModel.removeProduct = async function (product_id) {
     await db('products').where('product_id', product_id).del();
 }
 productModel.getImages = async function (product_id) {
-    const row = await db('product_images').where('product_id', product_id).select("path","is_primary");
+    const row = await db('product_images').where('product_id', product_id).select("product_image_id","path","is_primary");
     return row;
 }
 productModel.getDescriptions = async function (product_id) {
-    const row = await db('product_descriptions').where('product_id', product_id).select("description","upload_date");
+    const row = await db('product_descriptions').where('product_id', product_id).select("product_description_id","description","upload_date");
     return row;
 }
 productModel.addImage = async function (product_id,path_image,is_primary) {
@@ -33,10 +33,16 @@ productModel.addImage = async function (product_id,path_image,is_primary) {
 productModel.addDescription = async function (entity) {
     return db("product_descriptions").insert(entity);
 }
-productModel.updateDescription = async function (product_id,description_id,entity) {
+productModel.deleteDescription = async function (product_id, description_id) {
     return db("product_descriptions")
     .where("product_id", product_id)
-    .where("description_id", description_id)
-    .update(entity);
+    .where("product_description_id", description_id)
+    .del();
+}
+productModel.deleteImage = async function (product_id, image_id) {
+    return db("product_images")
+    .where("product_id", product_id)
+    .where("product_image_id", image_id)
+    .del();
 }
 export default productModel;
