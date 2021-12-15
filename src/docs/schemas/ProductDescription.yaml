@@ -2,6 +2,9 @@ type: object
 title: ProductDescription
 description: Schema for a product description.
 properties:
+  product_description_id:
+    type: string
+    description: The id of a product.
   description:
     type: string
     description: The description of a product.

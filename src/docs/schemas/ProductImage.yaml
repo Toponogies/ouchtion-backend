@@ -2,6 +2,9 @@ type: object
 title: ProductImage
 description: Schema for a product image.
 properties:
+  product_image_id:
+    type: string
+    description: The id of a product.
   path:
     type: string
     description: The path of a image in server.
