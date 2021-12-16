@@ -1,3 +1,23 @@
+get:
+  operationId: getProductImagens
+  summary: Get all Product images.
+  responses:
+    "200":
+      description: An array of Product images.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../../schemas/ProductImage.yaml"
+    "401":
+      $ref: "../../../responses/Error.yaml"
+    "500":
+      $ref: "../../../responses/Error.yaml"
+    default:
+      $ref: "../../../responses/Error.yaml"
+  tags:
+    - products
 post:
   operationId: addProductImage
   summary: Add a image to product.

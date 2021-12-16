@@ -2,7 +2,7 @@ type: object
 title: ProductImagePost
 description: Schema for a product image post.
 properties:
-  file:
+  image:
     type: string
     format: binary
     description: Upload source of a image to server.

@@ -61,17 +61,11 @@ paths:
 
   /products:
     $ref: "./resources/products/_index.yaml"
-  /products/seller:
-    $ref: "./resources/products/seller.yaml"
   /products/{Id}:
     $ref: "./resources/products/productId/_index.yaml"
-  /products/{Id}/avatar:
-    $ref: "./resources/products/productId/avatar.yaml"
   /products/{Id}/image:
     $ref: "./resources/products/productId/image.yaml"
   /products/{Id}/image/{imageId}:
     $ref: "./resources/products/productId/imageId/_index.yaml"
   /products/{Id}/description:
     $ref: "./resources/products/productId/description.yaml"
-  /products/{Id}/description/{descriptionId}:
-    $ref: "./resources/products/productId/descriptionId/_index.yaml"

@@ -2,8 +2,24 @@ AccessToken:
   $ref: "./AccessToken.yaml"
 Error:
   $ref: "./Error.yaml"
+Image:
+  $ref: "./Image.yaml"
 Login:
   $ref: "./Login.yaml"
+Product:
+  $ref: "./Product.yaml"
+ProductDescription:
+  $ref: "./ProductDescription.yaml"
+ProductDescriptionPost:
+  $ref: "./ProductDescriptionPost.yaml"
+ProductImage:
+  $ref: "./ProductImage.yaml"
+ProductImagePost:
+  $ref: "./ProductImagePost.yaml"
+ProductPost:
+  $ref: "./ProductUpdate.yaml"
+ProductUpdate:
+  $ref: "./ProductPost.yaml"
 RefreshToken:
   $ref: "./RefreshToken.yaml"
 Register:
@@ -16,21 +32,3 @@ User:
   $ref: "./User.yaml"
 ValidationError:
   $ref: "./ValidationError.yaml"
-Product:
-  $ref: "./Product.yaml"
-ProductUpdate:
-  $ref: "./ProductPost.yaml"
-ProductPost:
-  $ref: "./ProductUpdate.yaml"
-ProductFull:
-  $ref: "./ProductFull.yaml"
-ProductImage:
-  $ref: "./ProductImage.yaml"
-ProductImagePost:
-  $ref: "./ProductImagePost.yaml"
-ProductDescription:
-  $ref: "./ProductDescription.yaml"
-ProductDescriptionPost:
-  $ref: "./ProductDescriptionPost.yaml"
-images:
-  $ref: "./Image.yaml"

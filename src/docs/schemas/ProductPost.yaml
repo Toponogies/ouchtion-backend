@@ -11,6 +11,10 @@ properties:
   seller_id:
     type: string
     description: The password of a category.
+  avatar:
+    type: string
+    format: binary
+    description: avatar of the product
   name:
     type: string
     description: The name of a product.

@@ -1,6 +1,11 @@
 get:
   operationId: getProducts
   summary: Get all Products.
+  parameters:
+    - $ref: "../../parameters/query/query.yaml"
+    - $ref: "../../parameters/query/sort.yaml"
+    - $ref: "../../parameters/query/category.yaml"
+    - $ref: "../../parameters/query/page.yaml"
   responses:
     "200":
       description: An array of Products.
@@ -24,7 +29,7 @@ post:
   requestBody:
     required: true
     content:
-      application/json:
+      multipart/form-data:
         schema:
           $ref: "../../schemas/ProductPost.yaml"
   responses:

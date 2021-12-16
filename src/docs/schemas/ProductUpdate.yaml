@@ -12,3 +12,7 @@ properties:
     type: string
     format: date-time
     description: The timestamp end bidding product.
+  avatar:
+    type: string
+    format: binary
+    description: avatar of the product

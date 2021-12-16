@@ -9,7 +9,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: "../../../schemas/ProductFull.yaml"
+            $ref: "../../../schemas/Product.yaml"
     "404":
       $ref: "../../../responses/Error.yaml"
     "401":
@@ -26,7 +26,7 @@ put:
   requestBody:
     required: true
     content:
-      application/json:
+      multipart/form-data:
         schema:
           $ref: "../../../schemas/ProductUpdate.yaml"
   responses:

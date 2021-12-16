@@ -1,0 +1,5 @@
+in: query
+name: category
+description: The category of a search.
+schema:
+  type: string
