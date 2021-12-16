@@ -8,7 +8,7 @@ productModel.findBySellerId = async function (seller_id) {
 }
 productModel.isInBidding = async function (product_id) {
     const row = await db('biddings').where('product_id', product_id);
-    if (row.length > 0)
+    if (row && row.length > 0)
         return true;
     return false;
 }
@@ -44,6 +44,15 @@ productModel.deleteDescription = async function (product_id, description_id) {
     .where("product_id", product_id)
     .where("product_description_id", description_id)
     .del();
+}
+productModel.findImage = async function (product_id, image_id) {
+    const list = await db("product_images")
+    .where("product_id", product_id)
+    .where("product_image_id", image_id)
+    if (list.length === 0)
+    return null;
+
+    return list[0];
 }
 productModel.deleteImage = async function (product_id, image_id) {
     return db("product_images")

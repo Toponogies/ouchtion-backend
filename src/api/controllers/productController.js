@@ -1,6 +1,7 @@
 import httpStatus from 'http-status-codes';
-import { NOT_FOUND_FILE, NOT_FOUND_PRODUCT, NOT_PERMISSION, UNEXPECTED_ERROR } from '../helpers/constants/Errors';
+import { NOT_FOUND_FILE, NOT_FOUND_IMAGE, NOT_FOUND_PRODUCT, NOT_PERMISSION, UNEXPECTED_ERROR } from '../helpers/constants/Errors';
 import { formatDate } from '../helpers/constants/ISOtoDate';
+import removeFile from '../helpers/constants/removeFile';
 import { productModel } from "../models";
 
 
@@ -87,15 +88,18 @@ export default {
             }
 
             const file = req.file;
-            if (!file) {
-                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_FILE);
+            if (file) {
+                // cut path file
+                const index = file.path.indexOf('\\');
+                const path = file.path.substring(index + 1);
+                if (product.avatar)
+                {
+                    removeFile(process.env.PATH_FOLDER_PUBLIC + product.avatar);
+                }
+                req.body.avatar = path
             }
             
-            // cut path file
-            const index = file.path.indexOf('\\');
-            const path = file.path.substring(index + 1);
 
-            req.body.avatar = path
             req.body.end_at = formatDate(new Date(req.body.end_at))
 
             // update product
@@ -127,6 +131,12 @@ export default {
             {
                 return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
             }
+
+            // remove all image 
+            const images = await productModel.getImages(req.params.id);
+            images.forEach(image => {
+                removeFile(process.env.PATH_FOLDER_PUBLIC + image.path);
+            });
 
             // remove product
             const n = await productModel.removeProduct(req.params.id);
@@ -263,10 +273,17 @@ export default {
 
             // get product by id
             const product = await productModel.findById(product_id);
+            // get image
+            const image = await productModel.findImage(product_id,image_id);
 
             // check product exist
             if (product === null) {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
+            }
+
+            // check image exist
+            if (image === null) {
+                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_IMAGE);
             }
 
             // check product of this seller
@@ -274,6 +291,7 @@ export default {
                 return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
             }
 
+            removeFile(process.env.PATH_FOLDER_PUBLIC + image.path)
             const n = await productModel.deleteImage(product_id,image_id);
             // not found this product
             if (n === 0) {

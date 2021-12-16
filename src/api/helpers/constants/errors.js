@@ -86,6 +86,12 @@ export const NOT_FOUND_PRODUCT = {
     detail: "Not found product"
 };
 
+export const NOT_FOUND_IMAGE = {
+    title: "Not found image",
+    detail: "Not found image"
+};
+
+
 export const NOT_FOUND_FILE = {
     title: "Not found file",
     detail: "Not found file"
