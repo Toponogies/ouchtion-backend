@@ -22,7 +22,7 @@ productModel.getImages = async function (product_id) {
     return row;
 }
 productModel.getDescriptions = async function (product_id) {
-    const row = await db('product_descriptions').where('product_id', product_id).select("product_description_id","description","upload_date");
+    const row = await db('product_descriptions').where('product_id', product_id).orderBy('upload_date', 'desc').select("product_description_id","description","upload_date");
     return row;
 }
 productModel.addImage = async function (product_id,path_image,is_primary) {
