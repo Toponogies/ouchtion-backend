@@ -6,6 +6,12 @@ productModel.findBySellerId = async function (seller_id) {
     const row = await db('products').where('seller_id', seller_id);
     return row;
 }
+productModel.isInBidding = async function (product_id) {
+    const row = await db('biddings').where('product_id', product_id);
+    if (row.length > 0)
+        return true;
+    return false;
+}
 productModel.removeProduct = async function (product_id) {
     await db('product_images').where('product_id', product_id).del();
     await db('product_descriptions').where('product_id', product_id).del();
@@ -45,4 +51,5 @@ productModel.deleteImage = async function (product_id, image_id) {
     .where("product_image_id", image_id)
     .del();
 }
+
 export default productModel;

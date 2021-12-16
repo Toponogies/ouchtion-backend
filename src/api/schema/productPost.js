@@ -6,18 +6,11 @@ export const schema = {
       name: {type: "string"},
       end_at: {
         type: 'string',
-        oneOf: [
-          {
-            format: "date-time-custom"     // YYYY-MM-DD HH:MM:SS
-          },
-          {
-            format: 'date-time',
-          }
-        ]
+        format: 'date-time',
       }, 
-      init_price: {type: "integer"},
-      step_price: {type: "integer"},
-      buy_price: {type: "integer"},
+      init_price: {format: "string-of-int"},
+      step_price: {format: "string-of-int"},
+      buy_price: {format: "string-of-int"},
     },
     required: ["category_id","seller_id","name","end_at","init_price"],
     additionalProperties: false,

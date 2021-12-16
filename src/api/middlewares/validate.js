@@ -7,14 +7,16 @@ const dateTimeRegex = new RegExp('^(-?(?:[1-9][0-9]*)?[0-9]{4})-(1[0-2]|0[1-9])-
 function parseErrors(validationErrors) {
   let errors = [];
   validationErrors.forEach(error => {
-    errors.push({
-      param: error.params["missingProperty"],
-      key: error.keyword,
-      message: error.message,
-      property: (function() {
-        return error.keyword === 'minimum' ? error.dataPath : undefined
-      })() 
-    });
+    errors.push(
+      {
+        param: error,
+        key: error.keyword,
+        message: error.message,
+        property: (function() {
+          return error.keyword === 'minimum' ? error.dataPath : undefined
+        })() 
+      }
+    );
   });
 
   return errors;
@@ -22,8 +24,8 @@ function parseErrors(validationErrors) {
 
 export default schema => (req, res, next) => {
   const ajv = new Ajv({allErrors: true});
-  ajv.addFormat('date-time-custom', { // YYYY-MM-DD HH:MM:SS
-    validate: (dateTimeString) => dateTimeRegex.test(dateTimeString)
+  ajv.addFormat('string-of-int', { // YYYY-MM-DD HH:MM:SS
+    validate: (string) => !isNaN(string)
   })
   const valid = ajv.validate(schema, req.body);
   if (!valid) {

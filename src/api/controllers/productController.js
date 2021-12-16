@@ -1,9 +1,10 @@
 import httpStatus from 'http-status-codes';
-import path from 'path';
-import multer from 'multer';
-import fs from 'fs';
 import { NOT_FOUND_FILE, NOT_FOUND_PRODUCT, NOT_PERMISSION, UNEXPECTED_ERROR } from '../helpers/constants/Errors';
+import { formatDate } from '../helpers/constants/ISOtoDate';
 import { productModel } from "../models";
+
+
+
 export default {
     getAllProduct: async (req, res) => {
         try {
@@ -33,9 +34,6 @@ export default {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
             }
 
-            //get images and descriptions
-            product.images = await productModel.getImages(product.product_id);
-            product.descriptions = await productModel.getDescriptions(product.product_id);
             return res.json(product);
         } catch (err) {
             console.log(err);
@@ -48,14 +46,26 @@ export default {
             if (req.accessTokenPayload.role !== "seller") {
                 return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
             }
+        
+            const file = req.file;
+            if (!file) {
+                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_FILE);
+            }
             
-            req.body.is_sold = false;
-            const row = await productModel.add(req.body);
-            const id = row[0];
+            // cut path file
+            const index = file.path.indexOf('\\');
+            const path = file.path.substring(index + 1);
 
-            // get product with id
-            const product = await productModel.findById(id);
+            req.body.avatar = path
+            req.body.end_at = formatDate(new Date(req.body.end_at))
+
+            // add product
+            const row = await productModel.add(req.body);
+            const product_id = row[0];
+
+            const product = await productModel.findById(product_id);
             return res.json(product);
+
         } catch (err) {
             console.log(err);
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
@@ -75,6 +85,18 @@ export default {
             if (req.accessTokenPayload.userId !== product.seller_id) {
                 return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
             }
+
+            const file = req.file;
+            if (!file) {
+                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_FILE);
+            }
+            
+            // cut path file
+            const index = file.path.indexOf('\\');
+            const path = file.path.substring(index + 1);
+
+            req.body.avatar = path
+            req.body.end_at = formatDate(new Date(req.body.end_at))
 
             // update product
             const n = await productModel.patch(req.params.id, req.body);
@@ -100,76 +122,18 @@ export default {
                 return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
             }
 
+            const inBidding = await productModel.isInBidding(req.params.id)
+            if (inBidding === true)
+            {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            }
+
             // remove product
             const n = await productModel.removeProduct(req.params.id);
             if (n === 0) {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
             }
             return res.status(httpStatus.NO_CONTENT).send();
-        } catch (err) {
-            console.log(err);
-            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
-        }
-    },
-    uploadAvatar: async (req, res) => {
-        try {
-            // get product by id
-            const product = await productModel.findById(req.params.id);
-
-            // check product exist
-            if (product === null) {
-                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
-            }
-
-            // check product of this seller
-            if (req.accessTokenPayload.userId !== product.seller_id) {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
-            }
-
-            // create multer
-            var storage = multer.diskStorage({
-                destination: function (req, file, cb) {
-                    cb(null, 'localdata/product_avatar');
-                },
-                filename: function (req, file, cb) {
-                    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-                    cb(null, uniqueSuffix + path.extname(file.originalname))
-                }
-            });
-            var upload = multer({ storage: storage }).single('file');
-
-            // upload with multer (async function)
-            upload(req, res, async (err) => {
-                if (err) {
-                    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
-                }
-                const file = req.file;
-                if (!file) {
-                    return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_FILE);
-                }
-                
-                // cut path file
-                const index = file.path.indexOf('\\');
-                const path = file.path.substring(index + 1);
-
-                // use try catch because this is async function 
-                try {
-                    // update new avatar
-                    const n = await productModel.patch(req.params.id, {
-                        avatar: path
-                    })
-
-                    // not found this product
-                    if (n === 0) {
-                        return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
-                    }
-                }
-                catch (err) {
-                    console.log(err);
-                    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
-                }
-                return res.status(httpStatus.NO_CONTENT).send();
-            });
         } catch (err) {
             console.log(err);
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
@@ -190,50 +154,44 @@ export default {
                 return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
             }
 
-            // create multer
-            var storage = multer.diskStorage({
-                destination: function (req, file, cb) {
-                    if (!fs.existsSync(`localdata/product_image/${req.params.id}`)) {
-                        fs.mkdir(`localdata/product_image/${req.params.id}`, { recursive: true }, (err) => {
-                            if (err){
-                                console.log("Can't create directory");
-                            }
-                        });
-                    }
-                    cb(null, `localdata/product_image/${req.params.id}`);
-                },
-                filename: function (req, file, cb) {
-                    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-                    cb(null, uniqueSuffix + path.extname(file.originalname))
-                }
-            });
-            var upload = multer({ storage: storage }).single('file');
-
             // upload with multer (async function)
-            upload(req, res, async (err) => {
-                if (err) {
-                    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
-                }
-                const file = req.file;
-                if (!file) {
-                    return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_FILE);
-                }
+            const file = req.file;
+            if (!file) {
+                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_FILE);
+            }
 
-                // cut path file
-                const index = file.path.indexOf('\\');
-                const path = file.path.substring(index + 1);
+            // cut path file
+            const index = file.path.indexOf('\\');
+            const path = file.path.substring(index + 1);
 
-                // use try catch because this is async function 
-                try {
-                    // add image to database
-                   await productModel.addImage(req.params.id,path,req.query.is_primary)
-                }
-                catch (err) {
-                    console.log(err);
-                    return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
-                }
-                return res.status(httpStatus.NO_CONTENT).send();
-            });
+            // use try catch because this is async function 
+            try {
+                // add image to database
+                await productModel.addImage(req.params.id,path,req.query.is_primary)
+            }
+            catch (err) {
+                console.log(err);
+                return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+            }
+            return res.status(httpStatus.NO_CONTENT).send();
+        } catch (err) {
+            console.log(err);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+        }
+    },
+    getDescriptions : async (req, res) => {
+        try{
+            const descriptions = await productModel.getDescriptions(req.params.id);
+            return res.json(descriptions)
+        } catch (err) {
+            console.log(err);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+        }
+    },
+    getImages : async (req, res) => {
+        try{
+            const images = await productModel.getImages(req.params.id);
+            return res.json(images)
         } catch (err) {
             console.log(err);
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
