@@ -1,1 +1,1 @@
-// export { default as Example } from './example';
+export { default as userModel } from './userModel';
