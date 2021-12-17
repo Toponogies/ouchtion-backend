@@ -13,7 +13,7 @@ productModel.search = async function (query,sort,page,category) {
     let SQLquery = db('products').join('biddings',"biddings.product_id","products.product_id")
     .groupBy("products.product_id")
     .count("products.product_id as bidding_count")
-    .max("biddings.bid_price as bidding_max")
+    .max("biddings.bid_price as current_price")
     .select("products.*")
     // search query
     if (query) {
@@ -29,11 +29,21 @@ productModel.search = async function (query,sort,page,category) {
         if (sort === "time_desc")
             SQLquery = SQLquery.orderBy('end_at', 'desc')
         if (sort === "price_asc")
-            SQLquery = SQLquery.orderBy('bidding_max', 'asc')
+            SQLquery = SQLquery.orderBy('current_price', 'asc')
     }
     // page
     SQLquery = SQLquery.limit(process.env.NUMBER_PRODUCT_PER_PAGE).offset(page * process.env.NUMBER_PRODUCT_PER_PAGE)
     // excute
+    const row = await SQLquery;
+    return row;
+}
+productModel.getProduct = async function (product_id) {
+    let SQLquery = db('products').join('biddings',"biddings.product_id","products.product_id")
+    .groupBy("products.product_id")
+    .count("products.product_id as bidding_count")
+    .max("biddings.bid_price as current_price")
+    .select("products.*")
+    .where('products.product_id', product_id);
     const row = await SQLquery;
     return row;
 }

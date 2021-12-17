@@ -28,7 +28,7 @@ export default {
     getProduct: async (req, res) => {
         try {
             //get product
-            const product = await productModel.findById(req.params.id);
+            const product = await productModel.getProduct(req.params.id);
 
             //check product exist
             if (product === null) {
