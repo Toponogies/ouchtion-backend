@@ -1,5 +1,5 @@
 in: query
 name: category
-description: The category of a search.
+description: The category id of product
 schema:
   type: string
