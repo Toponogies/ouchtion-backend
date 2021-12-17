@@ -106,7 +106,6 @@ CREATE TABLE `product_descriptions` (
   `product_id` int NOT NULL,
   `description` varchar(10000) NOT NULL,
   `upload_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `is_init` tinyint DEFAULT '1',
   PRIMARY KEY (`product_description_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -147,9 +146,10 @@ CREATE TABLE `products` (
   `init_price` bigint unsigned NOT NULL,
   `step_price` bigint unsigned NOT NULL DEFAULT '0',
   `buyer_id` int DEFAULT NULL,
-  `is_sold` tinyint NOT NULL,
+  `is_sold` tinyint NOT NULL DEFAULT '0',
   `buy_price` bigint DEFAULT NULL,
-  PRIMARY KEY (`product_id`)
+  PRIMARY KEY (`product_id`),
+  FULLTEXT KEY `FULLTEXTSEARCH` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -220,4 +220,4 @@ CREATE TABLE `watchlists` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-12-13 14:38:03
+-- Dump completed on 2021-12-17 11:27:26
