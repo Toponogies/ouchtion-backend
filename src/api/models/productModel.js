@@ -18,7 +18,7 @@ productModel.search = async function (query,sort,page,category) {
     // search query
     if (query) {
         SQLquery = SQLquery.whereRaw(
-            `name LIKE '%${query}%'`)
+            `match(name) against('${query}')`)
     }
     // filter category
     if (category) {
