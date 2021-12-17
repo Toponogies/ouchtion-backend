@@ -1,9 +1,11 @@
 const router = require('express').Router();
 import productController from '../controllers/productController.js';
 import validate from '../middlewares/validate.js';
+import validateQuery from '../middlewares/validateQuery'
 import {schema as productSellerSchema} from '../schema/productSellerId'
+import {schema as productSearchSchema} from '../schema/productSearch'
 
-router.get('/', productController.getAllProduct);
+router.get('/',validateQuery(productSearchSchema), productController.getAllProduct);
 router.get('/seller',validate(productSellerSchema),productController.getAllProductBySellerId);
 router.get('/:id',productController.getProduct);
 router.get('/:id/image',productController.getImages);

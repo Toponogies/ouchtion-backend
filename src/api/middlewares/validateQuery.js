@@ -22,6 +22,9 @@ function parseErrors(validationErrors) {
 
 export default schema => (req, res, next) => {
   const ajv = new Ajv({allErrors: true});
+  ajv.addFormat('string-of-int', {
+    validate: (string) => !isNaN(string)
+  })
   const valid = ajv.validate(schema, req.query);
   if (!valid) {
     const errorParse = parseErrors(ajv.errors)
