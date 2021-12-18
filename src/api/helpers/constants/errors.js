@@ -68,10 +68,50 @@ export const ACCOUNT_NOT_ACTIVE = {
     detail: "Account not active"
 };
 
+export const NOT_PERMISSION = {
+    title: "Not permission access endpoint",
+    detail: "Not permission access endpoint"
+};
+
 export function VALIDATION_ERROR(validate_err){
     return {
         title: "VALIDATION_ERROR",
         detail: "Can't validation this request",
         field: validate_err
     };
+}
+
+export const NOT_FOUND_PRODUCT = {
+    title: "Not found product",
+    detail: "Not found product"
+};
+
+export const NOT_FOUND_USER = {
+    title: "Not found user",
+    detail: "Not found user"
+};
+
+export const NOT_FOUND_WATCH = {
+    title: "Not found watch",
+    detail: "Not found watch"
+};
+
+export const NOT_FOUND_IMAGE = {
+    title: "Not found image",
+    detail: "Not found image"
+};
+
+export const NOT_FOUND_FILE = {
+    title: "Not found file",
+    detail: "Not found file"
+}
+
+export const IS_EXIST = {
+    title: "This is exist",
+    detail: "This is exist"
+}
+
+export const PRODUCT_NOT_END = {
+    title: "Product bidding not finish",
+    detail: "Product bidding not finish"
 }
