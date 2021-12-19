@@ -1,5 +1,7 @@
 AccessToken:
   $ref: "./AccessToken.yaml"
+Bidding:
+  $ref: "./Bidding.yaml"
 Error:
   $ref: "./Error.yaml"
 Image:

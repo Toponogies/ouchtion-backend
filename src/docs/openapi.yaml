@@ -69,3 +69,14 @@ paths:
     $ref: "./resources/products/productId/imageId/_index.yaml"
   /products/{Id}/description:
     $ref: "./resources/products/productId/description.yaml"
+  /products/{Id}/bidding:
+    $ref: "./resources/products/productId/bidding.yaml"
+  /products/won:
+    $ref: "./resources/products/won.yaml"
+  /products/bidding:
+    $ref: "./resources/products/bidding.yaml"
+  /products/active:
+    $ref: "./resources/products/active.yaml"
+  /products/inactive:
+    $ref: "./resources/products/inactive.yaml"
+  

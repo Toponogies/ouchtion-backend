@@ -1,6 +1,6 @@
 get:
   operationId: getProductImagens
-  summary: Get all Product images.
+  summary: Get all image of one product.
   responses:
     "200":
       description: An array of Product images.
@@ -20,7 +20,7 @@ get:
     - products
 post:
   operationId: addProductImage
-  summary: Add a image to product.
+  summary: Add a image to a product.
   parameters:
     - $ref: "../../../parameters/path/id.yaml"
   requestBody:
