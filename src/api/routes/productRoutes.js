@@ -17,5 +17,10 @@ router.post('/:id/description', validate(productDescriptionSchema),productContro
 router.delete('/:id/description/:descriptionId',productController.deleteDescription);
 router.delete('/:id/image/:imageId',productController.deleteImage);
 
+router.get('/won',productController.productsWon)
+router.get('/bidding',productController.productsBidding)
+router.get('/active',productController.productsActive)
+router.get('/inactive',productController.productsInActive)
+
 
 export default router;

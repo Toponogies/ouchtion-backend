@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import httpStatus from 'http-status-codes';
-import dotenv from 'dotenv'
+import dotenv from 'dotenv';
 import { INVAILD_ACCESSTOKEN, NOTFOUND_ACCESSTOKEN } from '../helpers/constants/Errors';
 dotenv.config()
 export default function auth(req, res, next) {

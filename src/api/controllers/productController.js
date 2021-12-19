@@ -25,8 +25,12 @@ export default {
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
         }
     },
-    getProduct: async (req, res) => {
+    getProduct: async (req, res, next) => {
         try {
+            if (isNaN(req.params.id))
+            {
+                return next();
+            }
             //get product
             const product = await productModel.getProduct(req.params.id);
 
@@ -298,6 +302,73 @@ export default {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
             }
             return res.status(httpStatus.NO_CONTENT).send();
+        } catch (err) {
+            console.log(err);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+        }
+    },
+    productsWon: async (req, res) => {
+        try {
+            // check role bidder
+            if (req.accessTokenPayload.role !== "bidder") {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            }
+
+            console.log(req.accessTokenPayload)
+
+            const products = await productModel.productsWon(req.accessTokenPayload.userId);
+            return res.json(products);
+        } catch (err) {
+            console.log(err);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+        }
+    },
+    productsBidding: async (req, res) => {
+        try {
+            // check role bidder
+            if (req.accessTokenPayload.role !== "bidder") {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            }
+
+            const products = await productModel.productsBidding(req.accessTokenPayload.userId);
+            return res.json(products);
+        } catch (err) {
+            console.log(err);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+        }
+    },
+    productsActive: async (req, res) => {
+        try {
+            // check role seller
+            if (req.accessTokenPayload.role !== "seller") {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            }
+
+            const products = await productModel.productsActive(req.accessTokenPayload.userId);
+            return res.json(products);
+        } catch (err) {
+            console.log(err);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+        }
+    },
+    productsInActive: async (req, res) => {
+        try {
+            // check role seller
+            if (req.accessTokenPayload.role !== "seller") {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            }
+
+            const products = await productModel.productsInActive(req.accessTokenPayload.userId);
+            return res.json(products);
+        } catch (err) {
+            console.log(err);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+        }
+    },
+    getAllBidding: async (req, res) => {
+        try {
+            const biddings = await productModel.getAllBidding(req.params.id);
+            return res.json(biddings);
         } catch (err) {
             console.log(err);
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);

@@ -10,5 +10,6 @@ router.get('/seller',validate(productSellerSchema),productController.getAllProdu
 router.get('/:id',productController.getProduct);
 router.get('/:id/image',productController.getImages);
 router.get('/:id/description',productController.getDescriptions)
+router.get('/:id/bidding',productController.getAllBidding)
 
 export default router;

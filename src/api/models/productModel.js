@@ -101,5 +101,21 @@ productModel.deleteImage = async function (product_id, image_id) {
     .where("product_image_id", image_id)
     .del();
 }
+productModel.productsWon = async function (user_id) {
+    return db("products").where("buyer_id",user_id).andWhere("is_sold",true);
+}
+productModel.productsBidding = async function (user_id) {
+    return db('products').join('biddings',"biddings.product_id","products.product_id").where("user_id",user_id).select("products.*");
+}
+productModel.productsActive = async function (user_id) {
+    return db("products").where("seller_id",user_id).andWhere("is_sold",1);
+}
+productModel.productsInActive = async function (user_id) {
+    return db("products").where("seller_id",user_id).andWhere("is_sold",0);
+}
+productModel.getAllBidding = async function (product_id) {
+    return db("biddings").where("product_id",product_id)
+}
+
 
 export default productModel;
