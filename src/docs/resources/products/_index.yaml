@@ -6,6 +6,7 @@ get:
     - $ref: "../../parameters/query/sort.yaml"
     - $ref: "../../parameters/query/category.yaml"
     - $ref: "../../parameters/query/page.yaml"
+    - $ref: "../../parameters/query/number.yaml"
   responses:
     "200":
       description: An array of Products.
