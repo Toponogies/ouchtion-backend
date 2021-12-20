@@ -30,12 +30,16 @@ productModel.search = async function (query,sort,page,category,number_product) {
         if (sort === "bidding_desc")
             SQLquery = SQLquery.orderBy('bidding_count', 'desc')
     }
+    if (number_product)
+    {
+        SQLquery = SQLquery.limit(number_product)
+    }
     // page
     if (page)
     {
-        SQLquery = SQLquery.offset(page * number_product)
+        //if have page but not have number product default 6
+        SQLquery = number_product ? SQLquery.offset(page * number_product): SQLquery.offset(page * 6).limit(6)
     }
-    SQLquery = SQLquery.limit(number_product)
     // excute
     const row = await SQLquery;
     return row;
@@ -105,19 +109,40 @@ productModel.deleteImage = async function (product_id, image_id) {
     .del();
 }
 productModel.productsWon = async function (user_id) {
-    return db("products").where("buyer_id",user_id).andWhere("is_sold",true);
+    return db("products").join('biddings',"biddings.product_id","products.product_id")
+    .groupBy("products.product_id")
+    .count("products.product_id as bidding_count")
+    .max("biddings.bid_price as current_price")
+    .select("products.*")
+    .where("buyer_id",user_id).andWhere("is_sold",true);
 }
 productModel.productsBidding = async function (user_id) {
-    return db('products').join('biddings',"biddings.product_id","products.product_id").where("user_id",user_id).select("products.*");
+    return db('products').join('biddings',"biddings.product_id","products.product_id")
+    .groupBy("products.product_id")
+    .count("products.product_id as bidding_count")
+    .max("biddings.bid_price as current_price")
+    .select("products.*").where("user_id",user_id).select("products.*");
 }
 productModel.productsActive = async function (user_id) {
-    return db("products").where("seller_id",user_id).andWhere("is_sold",1);
+    return db("products").join('biddings',"biddings.product_id","products.product_id")
+    .groupBy("products.product_id")
+    .count("products.product_id as bidding_count")
+    .max("biddings.bid_price as current_price")
+    .select("products.*").where("seller_id",user_id).andWhere("is_sold",1);
 }
 productModel.productsInActive = async function (user_id) {
-    return db("products").where("seller_id",user_id).andWhere("is_sold",0);
+    return db("products").join('biddings',"biddings.product_id","products.product_id")
+    .groupBy("products.product_id")
+    .count("products.product_id as bidding_count")
+    .max("biddings.bid_price as current_price")
+    .select("products.*").where("seller_id",user_id).andWhere("is_sold",0);
 }
 productModel.getAllBidding = async function (product_id) {
-    return db("biddings").where("product_id",product_id)
+    return db("biddings").join('biddings',"biddings.product_id","products.product_id")
+    .groupBy("products.product_id")
+    .count("products.product_id as bidding_count")
+    .max("biddings.bid_price as current_price")
+    .select("products.*").where("product_id",product_id)
 }
 
 
