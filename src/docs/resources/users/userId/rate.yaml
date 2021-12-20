@@ -1,0 +1,51 @@
+get:
+  operationId: getUseRates
+  summary: Get all rates of a user.
+  responses:
+    "200":
+      description: An array rates.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../../schemas/Rate.yaml"
+    "401":
+      $ref: "../../../responses/Error.yaml"
+    "404":
+      $ref: "../../../responses/Error.yaml"
+    "500":
+      $ref: "../../../responses/Error.yaml"
+    default:
+      $ref: "../../../responses/Error.yaml"
+  tags:
+    - users
+
+post:
+  operationId: addRateUser
+  summary: A user rate one product win.
+  parameters:
+    - $ref: "../../../parameters/path/id.yaml"
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../../schemas/RatePost.yaml"
+  responses:
+    "204":
+      description: Updated role a user.
+    "400":
+      description: When bidding product not finish or have this rate in product
+    "401":
+      $ref: "../../../responses/Error.yaml"
+    "404":
+      $ref: "../../../responses/Error.yaml"
+    "422":
+      $ref: "../../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../../responses/Error.yaml"
+    default:
+      $ref: "../../../responses/Error.yaml"
+  tags:
+    - users

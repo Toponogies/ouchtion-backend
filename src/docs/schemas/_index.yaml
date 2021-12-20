@@ -26,3 +26,11 @@ WatchPost:
   $ref: "./WatchPost.yaml"
 Role:
   $ref: "./Role.yaml"
+Rate:
+  $ref: "./Rate.yaml"
+RatePost:
+  $ref: "./RatePost.yaml"
+Product:
+  $ref: "./Product.yaml"
+UserPoint:
+  $ref: "./UserPoint.yaml"

@@ -58,8 +58,14 @@ paths:
     $ref: "./resources/users/_index.yaml"
   /users/{Id}:
     $ref: "./resources/users/userId/_index.yaml"
+  /users/{Id}/point:
+    $ref: "./resources/users/userId/point.yaml"
   /users/{Id}/role:
     $ref: "./resources/users/userId/role.yaml"
+  /users/{Id}/rate:
+    $ref: "./resources/users/userId/rate.yaml"
+  /users/{Id}/productCanRate:
+    $ref: "./resources/users/userId/productsCanRate.yaml"
   /users/{Id}/newEmail:
     $ref: "./resources/users/userId/email.yaml"
   /users/{Id}/watchlist:

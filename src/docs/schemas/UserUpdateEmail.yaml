@@ -1,7 +1,8 @@
-title: UserUpdate
-description: Schema for UserUpdate.
+title: UserUpdateEmail
+description: Schema of body when update email.
 type: object
 properties:
-  token:
+  email:
     type: string
-    description: The token use change email of the User.
+    format: email
+    description: New email of user.

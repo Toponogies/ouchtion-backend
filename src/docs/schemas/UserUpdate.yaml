@@ -15,6 +15,3 @@ properties:
   address:
     type: string
     description: The address of the User.
-  email:
-    type: string
-    description: The email of the User.

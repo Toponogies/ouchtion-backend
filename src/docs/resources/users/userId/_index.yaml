@@ -12,6 +12,8 @@ get:
             $ref: "../../../schemas/User.yaml"
     "401":
       $ref: "../../../responses/Error.yaml"
+    "404":
+      $ref: "../../../responses/Error.yaml"
     "500":
       $ref: "../../../responses/Error.yaml"
     default:
@@ -20,7 +22,7 @@ get:
     - users
 put:
   operationId: updateuser
-  summary: Update a user. If update email send one token to this email
+  summary: Update a user.
   parameters:
     - $ref: "../../../parameters/path/id.yaml"
   requestBody:
