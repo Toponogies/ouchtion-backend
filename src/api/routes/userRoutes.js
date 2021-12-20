@@ -6,7 +6,7 @@ router.get('/:id', userController.getUser);
 router.put('/:id', userController.updateUser);
 
 router.get('/:id/rate', userController.getAllRate);
-router.get('/:id/notRate', userController.getAllProductNotRate);
+router.get('/:id/productCanRate', userController.getAllProductNotRate);
 router.post('/:id/rate', userController.postRate);
 
 router.get('/:id/watchlist', userController.getWatchList);

@@ -15,7 +15,7 @@ userModel.getPoint = async function (user_id) {
     const sum_like = row1[0].sum_like ? row1[0].sum_like : 0
     const count_rate = row2[0].count_rate ? row2[0].count_rate : 1
     const user = await this.findById(user_id);
-    user.point = (sum_like / count_rate).toFixed(2);
+    user.point = (sum_like / count_rate).toFixed(2) * 100;
     return {
         full_name: user.full_name,
         point: user.point
@@ -27,12 +27,17 @@ userModel.getAllBidding = async function (user_id) {
 userModel.getAllRate = async function (user_id) {
     return await db('products').join('rates',"rates.product_id","products.product_id").whereRaw(`(products.buyer_id= ${user_id} and type = 'SELLER-BUYER') or (products.seller_id= ${user_id} and type = 'BUYER-SELLER')`)
 }
-userModel.getAllProductNotRate = async function (user_id) {
+userModel.getAllProductBidderNotRate = async function (user_id) {
     return await db('products').whereRaw(`products.buyer_id= ${user_id} and is_sold = 1 and product_id not in(
     select products.product_id from products join rates on rates.product_id = products.product_id 
     where products.buyer_id= ${user_id} and type = 'BUYER-SELLER')`);
 }
-userModel.isInRate = async function(user_id,product_id){
+userModel.getAllProductSellerNotRate = async function (user_id) {
+    return await db('products').whereRaw(`products.seller_id= ${user_id} and is_sold = 1 and product_id not in(
+    select products.product_id from products join rates on rates.product_id = products.product_id 
+    where products.seller_id= ${user_id} and type = 'SELLER-BUYER')`);
+}
+userModel.isBidderInRate = async function(user_id,product_id){
     const row =  await db('products').join('rates',"rates.product_id","products.product_id").whereRaw(`products.product_id = ${product_id} and products.buyer_id= ${user_id} and type = 'BUYER-SELLER'`)
     if (row && row.length > 0)
     {
@@ -40,8 +45,24 @@ userModel.isInRate = async function(user_id,product_id){
     }
     return false;
 }
-userModel.isCanRate = async function(user_id,product_id){
+userModel.isBidderCanRate = async function(user_id,product_id){
     const row =  await db('products').whereRaw(`products.product_id = ${product_id} and products.buyer_id= ${user_id} and is_sold = 1`)
+    if (row && row.length > 0)
+    {
+        return true;
+    }
+    return false;
+}
+userModel.isSellerInRate = async function(user_id,product_id){
+    const row =  await db('products').join('rates',"rates.product_id","products.product_id").whereRaw(`products.product_id = ${product_id} and products.seller_id= ${user_id} and type = 'SELLER-BUYER'`)
+    if (row && row.length > 0)
+    {
+        return true;
+    }
+    return false;
+}
+userModel.isSellerCanRate = async function(user_id,product_id){
+    const row =  await db('products').whereRaw(`products.product_id = ${product_id} and products.seller_id= ${user_id} and is_sold = 1`)
     if (row && row.length > 0)
     {
         return true;
