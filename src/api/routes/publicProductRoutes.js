@@ -5,8 +5,8 @@ import validateQuery from '../middlewares/validateQuery'
 import {schema as productSellerSchema} from '../schema/productSellerId'
 import {schema as productSearchSchema} from '../schema/productSearch'
 
-router.get('/',validateQuery(productSearchSchema), productController.getAllProduct);
-router.get('/seller',validate(productSellerSchema),productController.getAllProductBySellerId);
+router.get('/',validateQuery(productSearchSchema), productController.searchProduct);
+//router.get('/seller',validate(productSellerSchema),productController.getAllProductBySellerId);
 router.get('/:id',productController.getProduct);
 router.get('/:id/image',productController.getImages);
 router.get('/:id/description',productController.getDescriptions)
