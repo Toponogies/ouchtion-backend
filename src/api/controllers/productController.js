@@ -9,7 +9,7 @@ import { productModel } from "../models";
 export default {
     getAllProduct: async (req, res) => {
         try {
-            const products = await productModel.search(req.query.query,req.query.sort,req.query.page,req.query.category);
+            const products = await productModel.search(req.query.query,req.query.sort,req.query.page,req.query.category,req.query.number);
             return res.json(products);
         } catch (err) {
             console.log(err);

@@ -4,7 +4,8 @@ export const schema = {
       page: {format: "string-of-int"},
       query: {type: "string"},
       category: {format: "string-of-int"},
-      sort: {type: "string"}
+      sort: {type: "string"},
+      number: {format: "string-of-int"}
     },
     additionalProperties: false,
 }

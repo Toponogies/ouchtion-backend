@@ -1,15 +1,12 @@
 import db from '../helpers/constants/db.js';
 import generate from './generic.model.js';
-import dotenv from 'dotenv';
-dotenv.config();
 
 let productModel = generate('products', 'product_id');
 productModel.findBySellerId = async function (seller_id) {
     const row = await db('products').where('seller_id', seller_id);
     return row;
 }
-productModel.search = async function (query,sort,page,category) {
-    page = page ? page:0;
+productModel.search = async function (query,sort,page,category,number_product) {
     let SQLquery = db('products').join('biddings',"biddings.product_id","products.product_id")
     .groupBy("products.product_id")
     .count("products.product_id as bidding_count")
@@ -30,9 +27,15 @@ productModel.search = async function (query,sort,page,category) {
             SQLquery = SQLquery.orderBy('end_at', 'desc')
         if (sort === "price_asc")
             SQLquery = SQLquery.orderBy('current_price', 'asc')
+        if (sort === "bidding_desc")
+            SQLquery = SQLquery.orderBy('bidding_count', 'desc')
     }
     // page
-    SQLquery = SQLquery.limit(process.env.NUMBER_PRODUCT_PER_PAGE).offset(page * process.env.NUMBER_PRODUCT_PER_PAGE)
+    if (page)
+    {
+        SQLquery = SQLquery.offset(page * number_product)
+    }
+    SQLquery = SQLquery.limit(number_product)
     // excute
     const row = await SQLquery;
     return row;
