@@ -4,7 +4,10 @@ import dotenv from 'dotenv'
 import { INVAILD_ACCESSTOKEN, NOTFOUND_ACCESSTOKEN } from '../helpers/constants/Errors';
 dotenv.config()
 export default function auth(req, res, next) {
-  const accessToken = req.headers['x-access-token'];
+  var accessToken =  req.headers['authorization'];
+  if (accessToken && accessToken.startsWith("Bearer ")){
+    accessToken = accessToken.slice(7, accessToken.length)
+  }
   if (accessToken) {
     try {
       var result = jwt.verify(accessToken, process.env.SERET_KEY)
