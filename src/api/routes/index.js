@@ -2,8 +2,9 @@ import ErrorRoutes from './errorRoutes';
 import authRoute from './authRoutes';
 import biddingRoute from './biddingRoutes';
 import publicProductRoutes from './publicProductRoutes';
+import categoryRoute from './categoryRoutes';
 import productRoute from './productRoutes';
-import { AUTH, BIDDING, PRODUCT } from '../helpers/constants/routes';
+import { AUTH, BIDDING, PRODUCT, CATEGORY } from '../helpers/constants/routes';
 import auth from '../middlewares/auth'
 
 export default function configure(app) {
