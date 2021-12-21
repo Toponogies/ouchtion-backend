@@ -51,7 +51,7 @@ export default {
             const refreshToken = jwt.sign(payloadRefreshToken, process.env.SERET_KEY, optsRefresh);
             
             // set value from redis
-            await setExRedis(user.id,process.env.REDIS_EXPIRED_REFRESHTOKEN_SECOND,{ 
+            await setExRedis(user.user_id,process.env.REDIS_EXPIRED_REFRESHTOKEN_SECOND,{ 
                 refreshToken: refreshToken,
             })
 
