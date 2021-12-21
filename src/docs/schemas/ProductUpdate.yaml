@@ -8,10 +8,6 @@ properties:
   name:
     type: string
     description: The name of a product.
-  end_at:
-    type: string
-    format: date-time
-    description: The timestamp end bidding product.
   avatar:
     type: string
     format: binary
