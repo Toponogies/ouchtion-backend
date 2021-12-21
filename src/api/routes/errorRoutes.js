@@ -1,5 +1,5 @@
 import httpStatus from 'http-status-codes';
-import { NOTFOUND_ERROR } from '../helpers/constants/Errors';
+import { NOTFOUND_ERROR, UNEXPECTED_ERROR } from '../helpers/constants/Errors';
 const router = require('express').Router();
 
 router.use((req, res) => {

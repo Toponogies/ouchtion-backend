@@ -1,10 +1,16 @@
-import ExampleRoutes from './exampleRoutes';
 import ErrorRoutes from './errorRoutes';
-import { EXAMPLE } from '../helpers/constants/Routes';
+import authRoute from './authRoutes';
+import productRoute from './productRoutes';
+import publicProductRoutes from './publicProductRoutes';
+import { AUTH, PRODUCT } from '../helpers/constants/routes';
+import auth from '../middlewares/auth'
 
 export default function configure(app) {
-    // Other routes
-    app.use(EXAMPLE, ExampleRoutes);
+    app.use(AUTH,authRoute)
+
+    app.use(PRODUCT,publicProductRoutes)
+    app.use(PRODUCT,auth,productRoute)
+
     // Default error route
     app.use(ErrorRoutes);
 }

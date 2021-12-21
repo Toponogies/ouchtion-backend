@@ -1,9 +1,98 @@
 export const UNEXPECTED_ERROR = {
-    title: 'Internal server error.',
+    title: 'INTERNAL_SERVER_ERROR',
     detail: 'Something is wrong.'
 };
 
-export const NOTFOUND_ERROR = {
-    title: 'Not found.',
-    detail: 'Resource is not available.'
+export const REDIS_SERVER_ERROR = {
+    title: 'REDIS_SERVER_ERROR',
+    detail: 'Server redis is wrong.'
 };
+
+export const NOTFOUND_REDIS = {
+    title: 'NOT_FOUND_IN_REDIS',
+    detail: 'Redis data is not available.'
+};
+
+export const NOTFOUND_ERROR = {
+    title: 'NOT_FOUND_ENDPOINT',
+    detail: 'Endpoint is not available.'
+};
+
+export const LOGIN_ERROR = {
+    title: 'UNAUTHORIZED',
+    detail: 'Enter a invaild email or password .'
+};
+
+export const DB_QUERY_ERROR = {
+    title: 'CONFLICT',
+    detail: 'Conflict database query'
+};
+
+export const INVAILD_ACCESSTOKEN = {
+    title: "INVAILD_ACCESSTOKEN",
+    detail: "Invalid access token."
+};
+
+export const NOTFOUND_ACCESSTOKEN = {
+    title: "NOTFOUND_ACCESSTOKEN",
+    detail: "Not found access token."
+};
+
+export const INVAILD_REFRESHTOKEN = {
+    title: "INVAILD_REFRESHTOKEN.",
+    detail: "Invalid refresh token."
+};
+
+export const EXPIRED_ACCESSTOKEN = {
+    title: "EXPIRED_ACCESSTOKEN",
+    detail: "Access token is expried"
+};
+
+export const EXPIRED_REFRESHTOKEN = {
+    title: "EXPIRED_REFRESHTOKEN",
+    detail: "Refresh token is expried"
+};
+
+export const INVAILD_VERIFYTOKEN = {
+    title: "INVAILD_VERIFYTOKEN",
+    detail: "Invalid verify token."
+};
+
+export const EXPIRED_VERIFYTOKEN = {
+    title: "EXPIRED_VERIFYTOKEN",
+    detail: "Verify token is expried"
+};
+
+export const ACCOUNT_NOT_ACTIVE = {
+    title: "ACCOUNT_NOT_ACTIVE",
+    detail: "Account not active"
+};
+
+export const NOT_PERMISSION = {
+    title: "NOT_PERMISSION",
+    detail: "Not permission access endpoint"
+};
+
+export function VALIDATION_ERROR(validate_err){
+    return {
+        title: "VALIDATION_ERROR",
+        detail: "Can't validation this request",
+        field: validate_err
+    };
+}
+
+export const NOT_FOUND_PRODUCT = {
+    title: "NOT_FOUND_PRODUCT",
+    detail: "Not found product"
+};
+
+export const NOT_FOUND_IMAGE = {
+    title: "NOT_FOUND_IMAGE",
+    detail: "Not found image"
+};
+
+
+export const NOT_FOUND_FILE = {
+    title: "NOT_FOUND_FILE",
+    detail: "Not found file"
+}
