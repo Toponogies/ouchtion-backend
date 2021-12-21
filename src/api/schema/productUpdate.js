@@ -3,10 +3,6 @@ export const schema = {
     properties: {
       name: {type: "string"},
       category_id: {type: "string"},
-      end_at: {
-        type: 'string',
-        format: 'date-time',
-      }, 
     },
     additionalProperties: false,
 }

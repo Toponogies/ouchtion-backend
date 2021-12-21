@@ -3,6 +3,7 @@ import express from 'express';
 import router from './api/routes';
 import morgan from 'morgan';
 import cors from 'cors';
+import checkWon from './api/services/checkWon';
 
 dotenv.config();
 const app = express();
@@ -24,8 +25,10 @@ app.use(cors({
 app.use(morgan('dev'));
 
 // Routes
-app.get('/', (req, res) => res.send('Hello world!'));
 router(app);
+
+// Service
+checkWon()
 
 // Make app listen at port
 app.listen(PORT, () => {

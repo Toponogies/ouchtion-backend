@@ -144,6 +144,9 @@ productModel.getAllBidding = async function (product_id) {
     .max("biddings.bid_price as current_price")
     .select("products.*").where("product_id",product_id)
 }
+productModel.getAllProductEnd = async function () { // use to check won
+    return db("products").whereRaw("end_at < now()").andWhere("is_sold",0)
+}
 
 
 export default productModel;

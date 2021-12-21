@@ -102,9 +102,6 @@ export default {
                 }
                 req.body.avatar = path
             }
-            
-
-            req.body.end_at = formatDate(new Date(req.body.end_at))
 
             // update product
             const n = await productModel.patch(req.params.id, req.body);
