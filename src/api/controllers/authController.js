@@ -39,11 +39,11 @@ export default {
 
             // create access token and refresh token
             const payloadAccessToken = {
-                userId: user.id,
+                userId: user.user_id,
                 role: user.role
             };
             const payloadRefreshToken = {
-                userId: user.id,
+                userId: user.user_id,
                 role: user.role,
                 userEmail: user.email
             };
