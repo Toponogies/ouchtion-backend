@@ -39,11 +39,11 @@ export default {
 
             // create access token and refresh token
             const payloadAccessToken = {
-                userId: user.id,
+                userId: user.user_id,
                 role: user.role
             };
             const payloadRefreshToken = {
-                userId: user.id,
+                userId: user.user_id,
                 role: user.role,
                 userEmail: user.email
             };
@@ -51,7 +51,7 @@ export default {
             const refreshToken = jwt.sign(payloadRefreshToken, process.env.SERET_KEY, optsRefresh);
             
             // set value from redis
-            await setExRedis(user.id,process.env.REDIS_EXPIRED_REFRESHTOKEN_SECOND,{ 
+            await setExRedis(user.user_id,process.env.REDIS_EXPIRED_REFRESHTOKEN_SECOND,{ 
                 refreshToken: refreshToken,
             })
 
@@ -105,7 +105,7 @@ export default {
         try {
             const { userId, role, userEmail } = jwt.verify(refreshToken, process.env.SERET_KEY, opts);
         } catch (err) {
-            if (error.name === "TokenExpiredError")
+            if (err.name === "TokenExpiredError")
                 return res.status(httpStatus.UNAUTHORIZED).send(EXPIRED_REFRESHTOKEN)
             else
                 return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_REFRESHTOKEN)
@@ -145,9 +145,8 @@ export default {
         //add user
         try {
             user = await userModel.add(req.body)
-        } catch (error) {
-            console.log(error);
-            if (error.sqlState === '23000')
+        } catch (err) {
+            if (err.sqlState === '23000')
                 return res.status(httpStatus.CONFLICT).send(DB_QUERY_ERROR)
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR)
         }
@@ -270,7 +269,7 @@ export default {
             const { userId } = jwt.verify(token, process.env.SERET_KEY, optsVerify);
             _userId = userId;
         } catch (err) {
-            if (error.name === "TokenExpiredError")
+            if (err.name === "TokenExpiredError")
                 return res.status(httpStatus.UNAUTHORIZED).send(EXPIRED_VERIFYTOKEN)
             else
                 return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_VERIFYTOKEN)
