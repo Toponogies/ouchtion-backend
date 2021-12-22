@@ -13,7 +13,7 @@ export default async function autoBidding(){
             {
                 // case if have other autobidding
                 const price_need = product.current_max_price + product.step_price;
-                if (autoBidding.max_price > product.current_max_price)
+                if (autoBidding.max_price > product.current_max_price && autoBidding.max_price > product.current_price)
                 {
                     // update buyer_id and current_price
                     await productModel.patch(autoBidding.product_id,{
