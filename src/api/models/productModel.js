@@ -10,7 +10,6 @@ productModel.search = async function (query,sort,page,category,number_product) {
     let SQLquery = db('products').join('biddings',"biddings.product_id","products.product_id")
     .groupBy("products.product_id")
     .count("products.product_id as bidding_count")
-    .max("biddings.bid_price as current_price")
     .select("products.*")
     // search query
     if (query) {
@@ -48,11 +47,32 @@ productModel.getProduct = async function (product_id) {
     let SQLquery = db('products').join('biddings',"biddings.product_id","products.product_id")
     .groupBy("products.product_id")
     .count("products.product_id as bidding_count")
-    .max("biddings.bid_price as current_price")
     .select("products.*")
     .where('products.product_id', product_id);
     const row = await SQLquery;
-    return row;
+    if (row.length === 0)
+        return null;
+
+    return row[0];
+}
+
+// use in autobidding get product uniclude one bidding
+productModel.getProductUseAutoBidding = async function (product_id,bidding_id = null) {
+    let SQLquery = db('products').join('biddings',"biddings.product_id","products.product_id")
+    .groupBy("products.product_id")
+    .max("biddings.max_price as current_max_price")
+    .max("biddings.bid_price as current_max_bid_price")
+    .select("products.*")
+    .where('products.product_id', product_id)
+    if (bidding_id)
+    {
+        SQLquery = SQLquery.whereRaw(`biddings.bidding_id != ${bidding_id}`)
+    }
+    const row = await SQLquery;
+    if (row.length === 0)
+        return null;
+
+    return row[0];
 }
 productModel.isInBidding = async function (product_id) {
     const row = await db('biddings').where('product_id', product_id);
@@ -112,7 +132,6 @@ productModel.productsWon = async function (user_id) {
     return db("products").join('biddings',"biddings.product_id","products.product_id")
     .groupBy("products.product_id")
     .count("products.product_id as bidding_count")
-    .max("biddings.bid_price as current_price")
     .select("products.*")
     .where("buyer_id",user_id).andWhere("is_sold",true);
 }
@@ -120,29 +139,23 @@ productModel.productsBidding = async function (user_id) {
     return db('products').join('biddings',"biddings.product_id","products.product_id")
     .groupBy("products.product_id")
     .count("products.product_id as bidding_count")
-    .max("biddings.bid_price as current_price")
     .select("products.*").where("user_id",user_id).select("products.*");
 }
 productModel.productsActive = async function (user_id) {
     return db("products").join('biddings',"biddings.product_id","products.product_id")
     .groupBy("products.product_id")
     .count("products.product_id as bidding_count")
-    .max("biddings.bid_price as current_price")
     .select("products.*").where("seller_id",user_id).andWhere("is_sold",1);
 }
 productModel.productsInActive = async function (user_id) {
     return db("products").join('biddings',"biddings.product_id","products.product_id")
     .groupBy("products.product_id")
     .count("products.product_id as bidding_count")
-    .max("biddings.bid_price as current_price")
     .select("products.*").where("seller_id",user_id).andWhere("is_sold",0);
 }
 productModel.getAllBidding = async function (product_id) {
     return db("biddings").join('biddings',"biddings.product_id","products.product_id")
-    .groupBy("products.product_id")
-    .count("products.product_id as bidding_count")
-    .max("biddings.bid_price as current_price")
-    .select("products.*").where("product_id",product_id)
+    .select("biddings.*").where("products.product_id",product_id).andWhere("is_valid",1)
 }
 productModel.getAllProductEnd = async function () { // use to check won
     return db("products").whereRaw("end_at < now()").andWhere("is_sold",0)
