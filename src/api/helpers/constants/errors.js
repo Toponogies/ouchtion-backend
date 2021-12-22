@@ -91,8 +91,22 @@ export const NOT_FOUND_IMAGE = {
     detail: "Not found image"
 };
 
-
 export const NOT_FOUND_FILE = {
     title: "NOT_FOUND_FILE",
     detail: "Not found file"
+}
+
+export const NOT_FOUND_BIDDING = {
+    title: "NOT_FOUND_BIDDING",
+    detail: "Not found bidding"
+}
+
+export const IS_EXIST = {
+    title: "IS_EXIST",
+    detail: "This is exist"
+}
+
+export const BAD_BIDDING = {
+    title: "BAD_BIDDING",
+    detail: "You don't have permission bidding or bad bidding request"
 }

@@ -4,6 +4,7 @@ import router from './api/routes';
 import morgan from 'morgan';
 import cors from 'cors';
 import checkWon from './api/services/checkWon';
+import autoBidding from './api/services/autoBidding';
 
 dotenv.config();
 const app = express();
@@ -18,7 +19,7 @@ app.use(express.static('localdata'));
 
 // Cors
 app.use(cors({
-    methods: 'GET,PATCH,POST,DELETE'
+    methods: 'GET,PATCH,POST,DELETE,PUT'
 }));
 
 // Request log
@@ -29,6 +30,7 @@ router(app);
 
 // Service
 checkWon()
+autoBidding()
 
 // Make app listen at port
 app.listen(PORT, () => {
