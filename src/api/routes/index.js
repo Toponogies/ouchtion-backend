@@ -14,6 +14,7 @@ export default function configure(app) {
     app.use(PRODUCT,auth,productRoute)
 
     app.use(BIDDING,auth,biddingRoute)
+    app.use(CATEGORY,categoryRoute)
 
     // Default error route
     app.use(ErrorRoutes);
