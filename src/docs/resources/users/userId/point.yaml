@@ -8,8 +8,6 @@ get:
         application/json:
           schema:
             $ref: "../../../schemas/UserPoint.yaml"
-    "401":
-      $ref: "../../../responses/Error.yaml"
     "404":
       $ref: "../../../responses/Error.yaml"
     "500":

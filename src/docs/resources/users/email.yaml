@@ -31,8 +31,6 @@ put:
   responses:
     "204":
       description: Checks token and changes email.
-    "401":
-      $ref: "../../responses/Error.yaml"
     "404":
       $ref: "../../responses/Error.yaml"
     "422":
