@@ -108,7 +108,7 @@ biddingModel.getBiddingRequests= async function (seller_id) {
     .select("bidding_approval_requests.*");
 }
 
-biddingModel.permissionBidding= async function (body) {
+biddingModel.permissionBidding = async function (body) {
     try{
         await db("bidding_permissions").insert(body);
     }
@@ -116,6 +116,10 @@ biddingModel.permissionBidding= async function (body) {
         await db("bidding_permissions").where("user_id", body.user_id).andWhere("product_id",body.product_id).update(body);
     }
     await db("bidding_approval_requests").where("user_id", body.user_id).andWhere("product_id",body.product_id).update({is_processed:0})
+}
+
+biddingModel.getBiddingPermissionProduct = async function (product_id) {
+    return await db("bidding_permissions").where("product_id",product_id);
 }
 
 biddingModel.notAllowBidding= async function (body) {
