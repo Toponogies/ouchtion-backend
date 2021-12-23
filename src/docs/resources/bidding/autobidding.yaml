@@ -1,17 +1,17 @@
 post:
-  operationId: addBidding
-  summary: Add a bidding.
+  operationId: addAutoBidding
+  summary: Add a auto bidding.
   requestBody:
     required: true
     content:
       application/json:
         schema:
-          $ref: "../../schemas/BiddingPost.yaml"
+          $ref: "../../schemas/AutoBiddingPost.yaml"
   responses:
     "204":
-      description: Added a bidding.
+      description: Added a auto bidding.
     "400":
-      description: if user not have permission or price bidding < current_price
+      description: if user not have permission bidding this product
       $ref: "../../responses/Error.yaml"
     "401":
       $ref: "../../responses/Error.yaml"

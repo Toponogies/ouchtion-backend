@@ -1,43 +1,33 @@
-get:
+post:
   operationId: getBiddingPermissionProduct
-  summary: Get all Biddings permission of one product.
-  parameters:
-    - $ref: "../../parameters/header/accessToken.yaml"
+  summary: get bidding permission of one product.
   requestBody:
     required: true
     content:
       application/json:
         schema:
-          type: object
-          description: Schema bidding for an product id.
-          properties:
-            product_id:
-              type: string
-              description: The product id.
-          required:
-            - product_id
+          $ref: "../../schemas/BiddingPermissionPost.yaml"
   responses:
     "200":
-      description: An array of Biddings permission.
+      description: get a array of bidding permission.
       content:
         application/json:
           schema:
-            type: array
-            items:
-              $ref: "../../schemas/BiddingPermission.yaml"
+            $ref: "../../schemas/BiddingPermission.yaml"
     "401":
       $ref: "../../responses/Error.yaml"
+    "404":
+      description: not found product
+      $ref: "../../responses/Error.yaml"
+    "422":
+      $ref: "../../responses/ValidationError.yaml"
     "500":
       $ref: "../../responses/Error.yaml"
-    default:
-      $ref: "../../responses/Error.yaml"
   tags:
-    - biddings
-post:
+    - bidding permission
+put:
   operationId: addBiddingPermission
-  summary: Add a bidding permission.
-  parameters:
-    - $ref: "../../parameters/header/accessToken.yaml"
+  summary: Seller add a bidding permission .
   requestBody:
     required: true
     content:
@@ -45,17 +35,16 @@ post:
         schema:
           $ref: "../../schemas/BiddingPermission.yaml"
   responses:
-    "200":
+    "204":
       description: Added a bidding permission.
-      content:
-        application/json:
-          schema:
-            $ref: "../../schemas/BiddingPermission.yaml"
     "401":
+      $ref: "../../responses/Error.yaml"
+    "404":
+      description: not found product or not found user
       $ref: "../../responses/Error.yaml"
     "422":
       $ref: "../../responses/ValidationError.yaml"
     "500":
       $ref: "../../responses/Error.yaml"
   tags:
-    - biddings
+    - bidding permission

@@ -1,5 +1,19 @@
 AccessToken:
   $ref: "./AccessToken.yaml"
+AutoBidding:
+  $ref: "./AutoBiddingPost.yaml"
+Bidding:
+  $ref: "./Bidding.yaml"
+BiddingPermission:
+  $ref: "./BiddingPermission.yaml"
+BiddingPermissionGet:
+  $ref: "./BiddingPermissionPost.yaml"
+BiddingPost:
+  $ref: "./BiddingPost.yaml"
+BiddingRequest:
+  $ref: "./BiddingRequest.yaml"
+BiddingRequestPostDelete:
+  $ref: "./BiddingRequestPostDelete.yaml"
 Error:
   $ref: "./Error.yaml"
 Login:
@@ -16,9 +30,3 @@ User:
   $ref: "./User.yaml"
 ValidationError:
   $ref: "./ValidationError.yaml"
-bidding:
-  $ref: "./Bidding.yaml"
-BiddingPermission:
-  $ref: "./BiddingPermission.yaml"
-BiddingRequest:
-  $ref: "./BiddingRequest.yaml"

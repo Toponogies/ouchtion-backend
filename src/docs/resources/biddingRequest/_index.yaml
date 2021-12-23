@@ -1,24 +1,9 @@
 get:
-  operationId: getBiddingRequestUser
-  summary: Get all process Biddings request to seller.
-  parameters:
-    - $ref: "../../parameters/header/accessToken.yaml"
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          type: object
-          description: Schema bidding for an seller id.
-          properties:
-            user_id:
-              type: string
-              description: The id of a user.
-          required:
-            - user_id
+  operationId: getBiddingRequestSeller
+  summary: Get all process Biddings request of a seller.
   responses:
     "200":
-      description: An array of Biddings permission.
+      description: An array of Biddings request of one seller.
       content:
         application/json:
           schema:
@@ -34,16 +19,14 @@ get:
   tags:
     - biddings
 post:
-  operationId: addBiddingRequest
-  summary: Add a bidding request.
-  parameters:
-    - $ref: "../../parameters/header/accessToken.yaml"
+  operationId: addBiddingRequestBidder
+  summary: Bidder add a bidding request.
   requestBody:
     required: true
     content:
       application/json:
         schema:
-          $ref: "../../schemas/BiddingRequest.yaml"
+          $ref: "../../schemas/BiddingRequestPostDelete.yaml"
   responses:
     "200":
       description: Added a bidding request.
@@ -51,11 +34,40 @@ post:
         application/json:
           schema:
             $ref: "../../schemas/BiddingRequest.yaml"
+    "400":
+      description: if have bidding request process
+      $ref: "../../responses/Error.yaml"
     "401":
+      $ref: "../../responses/Error.yaml"
+    "404":
+      description: not found product or not found user
       $ref: "../../responses/Error.yaml"
     "422":
       $ref: "../../responses/ValidationError.yaml"
     "500":
       $ref: "../../responses/Error.yaml"
   tags:
-    - biddings
+    - bidding request
+delete:
+  operationId: NotApprovalBiddingRequest
+  summary: Seller don't approval a bidding request .
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../schemas/BiddingRequestPostDelete.yaml"
+  responses:
+    "204":
+      description: Don't approval a bidding request.
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "404":
+      description: not found product or not found user
+      $ref: "../../responses/Error.yaml"
+    "422":
+      $ref: "../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - bidding request

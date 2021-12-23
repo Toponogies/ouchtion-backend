@@ -54,28 +54,13 @@ paths:
   /auth/refresh:
     $ref: "./resources/auth/refresh.yaml"
 
-  # /users:
-  #   $ref: "./resources/users/_index.yaml"
-  # /users/{Id}:
-  #   $ref: "./resources/users/userId/_index.yaml"
-  # /users/{Id}/resetPass:
-  #   $ref: "./resources/users/userId/resetPass.yaml"
-  # /users/{Id}/forgotPass:
-  #   $ref: "./resources/users/userId/forgotPass.yaml"
-
-  /bidding:
+  /biddings:
     $ref: "./resources/bidding/_index.yaml"
-  /bidding/product:
-    $ref: "./resources/bidding/product.yaml"
-  /bidding/user:
-    $ref: "./resources/bidding/user.yaml"
-  /bidding/{Id}:
-    $ref: "./resources/bidding/biddingId/_index.yaml"
-  /bidding/permission:
+  /biddings/autoBidding:
+    $ref: "./resources/bidding/autoBidding.yaml"
+  /biddings/rejectBidding/{Id}:
+    $ref: "./resources/bidding/rejectBidding/_index.yaml"
+  /biddings/biddingPermission:
     $ref: "./resources/biddingPermission/_index.yaml"
-  /bidding/permission/{Id}:
-    $ref: "./resources/biddingPermission/biddingPermissionId/_index.yaml"
-  /bidding/request:
+  /biddings/biddingRequest:
     $ref: "./resources/biddingRequest/_index.yaml"
-  /bidding/request/unaccept:
-    $ref: "./resources/biddingRequest/unaccept.yaml"
