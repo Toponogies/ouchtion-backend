@@ -126,6 +126,22 @@ export default {
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
         }
     },
+    getBiddingPermissionProduct: async(req, res) =>{
+        try {
+            // get product with id and check the seller
+            const product = await productModel.findById(req.body.product_id);
+            if (product === null)
+            {
+                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
+            }
+
+            const biddingPermissions = await biddingModel.getBiddingPermissionProduct(req.body.product_id)
+            return res.json(biddingPermissions)
+        } catch (err) {
+            console.log(err);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+        }
+    },
     notAllowBidding: async(req, res) =>{
         try {
             // check role only bidder
