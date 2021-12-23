@@ -54,19 +54,26 @@ paths:
   /auth/refresh:
     $ref: "./resources/auth/refresh.yaml"
 
+  /users/point:
+    $ref: "./resources/users/userId/point.yaml"
+  /users/bidding:
+    $ref: "./resources/users/bidding.yaml"
   /users:
     $ref: "./resources/users/_index.yaml"
-  /users/{Id}:
-    $ref: "./resources/users/userId/_index.yaml"
-  /users/{Id}/point:
-    $ref: "./resources/users/userId/point.yaml"
-  /users/{Id}/role:
-    $ref: "./resources/users/userId/role.yaml"
-  /users/{Id}/rate:
-    $ref: "./resources/users/userId/rate.yaml"
-  /users/{Id}/productCanRate:
-    $ref: "./resources/users/userId/productsCanRate.yaml"
-  /users/{Id}/newEmail:
-    $ref: "./resources/users/userId/email.yaml"
-  /users/{Id}/watchlist:
-    $ref: "./resources/users/userId/watchlist.yaml"
+  /users/Email:
+    $ref: "./resources/users/email.yaml"
+    
+  /users/all:
+    $ref: "./resources/users/all.yaml"
+  /users/role:
+    $ref: "./resources/users/role.yaml"
+  /users/requestSeller:
+    $ref: "./resources/users/requestSeller.yaml"
+  
+  /users/rate:
+    $ref: "./resources/users/rate.yaml"
+  /users/productCanRate:
+    $ref: "./resources/users/productsCanRate.yaml"
+  
+  /users/watchlist:
+    $ref: "./resources/users/watchlist.yaml"

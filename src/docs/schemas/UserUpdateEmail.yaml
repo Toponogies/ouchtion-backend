@@ -6,3 +6,6 @@ properties:
     type: string
     format: email
     description: New email of user.
+  password:
+    type: string
+    description: Password of user.

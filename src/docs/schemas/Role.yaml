@@ -2,6 +2,9 @@ title: Role
 description: Schema for role.
 type: object
 properties:
+  user_id:
+    type: string
+    description: The id of the User.
   role:
     type: string
     description: The role of the User.

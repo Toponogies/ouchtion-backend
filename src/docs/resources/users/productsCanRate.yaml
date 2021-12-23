@@ -9,14 +9,15 @@ get:
           schema:
             type: array
             items:
-              $ref: "../../../schemas/Product.yaml"
+              $ref: "../../schemas/ProductCanRate.yaml"
     "401":
-      $ref: "../../../responses/Error.yaml"
+      $ref: "../../responses/Error.yaml"
     "404":
-      $ref: "../../../responses/Error.yaml"
+      description: not found user
+      $ref: "../../responses/Error.yaml"
     "500":
-      $ref: "../../../responses/Error.yaml"
+      $ref: "../../responses/Error.yaml"
     default:
-      $ref: "../../../responses/Error.yaml"
+      $ref: "../../responses/Error.yaml"
   tags:
-    - users
+    - rate

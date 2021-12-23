@@ -1,10 +1,10 @@
-title: UserUpdate
-description: Schema for UserUpdate.
+title: User
+description: Schema for User.
 type: object
 properties:
-  password:
+  user_id:
     type: string
-    description: The password of the User.
+    description: The ID of the User.
   full_name:
     type: string
     description: The name of the User.
@@ -15,6 +15,6 @@ properties:
   address:
     type: string
     description: The address of the User.
-  newPassword:
+  email:
     type: string
-    description: The new password of the User.
+    description: The email of the User.

@@ -1,0 +1,22 @@
+get:
+  operationId: getAllBiddingUser
+  summary: Get all bidding of user
+  responses:
+    "200":
+      description: Got a user.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../schemas/Bidding.yaml"
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "404":
+      $ref: "../../responses/Error.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+    default:
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - users

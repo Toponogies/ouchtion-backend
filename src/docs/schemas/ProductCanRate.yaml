@@ -45,9 +45,6 @@ properties:
   current_price:
     type: integer
     description: Current price of this product
-  bidding_count:
-    type: integer
-    description: Number bidding of this product
 required:
   - category_id
   - seller_id

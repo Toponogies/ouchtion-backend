@@ -1,6 +1,6 @@
 get:
   operationId: getUsePoint
-  summary: Get point of a user.
+  summary: Get point of a user (public endpoint).
   responses:
     "200":
       description: An user point.

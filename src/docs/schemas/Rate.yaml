@@ -11,6 +11,7 @@ properties:
   type:
     type: string
     description: The type of the rate.
+    default: BUYER-SELLER
   rate:
     type: integer
     description: The type of the rate only 1 or -1.

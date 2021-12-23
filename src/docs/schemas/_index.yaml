@@ -1,19 +1,37 @@
 AccessToken:
   $ref: "./AccessToken.yaml"
+Bidding:
+  $ref: "./Bidding.yaml"
 Error:
   $ref: "./Error.yaml"
 Login:
   $ref: "./Login.yaml"
+ProductCanRate:
+  $ref: "./ProductCanRate.yaml"
+Rate:
+  $ref: "./Rate.yaml"
+RatePost:
+  $ref: "./RatePost.yaml"
 RefreshToken:
   $ref: "./RefreshToken.yaml"
 Register:
   $ref: "./Register.yaml"
+RequestSeller:
+  $ref: "./RequestSeller.yaml"
+RequestSellerPost:
+  $ref: "./RequestSellerPost.yaml"
 ResetPassword:
   $ref: "./ResetPassword.yaml"
+Role:
+  $ref: "./Role.yaml"
 Tokens:
   $ref: "./Tokens.yaml"
 User:
   $ref: "./User.yaml"
+UserPoint:
+  $ref: "./UserPoint.yaml"
+UserShort:  
+  $ref: "./UserShort.yaml"
 UserUpdate:
   $ref: "./UserUpdate.yaml"
 UserUpdateEmail:
@@ -22,15 +40,5 @@ ValidationError:
   $ref: "./ValidationError.yaml"
 Watch:
   $ref: "./Watch.yaml"
-WatchPost:
-  $ref: "./WatchPost.yaml"
-Role:
-  $ref: "./Role.yaml"
-Rate:
-  $ref: "./Rate.yaml"
-RatePost:
-  $ref: "./RatePost.yaml"
-Product:
-  $ref: "./Product.yaml"
-UserPoint:
-  $ref: "./UserPoint.yaml"
+WatchPostDelete:
+  $ref: "./WatchPostDelete.yaml"
