@@ -1,0 +1,23 @@
+get:
+  operationId: getChildCategorys
+  summary: Get all category. (public endpoint)
+  parameters:
+    - $ref: "../../../parameters/path/id.yaml"
+  responses:
+    "200":
+      description: An array of category.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../../schemas/Category.yaml"
+    "404":
+      description: not found this category id
+      $ref: "../../../responses/Error.yaml"
+    "500":
+      $ref: "../../../responses/Error.yaml"
+    default:
+      $ref: "../../../responses/Error.yaml"
+  tags:
+    - categorys

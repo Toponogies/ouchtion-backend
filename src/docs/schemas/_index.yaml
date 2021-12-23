@@ -1,5 +1,9 @@
 AccessToken:
   $ref: "./AccessToken.yaml"
+Category:
+  $ref: "./Category.yaml"
+CategoryPost:
+  $ref: "./CategoryPost.yaml"
 Error:
   $ref: "./Error.yaml"
 Login:

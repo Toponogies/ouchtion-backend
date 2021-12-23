@@ -54,11 +54,9 @@ paths:
   /auth/refresh:
     $ref: "./resources/auth/refresh.yaml"
 
-  # /users:
-  #   $ref: "./resources/users/_index.yaml"
-  # /users/{Id}:
-  #   $ref: "./resources/users/userId/_index.yaml"
-  # /users/{Id}/resetPass:
-  #   $ref: "./resources/users/userId/resetPass.yaml"
-  # /users/{Id}/forgotPass:
-  #   $ref: "./resources/users/userId/forgotPass.yaml"
+  /categorys:
+    $ref: "./resources/category/_index.yaml"
+  /categorys/{id}/childcategory:
+    $ref: "./resources/category/categoryId/childcategory.yaml"
+  /categorys/{id}:
+    $ref: "./resources/category/categoryId/_index.yaml"

@@ -1,0 +1,19 @@
+delete:
+  operationId: deleteCategorys
+  summary: Delete a category. (only delete if category not have product or category child) (only admin user)
+  parameters:
+    - $ref: "../../../parameters/path/id.yaml"
+  responses:
+    "204":
+      description: Deleted category.
+    "401":
+      description: If user not login or not a admin.
+    "404":
+      description: Not found this category.
+      $ref: "../../../responses/Error.yaml"
+    "500":
+      $ref: "../../../responses/Error.yaml"
+    default:
+      $ref: "../../../responses/Error.yaml"
+  tags:
+    - categorys

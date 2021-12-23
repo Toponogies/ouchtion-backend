@@ -1,0 +1,43 @@
+get:
+  operationId: getCategorys
+  summary: Get all category.(public endpoint)
+  responses:
+    "200":
+      description: An array of category.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../schemas/Category.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+    default:
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - categorys
+post:
+  operationId: postCategory (only admin user)
+  summary: Add a category.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../schemas/CategoryPost.yaml"
+  responses:
+    "204":
+      description: Added a category.
+    "401":
+      description: If user not login or not a admin.
+    "404":
+      description: Not found this category.
+      $ref: "../../responses/Error.yaml"
+    "422":
+      $ref: "../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+    default:
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - categorys

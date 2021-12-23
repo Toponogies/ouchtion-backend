@@ -1,0 +1,13 @@
+type: object
+title: CategoryPost
+description: Schema for a category post.
+properties:
+  parent_category_id:
+    type: string
+    description: Id of a category
+  name:
+    type: string
+    description: Name of a category
+required:
+  - parent_category_id
+  - name
