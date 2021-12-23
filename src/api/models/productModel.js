@@ -48,7 +48,8 @@ productModel.getProduct = async function (product_id) {
     .groupBy("products.product_id")
     .count("products.product_id as bidding_count")
     .select("products.*")
-    .where('products.product_id', product_id);
+    .where('products.product_id', product_id)
+    .andWhere("is_valid",1)
     const row = await SQLquery;
     if (row.length === 0)
         return null;
@@ -64,6 +65,7 @@ productModel.getProductUseAutoBidding = async function (product_id,bidding_id = 
     .max("biddings.bid_price as current_max_bid_price")
     .select("products.*")
     .where('products.product_id', product_id)
+    .andWhere("is_valid",1)
     if (bidding_id)
     {
         SQLquery = SQLquery.whereRaw(`biddings.bidding_id != ${bidding_id}`)
@@ -139,7 +141,7 @@ productModel.productsBidding = async function (user_id) {
     return db('products').join('biddings',"biddings.product_id","products.product_id")
     .groupBy("products.product_id")
     .count("products.product_id as bidding_count")
-    .select("products.*").where("user_id",user_id).select("products.*");
+    .select("products.*").where("user_id",user_id);
 }
 productModel.productsActive = async function (user_id) {
     return db("products").join('biddings',"biddings.product_id","products.product_id")
@@ -155,11 +157,17 @@ productModel.productsInActive = async function (user_id) {
 }
 productModel.getAllBidding = async function (product_id) {
     return db("biddings").join('biddings',"biddings.product_id","products.product_id")
-    .select("biddings.*").where("products.product_id",product_id).andWhere("is_valid",1)
+    .select("biddings.*").where("products.product_id",product_id)
 }
 productModel.getAllProductEnd = async function () { // use to check won
     return db("products").whereRaw("end_at < now()").andWhere("is_sold",0)
 }
 
+productModel.updateTimeWhenBidding = async function (product_id) { // use to update time end_at when <= 5 minute
+    return db.raw(`update products set end_at = DATE_ADD(now(), INTERVAL 10 minute)
+    where abs(TIMESTAMPDIFF(SECOND, end_at, now())) < 5 * 60 
+    and end_at > now()
+    and product_id = ${product_id}`)
+}
 
 export default productModel;

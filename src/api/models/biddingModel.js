@@ -15,7 +15,13 @@ biddingModel.addBidding= async function (body) {
 
     const product = await productModel.getProductUseAutoBidding(body.product_id);
 
-    await biddingModel.add(body);
+    // get bidding id bidding add
+    var biddingId = await biddingModel.add(body);
+    biddingId = biddingId[0];
+
+    // update time product end
+    await productModel.updateTimeWhenBidding(product.product_id);
+
     product.current_max_price = product.current_max_price > product.current_price ? product.current_max_price : product.current_price;
     if (product.current_max_price < body.bid_price)
     {
@@ -117,7 +123,7 @@ biddingModel.notAllowBidding= async function (body) {
 }
 
 biddingModel.getAllAutoBiddingValid= async function(){
-    return await db("biddings").whereRaw("max_price IS NOT NULL").andWhere("is_auto_process",1).orderBy("time","desc");
+    return await db("biddings").whereRaw("max_price IS NOT NULL").andWhere("is_auto_process",1).andWhere("is_valid",1).orderBy("time","desc");
 }
 
 biddingModel.disableOneAutoBidding = async function(bidding_id){
@@ -145,26 +151,43 @@ biddingModel.secondBidding = async function(product_id){
 biddingModel.rejectBidding = async function(bidding_id){
     const bidding = await biddingModel.findById(bidding_id)
     const product = await productModel.getProduct(bidding.product_id);
+    if (product.is_sold === 1)
+    {
+        return false;
+    }
+    const user = await userModel.findById(bidding.user_id);
     await db("biddings").where("user_id", bidding.user_id).update({
         is_valid:0
     })
+
+    let mailBidderOptions = { // mail to bidding's bidder have reject
+        from: 'norely@gmail.com',
+        to: user.email,
+        subject: 'Bidding reject',
+        text: `All your bididng of product name ${product.name} has deny, you can't bidding in this product`
+    };
+    sendMail(mailBidderOptions)
+
     if (product.buyer_id === bidding.user_id)
     {
+        //disable autobidding with userid
+        await biddingModel.disableAutoBiddingWithUserId(bidding.user_id);
+
         const secondBidding = await biddingModel.secondBidding(product.product_id)
+        //if not have second bidding
         if (secondBidding === null)
         {
             await productModel.patch(product.product_id,{
                 buyer_id:null,
                 current_price:0,
             })
-            return
+            return true;
         }
+        // if have second bidding
         await productModel.patch(product.product_id,{
             buyer_id:secondBidding.user_id,
             current_price:secondBidding.bid_price,
         })
-
-        await biddingModel.disableAutoBiddingWithUserId(bidding.user_id);
 
         const body = {
             type:"DENY",
@@ -180,6 +203,8 @@ biddingModel.rejectBidding = async function(bidding_id){
             await db("bidding_permissions").where("user_id", body.user_id).andWhere("product_id",body.product_id).update(body);
         }
     }
+
+    return true;
 }
 
 export default biddingModel;
