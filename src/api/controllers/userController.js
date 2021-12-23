@@ -1,9 +1,11 @@
 import httpStatus from 'http-status-codes';
+import jwt from 'jsonwebtoken'
+import bcrypt from 'bcrypt'
 import dotenv from 'dotenv';
 dotenv.config();
-import { EXPIRED_VERIFYTOKEN, INVAILD_VERIFYTOKEN, IS_EXIST, NOT_FOUND_FILE, NOT_FOUND_IMAGE, NOT_FOUND_PRODUCT, NOT_FOUND_USER, NOT_FOUND_WATCH, NOT_PERMISSION, PRODUCT_NOT_END, UNEXPECTED_ERROR } from '../helpers/constants/Errors';
+import { EXPIRED_VERIFYTOKEN, INVAILD_VERIFYTOKEN, IS_EXIST, NOT_FOUND_USER, NOT_FOUND_WATCH, NOT_PERMISSION, PRODUCT_NOT_END, SEND_REQUEST_EXIST, UNEXPECTED_ERROR, WRONG_PASSWORD } from '../helpers/constants/Errors';
 import sendMail from '../helpers/constants/sendEmail';
-import { userModel } from "../models";
+import { biddingModel, userModel } from "../models";
 
 
 export default {
@@ -26,8 +28,10 @@ export default {
     },
     getUser: async (req, res) => {
         try{
+            // get user id from token
+            const user_id = req.accessTokenPayload.userId
             // get user by id
-            const user = await userModel.findById(req.params.id);
+            const user = await userModel.findById(user_id);
 
             // check product exist
             if (user === null) {
@@ -38,11 +42,26 @@ export default {
             delete user.is_active
             delete user.role
 
-            // check user id and user id in token
-            if (req.accessTokenPayload.userId != req.params.id) {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
-            }
             res.json(user)
+        } catch (err) {
+            console.log(err);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+        }
+    },
+    getAllBidding: async (req, res) => {
+        try{
+            // get user id from token
+            const user_id = req.accessTokenPayload.userId
+            // get user by id
+            const user = await userModel.findById(user_id);
+
+            // check product exist
+            if (user === null) {
+                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
+            }
+
+            const biddings = await biddingModel.getAllBiddingUser(user_id)
+            res.json(biddings)
         } catch (err) {
             console.log(err);
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
@@ -50,21 +69,31 @@ export default {
     },
     updateUser: async (req, res) => {
         try{
+            // get user id from token
+            const user_id = req.accessTokenPayload.userId
             // get user by id
-            const user = await userModel.findById(req.params.id);
+            const user = await userModel.findById(user_id);
 
             // check product exist
             if (user === null) {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
             }
 
-            // check user id and user id in token
-            if (req.accessTokenPayload.userId != req.params.id) {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            // check password
+            if (bcrypt.compareSync(req.body.password, user.password) === false) {
+                return res.status(httpStatus.UNAUTHORIZED).send(WRONG_PASSWORD)
             }
-            const n = await userModel.patch(req.params.id,req.body)
+
+            if (req.body.newPassword)
+            {
+                req.body.password = req.body.newPassword;
+                delete req.body.newPassword
+                req.body.password = bcrypt.hashSync(req.body.password, 10);
+            }
+
+            const n = await userModel.patch(user_id,req.body)
             if (n === 0) {
-                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
+                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
             }
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
@@ -72,24 +101,104 @@ export default {
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
         }
     },
-    sendNewEmail: async (req, res) => {
+    sendUpgrageSellerRequest: async (req,res) =>{
         try{
-            const email = req.query.email
+            const user_id = req.accessTokenPayload.userId
+            // get user by id
+            const user = await userModel.findById(user_id);
 
-            //find user by email
-            const user = await userModel.findByEmail(email);
-            if (user !== null) {
-                return res.status(httpStatus.BAD_REQUEST).send(IS_EXIST);
+            // check product exist
+            if (user === null) {
+                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
             }
+            req.body.user_id = user_id
+
+            const check = await userModel.isHaveUpgrageSellerRequest(user_id)
+            if (check === true)
+            {
+                return res.status(httpStatus.BAD_REQUEST).send(SEND_REQUEST_EXIST);
+            }
+
+            await userModel.sendUpgrageSellerRequest(req.body)
+            return res.status(httpStatus.NO_CONTENT).send();
+        } catch (err) {
+            console.log(err);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+        }
+    },
+    getAllRequestSeller: async (req,res) =>{
+        try{
+            if (req.accessTokenPayload.role !== "admin") {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            }
+
+            const requestSellers = await userModel.getAllRequestSeller()
+            return res.json(requestSellers);
+        } catch (err) {
+            console.log(err);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+        }
+    },
+    updateRole: async (req, res) => {
+        try{
+            // get user id from token
+            const user_id = req.body.user_id;
+
+            if (req.accessTokenPayload.role !== "admin") {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            }
+
+            // get user by id
+            const user = await userModel.findById(user_id);
 
             // check product exist
             if (user === null) {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
             }
 
-            // check user id and user id in token
-            if (req.accessTokenPayload.userId != req.params.id) {
+            const n = await userModel.patch(user_id,req.body)
+            if (n === 0) {
+                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
+            }
+            return res.status(httpStatus.NO_CONTENT).send();
+        } catch (err) {
+            console.log(err);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+        }
+    },
+    getAllUser: async (req, res) => {
+        try{
+            if (req.accessTokenPayload.role !== "admin") {
                 return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            }
+            const users = await userModel.findAll()
+            return res.json(users);
+        } catch (err) {
+            console.log(err);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+        }
+    },
+    sendNewEmail: async (req, res) => {
+        try{
+            const email = req.body.email;
+            // get user id from token
+            const user_id = req.accessTokenPayload.userId
+
+            //find user by email
+            const userEmail = await userModel.findByEmail(email);
+            if (userEmail !== null) {
+                return res.status(httpStatus.BAD_REQUEST).send(IS_EXIST);
+            }
+
+            const user = await userModel.findById(user_id);
+            // check user exist
+            if (user === null) {
+                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
+            }
+
+            // check password
+            if (bcrypt.compareSync(req.body.password, user.password) === false) {
+                return res.status(httpStatus.UNAUTHORIZED).send(WRONG_PASSWORD)
             }
 
             // create new token
@@ -97,9 +206,11 @@ export default {
                 userId:user.user_id,
                 email:email 
             };
+
             const optsAccess = {
-                expiresIn: process.env.REDIS_EXPIRED_VERIFYTOKEN_SECOND
+                expiresIn: process.env.EXPIRED_VERIFYTOKEN
             };
+
             const token = jwt.sign(payload, process.env.SERET_KEY, optsAccess);
 
             let mailOptions = { // update text if have frontend
@@ -129,7 +240,8 @@ export default {
                 _userId = userId;
                 _email = email;
             } catch (err) {
-                if (error.name === "TokenExpiredError")
+                console.log(err)
+                if (err.name === "TokenExpiredError")
                     return res.status(httpStatus.UNAUTHORIZED).send(EXPIRED_VERIFYTOKEN)
                 else
                     return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_VERIFYTOKEN)
@@ -142,42 +254,18 @@ export default {
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
         }
     },
-    getAllBidding: async (req, res) => {
-        try{
-            // get user by id
-            const user = await userModel.findById(req.params.id);
-
-            // check product exist
-            if (user === null) {
-                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
-            }
-
-            // check user id and user id in token
-            if (req.accessTokenPayload.userId != req.params.id) {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
-            }
-            const biddings = await userModel.getAllBidding(req.params.id)
-            return res.send(biddings)
-        } catch (err) {
-            console.log(err);
-            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
-        }
-    },
     getAllRate: async (req, res) => {
         try{
+            // get user id from token
+            const user_id = req.accessTokenPayload.userId
             // get user by id
-            const user = await userModel.findById(req.params.id);
-
+            const user = await userModel.findById(user_id);
             // check product exist
             if (user === null) {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
             }
 
-            // check user id and user id in token
-            if (req.accessTokenPayload.userId != req.params.id) {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
-            }
-            const rates = await userModel.getAllRate(req.params.id)
+            const rates = await userModel.getAllRate(user_id)
             return res.send(rates)
         } catch (err) {
             console.log(err);
@@ -186,30 +274,27 @@ export default {
     },
     getAllProductNotRate: async (req, res) => {
         try{
+            // get user id from token
+            const user_id = req.accessTokenPayload.userId
             // get user by id
-            const user = await userModel.findById(req.params.id);
+            const user = await userModel.findById(user_id);
 
             // check product exist
             if (user === null) {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
             }
 
-            // check user id and user id in token
-            if (req.accessTokenPayload.userId != req.params.id) {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
-            }
-
             // check if user is bidder
             if (req.accessTokenPayload.role === "bidder")
             {
-                const products = await userModel.getAllProductBidderNotRate(req.params.id)
+                const products = await userModel.getAllProductBidderNotRate(user_id)
                 return res.send(products)
             }
 
             //check if user is seller
             if (req.accessTokenPayload.role === "seller")
             {
-                const products = await userModel.getAllProductSellerNotRate(req.params.id)
+                const products = await userModel.getAllProductSellerNotRate(user_id)
                 return res.send(products)
             }
             return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
@@ -220,19 +305,17 @@ export default {
     },
     getWatchList: async (req, res) => {
         try{
+            // get user id from token
+            const user_id = req.accessTokenPayload.userId
             // get user by id
-            const user = await userModel.findById(req.params.id);
+            const user = await userModel.findById(user_id);
 
             // check product exist
             if (user === null) {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
             }
 
-            // check user id and user id in token
-            if (req.accessTokenPayload.userId != req.params.id) {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
-            }
-            const watchlist = await userModel.getWatchList(req.params.id)
+            const watchlist = await userModel.getWatchList(user_id)
             return res.send(watchlist)
         } catch (err) {
             console.log(err);
@@ -241,40 +324,34 @@ export default {
     },
     postRate: async (req, res) => {
         try{
+            // get user id from token
+            const user_id = req.accessTokenPayload.userId
             // get user by id
-            const user = await userModel.findById(req.params.id);
+            const user = await userModel.findById(user_id);
 
             // check product exist
             if (user === null) {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
             }
 
-            // check user id and user id in token
-            if (req.accessTokenPayload.userId != req.params.id) {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
-            }
-
             // if user is bidder
             if (req.accessTokenPayload.role === "bidder")
             {
                 // check product finish
-                const isCanRate = await userModel.isBidderCanRate(req.params.id,req.body.product_id)
+                const isCanRate = await userModel.isBidderCanRate(user_id,req.body.product_id)
                 if (!isCanRate){
                     return res.status(httpStatus.BAD_REQUEST).send(PRODUCT_NOT_END);
                 }
 
                 // check rate exist
-                const isInRate = await userModel.isBidderInRate(req.params.id,req.body.product_id)
+                const isInRate = await userModel.isBidderInRate(user_id,req.body.product_id)
                 if (isInRate){
                     return res.status(httpStatus.BAD_REQUEST).send(IS_EXIST);
                 }
 
                 // add rate
                 req.body.type = "BUYER-SELLER"
-                const n = await userModel.postRate(req.params.id,req.body)
-                if (n === 0) {
-                    return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
-                }
+                await userModel.postRate(req.body)
                 return res.status(httpStatus.NO_CONTENT).send();
             }
 
@@ -282,23 +359,20 @@ export default {
             if (req.accessTokenPayload.role === "seller")
             {
                 // check product finish
-                const isCanRate = await userModel.isSellerCanRate(req.params.id,req.body.product_id)
+                const isCanRate = await userModel.isSellerCanRate(user_id,req.body.product_id)
                 if (!isCanRate){
                     return res.status(httpStatus.BAD_REQUEST).send(PRODUCT_NOT_END);
                 }
 
                 // check rate exist
-                const isInRate = await userModel.isSellerInRate(req.params.id,req.body.product_id)
+                const isInRate = await userModel.isSellerInRate(user_id,req.body.product_id)
                 if (isInRate){
                     return res.status(httpStatus.BAD_REQUEST).send(IS_EXIST);
                 }
 
                 // add rate
                 req.body.type = "SELLER-BUYER"
-                const n = await userModel.postRate(req.params.id,req.body)
-                if (n === 0) {
-                    return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
-                }
+                await userModel.postRate(req.body)
                 return res.status(httpStatus.NO_CONTENT).send();
             }
         } catch (err) {
@@ -308,28 +382,22 @@ export default {
     },
     addWatch: async (req, res) => {
         try{
+            // get user id from token
+            const user_id = req.accessTokenPayload.userId
             // get user by id
-            const user = await userModel.findById(req.params.id);
+            const user = await userModel.findById(user_id);
 
             // check product exist
             if (user === null) {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
             }
 
-            // check user id and user id in token
-            if (req.accessTokenPayload.userId != req.params.id) {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
-            }
-
             // check watch exist
-            const isInWatchList = await userModel.isInWatchList(req.params.id,req.body.product_id)
+            const isInWatchList = await userModel.isInWatchList(user_id,req.body.product_id)
             if (isInWatchList){
                 return res.status(httpStatus.BAD_REQUEST).send(IS_EXIST);
             }
-            const n = await userModel.addWatch(req.params.id,req.body.product_id)
-            if (n === 0) {
-                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
-            }
+            await userModel.addWatch(user_id,req.body.product_id)
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
             console.log(err);
@@ -338,20 +406,17 @@ export default {
     },
     deleteWatch:  async (req, res) => {
         try{
+            // get user id from token
+            const user_id = req.accessTokenPayload.userId
             // get user by id
-            const user = await userModel.findById(req.params.id);
+            const user = await userModel.findById(user_id);
 
             // check product exist
             if (user === null) {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
             }
 
-            // check user id and user id in token
-            if (req.accessTokenPayload.userId != req.params.id) {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
-            }
-
-            const n = await userModel.deleteWatch(req.params.id,req.body.product_id)
+            const n = await userModel.deleteWatch(user_id,req.body.product_id)
             if (n === 0) {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_WATCH);
             }

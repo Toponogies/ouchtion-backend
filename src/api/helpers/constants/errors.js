@@ -20,7 +20,12 @@ export const NOTFOUND_ERROR = {
 
 export const LOGIN_ERROR = {
     title: 'UNAUTHORIZED',
-    detail: 'Enter a invaild email or password .'
+    detail: 'Enter a invalid email or password .'
+};
+
+export const WRONG_PASSWORD = {
+    title: 'WRONG_PASSWORD',
+    detail: 'Password invalid.'
 };
 
 export const DB_QUERY_ERROR = {
@@ -121,14 +126,14 @@ export const IS_EXIST = {
     detail: "This is exist"
 }
 
+export const SEND_REQUEST_EXIST = {
+    title: "IS_EXIST",
+    detail: "Only send one request per week"
+}
+
 export const BAD_BIDDING = {
     title: "BAD_BIDDING",
     detail: "You don't have permission bidding or bad bidding request"
-}
-
-export const IS_EXIST = {
-    title: "This is exist",
-    detail: "This is exist"
 }
 
 export const PRODUCT_NOT_END = {

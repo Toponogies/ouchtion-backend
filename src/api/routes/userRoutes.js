@@ -1,18 +1,34 @@
 const router = require('express').Router();
 import userController from '../controllers/userController.js';
 import validate from '../middlewares/validate.js';
+import {schema as updateRoleSchema} from '../schema/updateRole'
+import {schema as upgrageSellerRequestSchema} from '../schema/upgrageSellerRequest'
+import {schema as rateSchema} from '../schema/rate'
+import {schema as watchSchema} from '../schema/watch'
+import {schema as sendNewEmailSchema} from '../schema/sendNewEmail'
+import {schema as updateUserSchema} from '../schema/updateUser'
 
-router.get('/:id', userController.getUser);
-router.put('/:id', userController.updateUser);
+router.get('/', userController.getUser);
+router.get('/bidding', userController.getAllBidding);
+router.put('/',validate(updateUserSchema), userController.updateUser);
+router.post('/email',validate(sendNewEmailSchema), userController.sendNewEmail) // send token to new email
 
-router.get('/:id/rate', userController.getAllRate);
-router.get('/:id/productCanRate', userController.getAllProductNotRate);
-router.post('/:id/rate', userController.postRate);
+// admin
+router.get('/all', userController.getAllUser);
+router.put('/role',validate(updateRoleSchema), userController.updateRole);
+router.get('/requestSeller', userController.getAllRequestSeller)
 
-router.get('/:id/watchlist', userController.getWatchList);
-router.post('/:id/watchlist', userController.addWatch);
-router.delete('/:id/watchlist', userController.deleteWatch);
+// request to be seller
+router.post('/requestSeller', validate(upgrageSellerRequestSchema), userController.sendUpgrageSellerRequest)
 
-router.get('/:id/bidding', userController.getAllBidding);
+// rate
+router.get('/rate', userController.getAllRate);
+router.get('/productCanRate', userController.getAllProductNotRate); // all product user can rate but no rate
+router.post('/rate',validate(rateSchema), userController.postRate);
+
+// watchlist
+router.get('/watchlist', userController.getWatchList);
+router.post('/watchlist',validate(watchSchema), userController.addWatch);
+router.delete('/watchlist',validate(watchSchema), userController.deleteWatch);
 
 export default router;
