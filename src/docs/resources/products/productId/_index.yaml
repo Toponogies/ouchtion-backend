@@ -1,6 +1,6 @@
 get:
   operationId: getproduct
-  summary: Get a product.
+  summary: Get a product. (public endpoint)
   parameters:
     - $ref: "../../../parameters/path/id.yaml"
   responses:
@@ -11,8 +11,6 @@ get:
           schema:
             $ref: "../../../schemas/Product.yaml"
     "404":
-      $ref: "../../../responses/Error.yaml"
-    "401":
       $ref: "../../../responses/Error.yaml"
     "500":
       $ref: "../../../responses/Error.yaml"

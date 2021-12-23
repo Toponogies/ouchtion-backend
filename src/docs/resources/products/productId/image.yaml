@@ -1,6 +1,6 @@
 get:
   operationId: getProductImagens
-  summary: Get all image of one product.
+  summary: Get all image of one product. (public endpoint)
   responses:
     "200":
       description: An array of Product images.
@@ -10,8 +10,6 @@ get:
             type: array
             items:
               $ref: "../../../schemas/ProductImage.yaml"
-    "401":
-      $ref: "../../../responses/Error.yaml"
     "500":
       $ref: "../../../responses/Error.yaml"
     default:

@@ -1,6 +1,6 @@
 get:
   operationId: getProductDescrpitions
-  summary: Get all descritpions of a product.
+  summary: Get all descritpions of a product. (public endpoint)
   responses:
     "200":
       description: An array of Product descritpions.
@@ -10,8 +10,6 @@ get:
             type: array
             items:
               $ref: "../../../schemas/ProductDescription.yaml"
-    "401":
-      $ref: "../../../responses/Error.yaml"
     "500":
       $ref: "../../../responses/Error.yaml"
     default:

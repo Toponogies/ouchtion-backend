@@ -1,6 +1,6 @@
 get:
   operationId: getBiddingProduct
-  summary: Get all bidding of one product (sort by time)
+  summary: Get all bidding of one product (sort by time) (public endpoint)
   parameters:
     - $ref: "../../../parameters/path/id.yaml"
   responses:
@@ -12,8 +12,6 @@ get:
             type: array
             items:
               $ref: "../../../schemas/Bidding.yaml"
-    "401":
-      $ref: "../../../responses/Error.yaml"
     "404":
       $ref: "../../../responses/Error.yaml"
     "500":
