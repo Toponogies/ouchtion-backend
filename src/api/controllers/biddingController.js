@@ -24,7 +24,7 @@ export default {
 
             const checkBiddingPermission = await biddingModel.isBiddingPermission(req.body);
             if (checkBiddingPermission === false){
-                return res.status(httpStatus.UNAUTHORIZED).send(BAD_BIDDING);
+                return res.status(httpStatus.BAD_REQUEST).send(BAD_BIDDING);
             }
 
             await biddingModel.add(req.body);
@@ -51,7 +51,7 @@ export default {
 
             const check = await biddingModel.addBidding(req.body);
             if (check === false){
-                return res.status(httpStatus.UNAUTHORIZED).send(BAD_BIDDING)
+                return res.status(httpStatus.BAD_REQUEST).send(BAD_BIDDING)
             }
 
             return res.status(httpStatus.NO_CONTENT).send();
@@ -173,7 +173,13 @@ export default {
                 return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
             }
 
-            await biddingModel.rejectBidding(bidding.bidding_id);
+            // if product end check = false
+            const check = await biddingModel.rejectBidding(bidding.bidding_id);
+            if (check === false)
+            {
+                return res.status(httpStatus.BAD_REQUEST).send(NOT_PERMISSION)
+            }
+
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
             console.log(err);
