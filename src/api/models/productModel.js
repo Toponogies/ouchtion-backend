@@ -161,5 +161,11 @@ productModel.getAllProductEnd = async function () { // use to check won
     return db("products").whereRaw("end_at < now()").andWhere("is_sold",0)
 }
 
+productModel.updateTimeWhenBidding = async function (product_id) { // use to update time end_at when <= 5 minute
+    return db.raw(`update products set end_at = DATE_ADD(now(), INTERVAL 10 minute)
+    where abs(TIMESTAMPDIFF(SECOND, end_at, now())) < 5 * 60 
+    and end_at > now()
+    and product_id = ${product_id}`)
+}
 
 export default productModel;
