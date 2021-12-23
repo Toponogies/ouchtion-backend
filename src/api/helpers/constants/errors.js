@@ -86,8 +86,18 @@ export const NOT_FOUND_PRODUCT = {
     detail: "Not found product"
 };
 
+export const NOT_FOUND_USER = {
+    title: "Not found user",
+    detail: "Not found user"
+};
+
+export const NOT_FOUND_WATCH = {
+    title: "Not found watch",
+    detail: "Not found watch"
+};
+
 export const NOT_FOUND_IMAGE = {
-    title: "NOT_FOUND_IMAGE",
+    title: "Not found image",
     detail: "Not found image"
 };
 
@@ -106,8 +116,6 @@ export const NOT_FOUND_CATEGORY = {
     detail: "Not found a category"
 }
 
-
-
 export const IS_EXIST = {
     title: "IS_EXIST",
     detail: "This is exist"
@@ -116,4 +124,14 @@ export const IS_EXIST = {
 export const BAD_BIDDING = {
     title: "BAD_BIDDING",
     detail: "You don't have permission bidding or bad bidding request"
+}
+
+export const IS_EXIST = {
+    title: "This is exist",
+    detail: "This is exist"
+}
+
+export const PRODUCT_NOT_END = {
+    title: "Product bidding not finish",
+    detail: "Product bidding not finish"
 }
