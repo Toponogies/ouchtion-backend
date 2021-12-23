@@ -101,6 +101,13 @@ export const NOT_FOUND_BIDDING = {
     detail: "Not found bidding"
 }
 
+export const NOT_FOUND_CATEGORY = {
+    title: "NOT_FOUND_CATEGORY",
+    detail: "Not found a category"
+}
+
+
+
 export const IS_EXIST = {
     title: "IS_EXIST",
     detail: "This is exist"
