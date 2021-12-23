@@ -123,7 +123,7 @@ biddingModel.notAllowBidding= async function (body) {
 }
 
 biddingModel.getAllAutoBiddingValid= async function(){
-    return await db("biddings").whereRaw("max_price IS NOT NULL").andWhere("is_auto_process",1).orderBy("time","desc");
+    return await db("biddings").whereRaw("max_price IS NOT NULL").andWhere("is_auto_process",1).andWhere("is_valid",1).orderBy("time","desc");
 }
 
 biddingModel.disableOneAutoBidding = async function(bidding_id){
