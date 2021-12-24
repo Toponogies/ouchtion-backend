@@ -1,0 +1,26 @@
+post:
+  operationId: buyProductNow
+  summary: Buy a product if product have buy_price.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../schemas/BuyProduct.yaml"
+  responses:
+    "204":
+      description: Buy success.
+    "400":
+      description: if user not have permission bidding this product
+      $ref: "../../responses/Error.yaml"
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "404":
+      description: not found the product
+      $ref: "../../responses/Error.yaml"
+    "422":
+      $ref: "../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - biddings

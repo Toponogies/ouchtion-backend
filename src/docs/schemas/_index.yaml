@@ -14,6 +14,8 @@ BiddingRequest:
   $ref: "./BiddingRequest.yaml"
 BiddingRequestPostDelete:
   $ref: "./BiddingRequestPostDelete.yaml"
+BuyProduct:
+  $ref: "./BuyProduct.yaml"
 Error:
   $ref: "./Error.yaml"
 Login:
