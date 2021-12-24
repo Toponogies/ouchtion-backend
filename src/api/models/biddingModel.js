@@ -13,11 +13,11 @@ biddingModel.addBidding= async function (body) {
         return false;
     }
 
-    const product = await productModel.getProductUseAutoBidding(body.product_id);
-
     // get bidding id bidding add
     var biddingId = await biddingModel.add(body);
     biddingId = biddingId[0];
+
+    const product = await productModel.getProductUseAutoBidding(body.product_id);
 
     // update time product end
     await productModel.updateTimeWhenBidding(product.product_id);
@@ -51,14 +51,16 @@ biddingModel.addBidding= async function (body) {
             text: `Your bididng of product name ${product.name} has success`
         };
         sendMail(mailBidderOptions)
-
-        let mailPriceHoderOptions = { // mail to current price buyer
-            from: 'norely@gmail.com',
-            to: price_hoder.email,
-            subject: 'Product have new bidding',
-            text: `Product name ${product.name} has new bidding`
-        };
-        sendMail(mailPriceHoderOptions)
+        if (price_hoder)
+        {
+            let mailPriceHoderOptions = { // mail to current price buyer
+                from: 'norely@gmail.com',
+                to: price_hoder.email,
+                subject: 'Product have new bidding',
+                text: `Product name ${product.name} has new bidding`
+            };
+            sendMail(mailPriceHoderOptions)
+        }
     }
     return true;
 }
@@ -72,7 +74,7 @@ biddingModel.isHaveBiddingRequest= async function (body) {
 }
 
 biddingModel.isBiddingPermission= async function (body) {
-    const product = await productModel.getProduct(body.product_id);
+    const product = await productModel.findById(body.product_id);
     if (product.is_sold !== 0){
         return false;
     }
@@ -82,6 +84,7 @@ biddingModel.isBiddingPermission= async function (body) {
     {
         return false;
     }
+    
 
     const list = await db("bidding_permissions").where("user_id", body.user_id).andWhere("product_id",body.product_id);
     if (list.length === 0)
@@ -127,7 +130,7 @@ biddingModel.notAllowBidding= async function (body) {
 }
 
 biddingModel.getAllAutoBiddingValid= async function(){
-    return await db("biddings").whereRaw("max_price IS NOT NULL").andWhere("is_auto_process",1).andWhere("is_valid",1).orderBy("time","desc");
+    return await db("biddings").whereRaw("max_price IS NOT NULL").andWhere("is_auto_process",1).andWhere("is_valid",1).orderBy("time","asc");
 }
 
 biddingModel.disableOneAutoBidding = async function(bidding_id){
@@ -136,8 +139,14 @@ biddingModel.disableOneAutoBidding = async function(bidding_id){
     })
 }
 
-biddingModel.disableAutoBiddingWithUserId = async function(user_id){
-    await db("biddings").where("user_id", user_id).update({
+biddingModel.disableAutoBidding = async function(user_id, product_id){
+    await db("biddings").where("user_id", user_id).andWhere("product_id",product_id).update({
+        is_auto_process:0
+    })
+}
+
+biddingModel.disableAutoBiddingWithProductId = async function(product_id){
+    await db("biddings").where("product_id", product_id).update({
         is_auto_process:0
     })
 }
@@ -175,7 +184,7 @@ biddingModel.rejectBidding = async function(bidding_id){
     if (product.buyer_id === bidding.user_id)
     {
         //disable autobidding with userid
-        await biddingModel.disableAutoBiddingWithUserId(bidding.user_id);
+        await biddingModel.disableAutoBidding(bidding.user_id,product.product_id);
 
         const secondBidding = await biddingModel.secondBidding(product.product_id)
         //if not have second bidding
@@ -209,6 +218,27 @@ biddingModel.rejectBidding = async function(bidding_id){
     }
 
     return true;
+}
+
+biddingModel.buyNowProduct = async function(body){
+    body.max_price = 0;
+    const checkBiddingPermission = await biddingModel.isBiddingPermission(body);
+    if (checkBiddingPermission === false){
+        return false;
+    }
+
+    const product = await productModel.findById(body.product_id);
+    if (product.buy_price !== null)
+    {
+        await biddingModel.disableAutoBiddingWithProductId(body.product_id);
+        await productModel.patch(body.product_id,{
+            buyer_id:body.user_id,
+            current_price:product.buy_price
+        })
+        await productModel.updateEndAtEquaNow(body.product_id);
+        return true;
+    }
+    return false;
 }
 
 biddingModel.getAllBiddingUser = async function(user_id){

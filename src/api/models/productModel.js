@@ -147,17 +147,17 @@ productModel.productsActive = async function (user_id) {
     return db("products").join('biddings',"biddings.product_id","products.product_id")
     .groupBy("products.product_id")
     .count("products.product_id as bidding_count")
-    .select("products.*").where("seller_id",user_id).andWhere("is_sold",1);
+    .select("products.*").where("seller_id",user_id).andWhere("is_sold",0);
 }
 productModel.productsInActive = async function (user_id) {
     return db("products").join('biddings',"biddings.product_id","products.product_id")
     .groupBy("products.product_id")
     .count("products.product_id as bidding_count")
-    .select("products.*").where("seller_id",user_id).andWhere("is_sold",0);
+    .select("products.*").where("seller_id",user_id).andWhere("is_sold",1);
 }
 productModel.getAllBidding = async function (product_id) {
-    return db("biddings").join('biddings',"biddings.product_id","products.product_id")
-    .select("biddings.*").where("products.product_id",product_id)
+    return db("biddings").join('products',"biddings.product_id","products.product_id")
+    .select("biddings.*").where("products.product_id",product_id).andWhere("is_valid",1)
 }
 productModel.getAllProductEnd = async function () { // use to check won
     return db("products").whereRaw("end_at < now()").andWhere("is_sold",0)
@@ -168,6 +168,11 @@ productModel.updateTimeWhenBidding = async function (product_id) { // use to upd
     where abs(TIMESTAMPDIFF(SECOND, end_at, now())) < 5 * 60 
     and end_at > now()
     and product_id = ${product_id}`)
+}
+
+productModel.updateEndAtEquaNow = async function (product_id) { // use to update time end_at when <= 5 minute
+    return db.raw(`update products set end_at = now()
+    where product_id = ${product_id}`)
 }
 
 export default productModel;
