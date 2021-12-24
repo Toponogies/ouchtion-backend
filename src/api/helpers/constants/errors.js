@@ -91,18 +91,13 @@ export const NOT_FOUND_PRODUCT = {
     detail: "Not found product"
 };
 
-export const NOT_FOUND_USER = {
-    title: "Not found user",
-    detail: "Not found user"
-};
-
 export const NOT_FOUND_WATCH = {
-    title: "Not found watch",
+    title: "NOT_FOUND_WATCH",
     detail: "Not found watch"
 };
 
 export const NOT_FOUND_IMAGE = {
-    title: "Not found image",
+    title: "NOT_FOUND_IMAGE",
     detail: "Not found image"
 };
 
@@ -142,6 +137,6 @@ export const BAD_BIDDING = {
 }
 
 export const PRODUCT_NOT_END = {
-    title: "Product bidding not finish",
+    title: "PRODUCT_NOT_END",
     detail: "Product bidding not finish"
 }
