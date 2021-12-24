@@ -241,5 +241,8 @@ biddingModel.buyNowProduct = async function(body){
     return false;
 }
 
+biddingModel.getAllBiddingUser = async function(user_id){
+    return await db("biddings").where("user_id", user_id);
+}
 
 export default biddingModel;
