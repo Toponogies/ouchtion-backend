@@ -1,8 +1,8 @@
 import httpStatus from 'http-status-codes';
-import { NOT_FOUND_FILE, NOT_FOUND_IMAGE, NOT_FOUND_PRODUCT, NOT_PERMISSION, UNEXPECTED_ERROR } from '../helpers/constants/Errors';
+import { NOT_FOUND_FILE, NOT_FOUND_IMAGE, NOT_FOUND_PRODUCT, NOT_FOUND_USER, NOT_PERMISSION, UNEXPECTED_ERROR } from '../helpers/constants/Errors';
 import { formatDate } from '../helpers/constants/ISOtoDate';
 import removeFile from '../helpers/constants/removeFile';
-import { productModel } from "../models";
+import { productModel, userModel } from "../models";
 
 
 
@@ -18,6 +18,11 @@ export default {
     },
     getAllProductBySellerId: async (req, res) => {
         try {
+            const user = await userModel.findById(req.body.seller_id);
+            if (user === null)
+            {
+                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
+            }
             const products = await productModel.findBySellerId(req.body.seller_id);
             return res.json(products);
         } catch (err) {
@@ -61,8 +66,10 @@ export default {
             const index = file.path.indexOf('\\');
             const path = file.path.substring(index + 1);
 
+            req.body.seller_id = req.accessTokenPayload.userId
             req.body.avatar = path
             req.body.end_at = formatDate(new Date(req.body.end_at))
+            req.body.current_price = req.body.init_price;
 
             // add product
             const row = await productModel.add(req.body);
@@ -192,6 +199,13 @@ export default {
     },
     getDescriptions : async (req, res) => {
         try{
+            // get product by id
+            const product = await productModel.findById(req.params.id);
+
+            // check product exist
+            if (product === null) {
+                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
+            }
             const descriptions = await productModel.getDescriptions(req.params.id);
             return res.json(descriptions)
         } catch (err) {
@@ -201,6 +215,13 @@ export default {
     },
     getImages : async (req, res) => {
         try{
+            // get product by id
+            const product = await productModel.findById(req.params.id);
+
+            // check product exist
+            if (product === null) {
+                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
+            }
             const images = await productModel.getImages(req.params.id);
             return res.json(images)
         } catch (err) {
