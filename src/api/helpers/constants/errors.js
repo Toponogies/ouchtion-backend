@@ -121,6 +121,11 @@ export const NOT_FOUND_CATEGORY = {
     detail: "Not found a category"
 }
 
+export const NOT_FOUND_USER = {
+    title: "NOT_FOUND_USER",
+    detail: "Not found a user"
+}
+
 export const IS_EXIST = {
     title: "IS_EXIST",
     detail: "This is exist"

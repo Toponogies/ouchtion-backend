@@ -60,6 +60,32 @@ export default {
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
         }
     },
+    buyNowProduct: async(req, res) => {
+        try {
+            req.body.user_id = req.accessTokenPayload.userId;
+            // check role only bidder
+            if (req.accessTokenPayload.role !== "bidder") {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            }
+
+            // check product exist
+            const product = await productModel.findById(req.body.product_id);
+            if (product === null)
+            {
+                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
+            }
+
+            const check = await biddingModel.buyNowProduct(req.body);
+            if (check === false)
+            {
+                return res.status(httpStatus.BAD_REQUEST).send(BAD_BIDDING);
+            }
+            return res.status(httpStatus.NO_CONTENT).send();
+        } catch (err) {
+            console.log(err);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+        }
+    },
     addBiddingRequest: async(req, res) => {
         try {
             req.body.user_id = req.accessTokenPayload.userId;

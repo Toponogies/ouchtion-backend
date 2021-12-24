@@ -14,6 +14,13 @@ export default {
     },
     getAllChildCategory: async (req, res) => {
         try {
+             // check category exist
+             const category = await categoryModel.findById(req.params.id);
+             if (category === null)
+             {
+                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_CATEGORY)
+             }
+             
             const categorys = await categoryModel.getAllChildCategory(req.params.id)
             return res.json(categorys);
         } catch (err) {
@@ -43,7 +50,8 @@ export default {
             }
             
             // check category exist
-            const category = categoryModel.findById(req.params.id);
+            const category = await categoryModel.findById(req.params.id);
+            console.log(category)
             if (category === null)
             {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_CATEGORY)
