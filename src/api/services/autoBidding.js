@@ -4,13 +4,17 @@ export default async function autoBidding(){
     try {
         const list = await biddingModel.getAllAutoBiddingValid();
         list.forEach(async autoBidding => {
-            const product = await productModel.getProductUseAutoBidding(autoBidding.product_id,autoBidding.bidding_id)
+            var product = await productModel.getProductUseAutoBidding(autoBidding.product_id,autoBidding.bidding_id)
+            if (product === null)
+            {
+                product = await productModel.findById(autoBidding.product_id);
+            }
             if (product.is_sold == 1){
                 await biddingModel.disableOneAutoBidding(autoBidding.bidding_id);
                 return
             }
             // max all autobidding
-            product.current_max_price = product.current_max_price !== null ? product.current_max_price : 0;
+            product.current_max_price = product.current_max_price && product.current_max_price !== null ? product.current_max_price : 0;
             // get max current_max_price and current_price
             product.current_max_price = product.current_max_price > product.current_price ? product.current_max_price : product.current_price;
             // plus 1 if step price = 0
