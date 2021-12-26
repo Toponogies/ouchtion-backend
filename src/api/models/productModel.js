@@ -7,9 +7,9 @@ productModel.findBySellerId = async function (seller_id) {
     return row;
 }
 productModel.search = async function (query,sort,page,category,number_product) {
-    let SQLquery = db('products').join('biddings',"biddings.product_id","products.product_id")
-    .groupBy("products.product_id")
-    .count("products.product_id as bidding_count")
+    let SQLquery = db('products').leftJoin('biddings',"biddings.product_id","products.product_id")
+    .groupBy("biddings.product_id")
+    .count("biddings.product_id as bidding_count")
     .select("products.*")
     // search query
     if (query) {
@@ -44,7 +44,7 @@ productModel.search = async function (query,sort,page,category,number_product) {
     return row;
 }
 productModel.getProduct = async function (product_id) {
-    let SQLquery = db('products').join('biddings',"biddings.product_id","products.product_id")
+    let SQLquery = db('products').leftJoin('biddings',"biddings.product_id","products.product_id")
     .groupBy("products.product_id")
     .count("products.product_id as bidding_count")
     .select("products.*")
@@ -131,33 +131,32 @@ productModel.deleteImage = async function (product_id, image_id) {
     .del();
 }
 productModel.productsWon = async function (user_id) {
-    return db("products").join('biddings',"biddings.product_id","products.product_id")
-    .groupBy("products.product_id")
-    .count("products.product_id as bidding_count")
+    return db("products").leftJoin('biddings',"biddings.product_id","products.product_id")
+    .groupBy("biddings.product_id")
+    .count("biddings.product_id as bidding_count")
     .select("products.*")
     .where("buyer_id",user_id).andWhere("is_sold",true);
 }
 productModel.productsBidding = async function (user_id) {
-    return db('products').join('biddings',"biddings.product_id","products.product_id")
-    .groupBy("products.product_id")
-    .count("products.product_id as bidding_count")
+    return db('products').leftJoin('biddings',"biddings.product_id","products.product_id")
+    .groupBy("biddings.product_id")
+    .count("biddings.product_id as bidding_count")
     .select("products.*").where("user_id",user_id);
 }
 productModel.productsActive = async function (user_id) {
-    return db("products").join('biddings',"biddings.product_id","products.product_id")
-    .groupBy("products.product_id")
-    .count("products.product_id as bidding_count")
+    return db("products").leftJoin('biddings',"biddings.product_id","products.product_id")
+    .groupBy("biddings.product_id")
+    .count("biddings.product_id as bidding_count")
     .select("products.*").where("seller_id",user_id).andWhere("is_sold",0);
 }
 productModel.productsInActive = async function (user_id) {
-    return db("products").join('biddings',"biddings.product_id","products.product_id")
-    .groupBy("products.product_id")
-    .count("products.product_id as bidding_count")
+    return db("products").leftJoin('biddings',"biddings.product_id","products.product_id")
+    .groupBy("biddings.product_id")
+    .count("biddings.product_id as bidding_count")
     .select("products.*").where("seller_id",user_id).andWhere("is_sold",1);
 }
 productModel.getAllBidding = async function (product_id) {
-    return db("biddings").join('products',"biddings.product_id","products.product_id")
-    .select("biddings.*").where("products.product_id",product_id).andWhere("is_valid",1)
+    return db("biddings").where("product_id",product_id).andWhere("is_valid",1)
 }
 productModel.getAllProductEnd = async function () { // use to check won
     return db("products").whereRaw("end_at < now()").andWhere("is_sold",0)
