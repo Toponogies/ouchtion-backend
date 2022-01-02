@@ -5,6 +5,9 @@ properties:
   bidding_id:
     type: string
     description: The id of a bidding.
+  full_name:
+    type: string
+    description: The name of a user.
   user_id:
     type: string
     description: The id of a user.
@@ -25,3 +28,7 @@ properties:
     type: boolean
     description: The variable check this bidding valid.
     default: 1
+  is_auto_process:
+    type: boolean
+    description: The variable check this auto bidding is run.
+    default: 0
