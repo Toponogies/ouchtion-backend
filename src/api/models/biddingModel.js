@@ -145,6 +145,12 @@ biddingModel.disableAutoBidding = async function(user_id, product_id){
     })
 }
 
+biddingModel.disableAutoBiddingByUserIdBiddingId = async function(user_id, bidding_id){
+    await db("biddings").where("user_id", user_id).andWhere("bidding_id",bidding_id).update({
+        is_auto_process:0
+    })
+}
+
 biddingModel.disableAutoBiddingWithProductId = async function(product_id){
     await db("biddings").where("product_id", product_id).update({
         is_auto_process:0
@@ -192,7 +198,7 @@ biddingModel.rejectBidding = async function(bidding_id){
         {
             await productModel.patch(product.product_id,{
                 buyer_id:null,
-                current_price:0,
+                current_price:product.init_price,
             })
             return true;
         }

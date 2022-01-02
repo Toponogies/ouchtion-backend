@@ -82,14 +82,12 @@ productModel.isInBidding = async function (product_id) {
         return true;
     return false;
 }
-productModel.removeProduct = async function (product_id) {
-    await db('product_images').where('product_id', product_id).del();
-    await db('product_descriptions').where('product_id', product_id).del();
-    await db('products').where('product_id', product_id).del();
-}
 productModel.getImages = async function (product_id) {
     const row = await db('product_images').where('product_id', product_id).select("product_image_id","path","is_primary");
     return row;
+}
+productModel.removeProduct = async function (product_id) {
+    await db('products').where('product_id', product_id).del();
 }
 productModel.getDescriptions = async function (product_id) {
     const row = await db('product_descriptions').where('product_id', product_id).orderBy('upload_date', 'desc').select("product_description_id","description","upload_date");
@@ -156,7 +154,7 @@ productModel.productsInActive = async function (user_id) {
     .select("products.*").where("seller_id",user_id).andWhere("is_sold",1);
 }
 productModel.getAllBidding = async function (product_id) {
-    return db("biddings").where("product_id",product_id).andWhere("is_valid",1)
+    return db("biddings").leftJoin('users',"users.user_id","biddings.user_id").where("product_id",product_id).andWhere("is_valid",1).select("biddings.*").select("full_name");
 }
 productModel.getAllProductEnd = async function () { // use to check won
     return db("products").whereRaw("end_at < now()").andWhere("is_sold",0)

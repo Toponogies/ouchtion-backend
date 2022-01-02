@@ -30,6 +30,9 @@ export default async function autoBidding(){
                         buyer_id:autoBidding.user_id,
                         current_price:price_need
                     })
+                    await biddingModel.patch(autoBidding.bidding_id,{
+                        bid_price:price_need
+                    })
                     // update time product end
                     await productModel.updateTimeWhenBidding(product.product_id);
                 }
@@ -44,6 +47,9 @@ export default async function autoBidding(){
                     // update current_price
                     await productModel.patch(autoBidding.product_id,{
                         current_price:price_need
+                    })
+                    await biddingModel.patch(autoBidding.bidding_id,{
+                        bid_price:price_need
                     })
                     // update time product end
                     await productModel.updateTimeWhenBidding(product.product_id);
