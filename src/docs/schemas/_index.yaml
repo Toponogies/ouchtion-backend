@@ -1,7 +1,7 @@
 AccessToken:
   $ref: "./AccessToken.yaml"
 Bidding:
-  $ref: "./Bidding.yaml"
+  $ref: "./BiddingOfUser.yaml"
 Error:
   $ref: "./Error.yaml"
 Login:

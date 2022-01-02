@@ -26,7 +26,7 @@ properties:
   is_valid:
     type: boolean
     description: The date of a bidding.
-required:
-  - bid_price
-  - user_id
-  - product_id
+  is_auto_process:
+    type: boolean
+    description: The variable check this auto bidding is run.
+    default: 0
