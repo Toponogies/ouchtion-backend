@@ -34,6 +34,17 @@ export default {
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
         }
     },
+    disableAutoBidding: async (req, res) => {
+        try {
+            // get user id from token
+            const user_id = req.accessTokenPayload.userId
+            await biddingModel.disableAutoBiddingByUserIdBiddingId(user_id,req.params.id);
+            return res.status(httpStatus.NO_CONTENT).send();
+        } catch (err) {
+            console.log(err);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+        }
+    },
     addBidding: async(req, res) => {
         try {
             req.body.user_id = req.accessTokenPayload.userId;

@@ -10,6 +10,7 @@ import {schema as buyProductSchema} from '../schema/buyProduct';
 
 router.post('/',validate(biddingSchema), biddingController.addBidding) // create a bididng
 router.post('/autoBidding', validate(autobiddingSchema), biddingController.addAutoBidding) // create a auto bididng
+router.delete('/autoBidding/:id', biddingController.disableAutoBidding) // disable a auto bididng
 router.delete('/rejectBidding/:id', biddingController.rejectBidding)
 router.post('/buyProduct', validate(buyProductSchema), biddingController.buyNowProduct) // buy product
 

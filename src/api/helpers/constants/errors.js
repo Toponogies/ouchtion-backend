@@ -136,6 +136,16 @@ export const BAD_BIDDING = {
     detail: "You don't have permission bidding or bad bidding request"
 }
 
+export const BAD_DELETE = {
+    title: "BAD_DELETE",
+    detail: "You don't remove when it have foreign key in database"
+}
+
+export const BAD_REQUEST = {
+    title: "BAD_REQUEST",
+    detail: "Some key not same with foreign key"
+}
+
 export const PRODUCT_NOT_END = {
     title: "PRODUCT_NOT_END",
     detail: "Product bidding not finish"
