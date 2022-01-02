@@ -6,6 +6,9 @@ delete:
   responses:
     "204":
       description: Deleted category.
+    "400":
+      description: Have child category.
+      $ref: "../../../responses/Error.yaml"
     "401":
       description: If user not login or not a admin.
     "404":
