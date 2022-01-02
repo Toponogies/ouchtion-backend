@@ -1,5 +1,5 @@
 import httpStatus from 'http-status-codes';
-import { NOT_FOUND_FILE, NOT_FOUND_IMAGE, NOT_FOUND_PRODUCT, NOT_FOUND_USER, NOT_PERMISSION, UNEXPECTED_ERROR } from '../helpers/constants/Errors';
+import { BAD_DELETE, NOT_FOUND_FILE, NOT_FOUND_IMAGE, NOT_FOUND_PRODUCT, NOT_FOUND_USER, NOT_PERMISSION, UNEXPECTED_ERROR } from '../helpers/constants/Errors';
 import { formatDate } from '../helpers/constants/ISOtoDate';
 import removeFile from '../helpers/constants/removeFile';
 import { productModel, userModel } from "../models";
@@ -137,14 +137,8 @@ export default {
             const inBidding = await productModel.isInBidding(req.params.id)
             if (inBidding === true)
             {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+                return res.status(httpStatus.BAD_REQUEST).send(BAD_DELETE)
             }
-
-            // remove all image 
-            const images = await productModel.getImages(req.params.id);
-            images.forEach(image => {
-                removeFile(process.env.PATH_FOLDER_PUBLIC + image.path);
-            });
 
             // remove product
             const n = await productModel.removeProduct(req.params.id);
@@ -153,6 +147,9 @@ export default {
             }
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
+            if (err.errno === 1451){
+                return res.status(httpStatus.BAD_REQUEST).send(BAD_DELETE)
+            }
             console.log(err);
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
         }
