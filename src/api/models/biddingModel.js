@@ -62,7 +62,12 @@ biddingModel.addBidding= async function (body) {
             sendMail(mailPriceHoderOptions)
         }
     }
-    return true;
+    return biddingId;
+}
+
+biddingModel.findAllUserId = async function (product_id) {
+    const list = await db("bidding").where("product_id", product_id).select("user_id")
+    return list
 }
 
 biddingModel.isHaveBiddingRequest= async function (body) {

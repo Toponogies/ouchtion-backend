@@ -122,6 +122,16 @@ productModel.findImage = async function (product_id, image_id) {
 
     return list[0];
 }
+productModel.findDescription = async function (product_id, description_id) {
+    const list =  db("product_descriptions")
+    .where("product_id", product_id)
+    .where("product_description_id", description_id)
+    if (list.length === 0)
+    return null;
+
+    return list[0];
+}
+
 productModel.deleteImage = async function (product_id, image_id) {
     return db("product_images")
     .where("product_id", product_id)

@@ -3,6 +3,7 @@ import { BAD_DELETE, NOT_FOUND_FILE, NOT_FOUND_IMAGE, NOT_FOUND_PRODUCT, NOT_FOU
 import { formatDate } from '../helpers/constants/ISOtoDate';
 import removeFile from '../helpers/constants/removeFile';
 import { productModel, userModel } from "../models";
+import { getIO } from "../helpers/constants/socketIO"
 
 
 
@@ -76,6 +77,13 @@ export default {
             const product_id = row[0];
 
             const product = await productModel.findById(product_id);
+
+            // socket emit
+            getIO().emit("addProduct",{
+                message:"new product add",
+                data:product
+            })
+
             return res.json(product);
 
         } catch (err) {
@@ -115,6 +123,15 @@ export default {
             if (n === 0) {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
             }
+
+            const productNew = await productModel.findById(product_id);
+
+            // socket emit
+            getIO().emit("updateProduct",{
+                message:"Update product",
+                data:productNew
+            })
+
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
             console.log(err);
@@ -145,6 +162,13 @@ export default {
             if (n === 0) {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
             }
+
+            // socket emit
+            getIO().emit("deleteProduct",{
+                message:"Delete product",
+                data:product,
+            })
+
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
             if (err.errno === 1451){
@@ -182,7 +206,16 @@ export default {
             // use try catch because this is async function 
             try {
                 // add image to database
-                await productModel.addImage(req.params.id,path,req.query.is_primary)
+                var imageId = await productModel.addImage(req.params.id,path,req.query.is_primary)
+                imageId = imageId[0];
+
+                const image = await productModel.findImage(product_id,imageId);
+
+                // socket emit
+                getIO().emit("newProductImage",{
+                    message:"New product image",
+                    data:image
+                })
             }
             catch (err) {
                 console.log(err);
@@ -248,7 +281,17 @@ export default {
             }
 
             // add description
-            await productModel.addDescription(entity)
+            var descripiontId = await productModel.addDescription(entity)
+            descripiontId= descripiontId[0];
+
+            //find description
+            const description = await productModel.findDescription(product.product_id,descripiontId)
+
+            // socket emit
+            getIO().emit("newProductDescription",{
+                message:"New product description",
+                data:description
+            })
             
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
@@ -316,6 +359,14 @@ export default {
             if (n === 0) {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
             }
+
+            // socket emit
+            getIO().emit("deleteProductImage",{
+                message:"Delete product image",
+                data:image
+            })
+
+
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
             console.log(err);

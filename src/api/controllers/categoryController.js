@@ -1,6 +1,7 @@
 import httpStatus from 'http-status-codes';
 import { BAD_DELETE, BAD_REQUEST, NOT_FOUND_CATEGORY, UNEXPECTED_ERROR } from '../helpers/constants/Errors';
 import categoryModel from '../models/categoryModel';
+import { getIO } from "../helpers/constants/socketIO"
 
 export default {
     getAllCategory: async (req, res) => {
@@ -35,7 +36,17 @@ export default {
                 return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
             }
 
-            await categoryModel.add(req.body)
+            var categoryId = await categoryModel.add(req.body)
+            categoryId = categoryId[0];
+
+            const category = await categoryModel.findById(categoryId);
+
+            // socket emit
+            getIO().emit("addCategory",{
+                message:"new category add",
+                data: category,
+            })
+
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
             console.log(err);
@@ -61,6 +72,13 @@ export default {
             }
 
             await categoryModel.removeById(req.params.id)
+
+            // socket emit
+            getIO().emit("deleteCategory",{
+                message:"delete category",
+                data: category,
+            })
+
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
             console.log(err);

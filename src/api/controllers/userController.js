@@ -6,7 +6,7 @@ dotenv.config();
 import { EXPIRED_VERIFYTOKEN, INVAILD_VERIFYTOKEN, IS_EXIST, NOT_FOUND_USER, NOT_FOUND_WATCH, NOT_PERMISSION, PRODUCT_NOT_END, SEND_REQUEST_EXIST, UNEXPECTED_ERROR, WRONG_PASSWORD } from '../helpers/constants/Errors';
 import sendMail from '../helpers/constants/sendEmail';
 import { biddingModel, userModel } from "../models";
-
+import { getIO } from "../helpers/constants/socketIO"
 
 export default {
     getPoint: async (req, res) => {
@@ -120,6 +120,13 @@ export default {
             }
 
             await userModel.sendUpgrageSellerRequest(req.body)
+
+            // socket emit
+            getIO().emit("addRequestUpgrage",{
+                message:"new request upgrade seller add",
+                data: req.body,
+            })
+
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
             console.log(err);
@@ -149,7 +156,7 @@ export default {
             }
 
             // get user by id
-            const user = await userModel.findById(user_id);
+            var user = await userModel.findById(user_id);
 
             // check product exist
             if (user === null) {
@@ -160,6 +167,13 @@ export default {
             if (n === 0) {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
             }
+
+            // socket emit
+            getIO().emit("updateRole",{
+                message:"new role update",
+                data: req.body,
+            })
+
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
             console.log(err);
@@ -352,6 +366,13 @@ export default {
                 // add rate
                 req.body.type = "BUYER-SELLER"
                 await userModel.postRate(req.body)
+
+                // socket emit
+                getIO().emit("newRate",{
+                    message:"new rate add",
+                    data: req.body,
+                })
+
                 return res.status(httpStatus.NO_CONTENT).send();
             }
 
@@ -373,6 +394,13 @@ export default {
                 // add rate
                 req.body.type = "SELLER-BUYER"
                 await userModel.postRate(req.body)
+
+                // socket emit
+                getIO().emit("newRate",{
+                    message:"new rate add",
+                    data: req.body,
+                })
+
                 return res.status(httpStatus.NO_CONTENT).send();
             }
         } catch (err) {
