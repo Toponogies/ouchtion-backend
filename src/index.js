@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 import checkWon from './api/services/checkWon';
 import autoBidding from './api/services/autoBidding';
+import socketServer from './api/helpers/constants/socketServer';
 
 dotenv.config();
 const app = express();
