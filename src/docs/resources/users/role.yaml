@@ -1,0 +1,24 @@
+put:
+  operationId: updateRoleuser
+  summary: Update role a user. (only admin can use)
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../schemas/Role.yaml"
+  responses:
+    "204":
+      description: Updated role a user.
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "404":
+      $ref: "../../responses/Error.yaml"
+    "422":
+      $ref: "../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+    default:
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - users

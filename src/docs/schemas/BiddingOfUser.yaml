@@ -1,0 +1,32 @@
+type: object
+title: Bidding
+description: Schema for a bidding request.
+properties:
+  bidding_id:
+    type: string
+    description: The id of a bidding.
+  user_id:
+    type: string
+    description: The id of a user.
+  product_id:
+    type: string
+    description: The id of a product.
+  bid_price:
+    type: integer
+    format: int64
+    description: The price of a bidding.
+  max_price:
+    type: integer
+    format: int64
+    description: The max price of a autobidding.
+  time:
+    type: string
+    format: date
+    description: The date of a bidding.
+  is_valid:
+    type: boolean
+    description: The date of a bidding.
+  is_auto_process:
+    type: boolean
+    description: The variable check this auto bidding is run.
+    default: 0

@@ -1,0 +1,69 @@
+get:
+  operationId: getWatchList
+  summary: Get watchlist of user.
+  responses:
+    "200":
+      description: get all watch of watchlist.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../schemas/Watch.yaml"
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "404":
+      $ref: "../../responses/Error.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - watchlist
+post:
+  operationId: addUserWatch
+  summary: Add a watch of User.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../schemas/WatchPostDelete.yaml"
+  responses:
+    "204":
+      description: Added a watch of a user.
+    "400":
+      description: if this watch exist in watchlist
+      $ref: "../../responses/Error.yaml"
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "404":
+      $ref: "../../responses/Error.yaml"
+    "422":
+      $ref: "../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - watchlist
+delete:
+  operationId: deletewatch
+  summary: Delete a watch in watchlist.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../schemas/WatchPostDelete.yaml"
+  responses:
+    "204":
+      description: Deleted a watch.
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "404":
+      $ref: "../../responses/Error.yaml"
+    "422":
+      $ref: "../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+    default:
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - watchlist

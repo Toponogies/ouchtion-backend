@@ -1,0 +1,11 @@
+title: UserPoint
+description: Schema for user point.
+type: object
+properties:
+  full_name:
+    type: string
+    description: The full name of user.
+  point:
+    type: integer
+    description: The point of user (max is 100).
+    default: 100

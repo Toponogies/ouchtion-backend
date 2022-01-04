@@ -1,0 +1,14 @@
+title: RequestSeller
+description: Schema for a request update bidder to seller.
+type: object
+properties:
+  user_id:
+    type: string
+    description: Id of one user
+  time:
+    type: string
+    format: date-time
+    description: Time send this request
+  reason:
+    type: string
+    description: Reason why need to be a seller.
