@@ -1,0 +1,42 @@
+get:
+  operationId: getProductDescrpitions
+  summary: Get all descritpions of a product. (public endpoint)
+  responses:
+    "200":
+      description: An array of Product descritpions.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../../schemas/ProductDescription.yaml"
+    "500":
+      $ref: "../../../responses/Error.yaml"
+    default:
+      $ref: "../../../responses/Error.yaml"
+  tags:
+    - products
+post:
+  operationId: addProductDescription
+  summary: Add a description to a product.
+  parameters:
+    - $ref: "../../../parameters/path/id.yaml"
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../../schemas/ProductDescriptionPost.yaml"
+  responses:
+    "204":
+      description: Added a product description.
+    "401":
+      $ref: "../../../responses/Error.yaml"
+    "404":
+      $ref: "../../../responses/Error.yaml"
+    "422":
+      $ref: "../../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../../responses/Error.yaml"
+  tags:
+    - products

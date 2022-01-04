@@ -1,0 +1,5 @@
+in: query
+name: query
+description: The query of a search.
+schema:
+  type: string

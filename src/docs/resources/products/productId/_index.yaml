@@ -1,0 +1,62 @@
+get:
+  operationId: getproduct
+  summary: Get a product. (public endpoint)
+  parameters:
+    - $ref: "../../../parameters/path/id.yaml"
+  responses:
+    "200":
+      description: Got a product.
+      content:
+        application/json:
+          schema:
+            $ref: "../../../schemas/Product.yaml"
+    "404":
+      $ref: "../../../responses/Error.yaml"
+    "500":
+      $ref: "../../../responses/Error.yaml"
+  tags:
+    - products
+put:
+  operationId: updateproduct
+  summary: Update a product.
+  parameters:
+    - $ref: "../../../parameters/path/id.yaml"
+  requestBody:
+    required: true
+    content:
+      multipart/form-data:
+        schema:
+          $ref: "../../../schemas/ProductUpdate.yaml"
+  responses:
+    "204":
+      description: Updated a product.
+    "404":
+      $ref: "../../../responses/Error.yaml"
+    "422":
+      $ref: "../../../responses/ValidationError.yaml"
+    "401":
+      $ref: "../../../responses/Error.yaml"
+    "500":
+      $ref: "../../../responses/Error.yaml"
+    default:
+      $ref: "../../../responses/Error.yaml"
+  tags:
+    - products
+delete:
+  operationId: deletproduct
+  summary: Delete a product.
+  parameters:
+    - $ref: "../../../parameters/path/id.yaml"
+  responses:
+    "204":
+      description: Deleted a product.
+    "401":
+      $ref: "../../../responses/Error.yaml"
+    "404":
+      $ref: "../../../responses/Error.yaml"
+    "500":
+      $ref: "../../../responses/Error.yaml"
+    default:
+      $ref: "../../../responses/Error.yaml"
+  tags:
+    - products

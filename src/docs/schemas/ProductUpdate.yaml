@@ -1,0 +1,14 @@
+type: object
+title: ProductUpdate
+description: Schema for a product request.
+properties:
+  category_id:
+    type: string
+    description: The password of a category.
+  name:
+    type: string
+    description: The name of a product.
+  avatar:
+    type: string
+    format: binary
+    description: avatar of the product
