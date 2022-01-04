@@ -75,7 +75,7 @@ CREATE TABLE `biddings` (
   KEY `BINDDING_PRODUCT_idx` (`product_id`),
   CONSTRAINT `BINDDING_PRODUCT` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`),
   CONSTRAINT `BINDDING_USER` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=124 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -92,7 +92,7 @@ CREATE TABLE `category` (
   PRIMARY KEY (`category_id`),
   KEY `SUBCATEGORY_CATEGORY_idx` (`parent_category_id`),
   CONSTRAINT `SUBCATEGORY_CATEGORY` FOREIGN KEY (`parent_category_id`) REFERENCES `category` (`category_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -107,8 +107,10 @@ CREATE TABLE `product_descriptions` (
   `product_id` int NOT NULL,
   `description` varchar(10000) NOT NULL,
   `upload_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`product_description_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`product_description_id`),
+  KEY `PRODUCT_DESCRIPTION_idx` (`product_id`),
+  CONSTRAINT `PRODUCT_DESCRIPTION` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -126,7 +128,7 @@ CREATE TABLE `product_images` (
   PRIMARY KEY (`product_image_id`),
   KEY `PRODUCTIMAGE_PRODUCT_idx` (`product_id`),
   CONSTRAINT `PRODUCTIMAGE_PRODUCT` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=82 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -151,8 +153,14 @@ CREATE TABLE `products` (
   `buy_price` bigint DEFAULT NULL,
   `current_price` bigint NOT NULL DEFAULT '0',
   PRIMARY KEY (`product_id`),
-  FULLTEXT KEY `FULLTEXTSEARCH` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `PRODUCT_CATEGORY_idx` (`category_id`),
+  KEY `PRODUCT_SELLER_idx` (`seller_id`),
+  KEY `PRODUCT_BUYER_idx` (`buyer_id`),
+  FULLTEXT KEY `FULLTEXTSEARCH` (`name`),
+  CONSTRAINT `PRODUCT_BUYER` FOREIGN KEY (`buyer_id`) REFERENCES `users` (`user_id`),
+  CONSTRAINT `PRODUCT_CATEGORY` FOREIGN KEY (`category_id`) REFERENCES `category` (`category_id`),
+  CONSTRAINT `PRODUCT_SELLER` FOREIGN KEY (`seller_id`) REFERENCES `users` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -172,7 +180,7 @@ CREATE TABLE `rates` (
   KEY `RATE_PRODUCT_idx` (`product_id`),
   CONSTRAINT `RATE_PRODUCT` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`),
   CONSTRAINT `rates_chk_1` CHECK (((`rate` = 1) or (`rate` = -(1))))
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -239,4 +247,4 @@ CREATE TABLE `watchlists` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-12-22 15:48:16
+-- Dump completed on 2022-01-03 22:11:17
