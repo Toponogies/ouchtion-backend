@@ -65,6 +65,7 @@ export default {
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
         }
     },
+
     refresh: async (req, res) => {
         const { accessToken, refreshToken } = req.body;
         const opts = {
@@ -122,6 +123,7 @@ export default {
             refreshToken: refreshToken
         });
     },
+
     logout: async (req, res) =>{
         const { accessToken } = req.body;
         const opts = {
@@ -138,12 +140,14 @@ export default {
             return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_REFRESHTOKEN);
         }
     },
-    register: async(req, res) =>{
-        //hash pass
+
+    register: async(req, res) =>
+    {
+        // Hash pass
         req.body.password = bcrypt.hashSync(req.body.password, 10);
         var user = null;
 
-        //add user
+        // Add user
         try {
             user = await userModel.add(req.body);
         } catch (err) {
@@ -152,7 +156,7 @@ export default {
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
         }
 
-        // create access token and refresh token
+        // Create access token and refresh token
         const payloadVerifyToken = {
             userId: user[0]
         };
@@ -182,6 +186,7 @@ export default {
 
         return res.status(httpStatus.NO_CONTENT).send();
     },
+
     verify: async(req, res) =>{
         const verifyToken = req.query.token;
 
@@ -224,6 +229,7 @@ export default {
         });
         return res.status(httpStatus.NO_CONTENT).send();
     },
+
     resetByEmail: async(req, res) =>{
         const email = req.query.email;
         const user = await userModel.findByEmail(email);
@@ -260,6 +266,7 @@ export default {
 
         return res.status(httpStatus.NO_CONTENT).send();
     },
+    
     resetPass: async(req,res) =>{
         req.body.password = bcrypt.hashSync(req.body.password, 10);
         const {password, token} = req.body;

@@ -60,6 +60,7 @@ paths:
     $ref: "./resources/category/categoryId/childcategory.yaml"
   /categorys/{id}:
     $ref: "./resources/category/categoryId/_index.yaml"
+
   /biddings:
     $ref: "./resources/bidding/_index.yaml"
   /biddings/buyProduct:
@@ -67,7 +68,7 @@ paths:
   /biddings/autoBidding:
     $ref: "./resources/bidding/autoBidding.yaml"
   /biddings/autoBidding/{Id}:
-    $ref: "./resources/bidding/autobidding/_index.yaml"
+    $ref: "./resources/bidding/autoBidding/_index.yaml"
   /biddings/rejectBidding/{Id}:
     $ref: "./resources/bidding/rejectBidding/_index.yaml"
   /biddings/biddingPermission:
@@ -89,12 +90,10 @@ paths:
     $ref: "./resources/users/role.yaml"
   /users/requestSeller:
     $ref: "./resources/users/requestSeller.yaml"
-  
   /users/rate:
     $ref: "./resources/users/rate.yaml"
   /users/productCanRate:
     $ref: "./resources/users/productsCanRate.yaml"
-  
   /users/watchlist:
     $ref: "./resources/users/watchlist.yaml"
 
@@ -120,4 +119,3 @@ paths:
     $ref: "./resources/products/active.yaml"
   /products/inactive:
     $ref: "./resources/products/inactive.yaml"
-  
