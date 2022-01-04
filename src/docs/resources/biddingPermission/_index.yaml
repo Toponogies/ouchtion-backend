@@ -1,0 +1,50 @@
+post:
+  operationId: getBiddingPermissionProduct
+  summary: get bidding permission of one product.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../schemas/BiddingPermissionPost.yaml"
+  responses:
+    "200":
+      description: get a array of bidding permission.
+      content:
+        application/json:
+          schema:
+            $ref: "../../schemas/BiddingPermission.yaml"
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "404":
+      description: not found product
+      $ref: "../../responses/Error.yaml"
+    "422":
+      $ref: "../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - bidding permission
+put:
+  operationId: addBiddingPermission
+  summary: Seller add a bidding permission .
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../schemas/BiddingPermission.yaml"
+  responses:
+    "204":
+      description: Added a bidding permission.
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "404":
+      description: not found product or not found user
+      $ref: "../../responses/Error.yaml"
+    "422":
+      $ref: "../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - bidding permission

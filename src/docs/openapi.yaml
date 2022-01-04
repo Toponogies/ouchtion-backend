@@ -54,6 +54,20 @@ paths:
   /auth/refresh:
     $ref: "./resources/auth/refresh.yaml"
 
+  /biddings:
+    $ref: "./resources/bidding/_index.yaml"
+  /biddings/buyProduct:
+    $ref: "./resources/bidding/buyProduct.yaml"
+  /biddings/autoBidding:
+    $ref: "./resources/bidding/autoBidding.yaml"
+  /biddings/autoBidding/{Id}:
+    $ref: "./resources/bidding/autobidding/_index.yaml"
+  /biddings/rejectBidding/{Id}:
+    $ref: "./resources/bidding/rejectBidding/_index.yaml"
+  /biddings/biddingPermission:
+    $ref: "./resources/biddingPermission/_index.yaml"
+  /biddings/biddingRequest:
+    $ref: "./resources/biddingRequest/_index.yaml"
   /users/point:
     $ref: "./resources/users/userId/point.yaml"
   /users/bidding:

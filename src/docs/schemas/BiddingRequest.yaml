@@ -1,0 +1,17 @@
+type: object
+title: BiddingRequest
+description: Schema for a bidding request.
+properties:
+  user_id:
+    type: string
+    description: The id of a user.
+  product_id:
+    type: string
+    description: The id of a product.
+  is_processed:
+    type: boolean
+    default: true
+    description: Check of a bidding request process.
+required:
+  - user_id
+  - product_id

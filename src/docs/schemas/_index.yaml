@@ -1,5 +1,21 @@
 AccessToken:
   $ref: "./AccessToken.yaml"
+AutoBidding:
+  $ref: "./AutoBiddingPost.yaml"
+Bidding:
+  $ref: "./Bidding.yaml"
+BiddingPermission:
+  $ref: "./BiddingPermission.yaml"
+BiddingPermissionGet:
+  $ref: "./BiddingPermissionPost.yaml"
+BiddingPost:
+  $ref: "./BiddingPost.yaml"
+BiddingRequest:
+  $ref: "./BiddingRequest.yaml"
+BiddingRequestPostDelete:
+  $ref: "./BiddingRequestPostDelete.yaml"
+BuyProduct:
+  $ref: "./BuyProduct.yaml"
 Bidding:
   $ref: "./BiddingOfUser.yaml"
   $ref: "./BiddingOfProduct.yaml"

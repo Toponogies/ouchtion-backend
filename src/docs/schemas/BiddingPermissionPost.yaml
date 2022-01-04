@@ -1,0 +1,9 @@
+type: object
+title: BiddingPermission
+description: Schema for a bidding permission request.
+properties:
+  product_id:
+    type: string
+    description: The id of a product.
+required:
+  - product_id

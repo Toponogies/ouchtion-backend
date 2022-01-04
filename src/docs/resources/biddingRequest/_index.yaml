@@ -1,0 +1,73 @@
+get:
+  operationId: getBiddingRequestSeller
+  summary: Get all process Biddings request of a seller.
+  responses:
+    "200":
+      description: An array of Biddings request of one seller.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../schemas/BiddingRequest.yaml"
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+    default:
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - biddings
+post:
+  operationId: addBiddingRequestBidder
+  summary: Bidder add a bidding request.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../schemas/BiddingRequestPostDelete.yaml"
+  responses:
+    "200":
+      description: Added a bidding request.
+      content:
+        application/json:
+          schema:
+            $ref: "../../schemas/BiddingRequest.yaml"
+    "400":
+      description: if have bidding request process
+      $ref: "../../responses/Error.yaml"
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "404":
+      description: not found product or not found user
+      $ref: "../../responses/Error.yaml"
+    "422":
+      $ref: "../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - bidding request
+delete:
+  operationId: NotApprovalBiddingRequest
+  summary: Seller don't approval a bidding request .
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../schemas/BiddingRequestPostDelete.yaml"
+  responses:
+    "204":
+      description: Don't approval a bidding request.
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "404":
+      description: not found product or not found user
+      $ref: "../../responses/Error.yaml"
+    "422":
+      $ref: "../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - bidding request
