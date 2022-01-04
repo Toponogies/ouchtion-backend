@@ -1,9 +1,9 @@
 export const schema = {
-    type: "object",
+    type: 'object',
     properties: {
-        user_id: {format: "string-of-int"},
-        role: {enum: ["bidder", "seller", "admin"]},
+        user_id: {format: 'string-of-int'},
+        role: {enum: ['bidder', 'seller', 'admin']},
     },
-    required: ["user_id","role"],
+    required: ['user_id','role'],
     additionalProperties: false,
-}
+};

@@ -1,9 +1,9 @@
 export const schema = {
-    type: "object",
+    type: 'object',
     properties: {
-        parent_category_id: {format: "string-of-int"},
-        name: {type: "string"},
+        parent_category_id: {format: 'string-of-int'},
+        name: {type: 'string'},
     },
-    required: ["name"],
+    required: ['name'],
     additionalProperties: false,
-}
+};

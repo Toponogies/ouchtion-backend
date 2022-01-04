@@ -1,10 +1,10 @@
 export const schema = {
-    type: "object",
+    type: 'object',
     properties: {
-        product_id: {format: "string-of-int"},
+        product_id: {format: 'string-of-int'},
         rate: {enum: [1, -1]},
-        comment: {type: "string"},
+        comment: {type: 'string'},
     },
-    required: ["product_id"],
+    required: ['product_id'],
     additionalProperties: false,
-}
+};
