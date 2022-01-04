@@ -1,0 +1,42 @@
+get:
+  operationId: getProductImagens
+  summary: Get all image of one product. (public endpoint)
+  responses:
+    "200":
+      description: An array of Product images.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../../schemas/ProductImage.yaml"
+    "500":
+      $ref: "../../../responses/Error.yaml"
+    default:
+      $ref: "../../../responses/Error.yaml"
+  tags:
+    - products
+post:
+  operationId: addProductImage
+  summary: Add a image to a product.
+  parameters:
+    - $ref: "../../../parameters/path/id.yaml"
+  requestBody:
+    required: true
+    content:
+      multipart/form-data:
+        schema:
+          $ref: "../../../schemas/ProductImagePost.yaml"
+  responses:
+    "204":
+      description: Added a product image.
+    "401":
+      $ref: "../../../responses/Error.yaml"
+    "404":
+      $ref: "../../../responses/Error.yaml"
+    "422":
+      $ref: "../../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../../responses/Error.yaml"
+  tags:
+    - products

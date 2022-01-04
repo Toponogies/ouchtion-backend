@@ -1,8 +1,8 @@
 export const schema = {
     type: "object",
     properties: {
-      seller_id: {format: "string-of-int"}
+        reason: {type: "string",maxLength: 300},
     },
-    required: ["seller_id"],
+    required: ["reason"],
     additionalProperties: false,
 }

@@ -1,0 +1,8 @@
+name: imageId
+in: path
+required: true
+description: The ID of the product image.
+schema:
+  type: integer
+  format: int64
+  minimum: 1

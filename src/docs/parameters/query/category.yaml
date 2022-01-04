@@ -1,0 +1,5 @@
+in: query
+name: category
+description: The category id of product
+schema:
+  type: string

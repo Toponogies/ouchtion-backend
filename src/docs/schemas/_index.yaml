@@ -2,8 +2,11 @@ AccessToken:
   $ref: "./AccessToken.yaml"
 Bidding:
   $ref: "./BiddingOfUser.yaml"
+  $ref: "./BiddingOfProduct.yaml"
 Error:
   $ref: "./Error.yaml"
+Image:
+  $ref: "./Image.yaml"
 Login:
   $ref: "./Login.yaml"
 ProductCanRate:
@@ -12,6 +15,20 @@ Rate:
   $ref: "./Rate.yaml"
 RatePost:
   $ref: "./RatePost.yaml"
+Product:
+  $ref: "./Product.yaml"
+ProductDescription:
+  $ref: "./ProductDescription.yaml"
+ProductDescriptionPost:
+  $ref: "./ProductDescriptionPost.yaml"
+ProductImage:
+  $ref: "./ProductImage.yaml"
+ProductImagePost:
+  $ref: "./ProductImagePost.yaml"
+ProductPost:
+  $ref: "./ProductUpdate.yaml"
+ProductUpdate:
+  $ref: "./ProductPost.yaml"
 RefreshToken:
   $ref: "./RefreshToken.yaml"
 Register:
