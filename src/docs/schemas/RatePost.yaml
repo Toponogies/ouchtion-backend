@@ -1,0 +1,14 @@
+title: RatePost
+description: Schema for rate post.
+type: object
+properties:
+  product_id:
+    type: string
+    description: The id of the product.
+  rate:
+    type: integer
+    description: The type of the rate [1 or -1].
+    default: 1
+  comment:
+    type: string
+    description: Comment of one rate

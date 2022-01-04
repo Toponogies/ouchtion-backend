@@ -1,0 +1,9 @@
+title: RequestSeller
+description: Schema for a request update bidder to seller.
+type: object
+properties:
+  reason:
+    type: string
+    description: Reason why need to be a seller.
+required:
+  - reason

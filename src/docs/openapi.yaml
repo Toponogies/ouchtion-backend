@@ -68,3 +68,50 @@ paths:
     $ref: "./resources/biddingPermission/_index.yaml"
   /biddings/biddingRequest:
     $ref: "./resources/biddingRequest/_index.yaml"
+  /users/point:
+    $ref: "./resources/users/userId/point.yaml"
+  /users/bidding:
+    $ref: "./resources/users/bidding.yaml"
+  /users:
+    $ref: "./resources/users/_index.yaml"
+  /users/Email:
+    $ref: "./resources/users/email.yaml"
+    
+  /users/all:
+    $ref: "./resources/users/all.yaml"
+  /users/role:
+    $ref: "./resources/users/role.yaml"
+  /users/requestSeller:
+    $ref: "./resources/users/requestSeller.yaml"
+  
+  /users/rate:
+    $ref: "./resources/users/rate.yaml"
+  /users/productCanRate:
+    $ref: "./resources/users/productsCanRate.yaml"
+  
+  /users/watchlist:
+    $ref: "./resources/users/watchlist.yaml"
+
+  /products:
+    $ref: "./resources/products/_index.yaml"
+  /products/seller:
+    $ref: "./resources/products/seller.yaml"
+  /products/{Id}:
+    $ref: "./resources/products/productId/_index.yaml"
+  /products/{Id}/image:
+    $ref: "./resources/products/productId/image.yaml"
+  /products/{Id}/image/{imageId}:
+    $ref: "./resources/products/productId/imageId/_index.yaml"
+  /products/{Id}/description:
+    $ref: "./resources/products/productId/description.yaml"
+  /products/{Id}/bidding:
+    $ref: "./resources/products/productId/bidding.yaml"
+  /products/won:
+    $ref: "./resources/products/won.yaml"
+  /products/bidding:
+    $ref: "./resources/products/bidding.yaml"
+  /products/active:
+    $ref: "./resources/products/active.yaml"
+  /products/inactive:
+    $ref: "./resources/products/inactive.yaml"
+  

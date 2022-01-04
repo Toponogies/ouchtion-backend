@@ -1,38 +1,48 @@
 get:
-  operationId: getUsers
-  summary: Get all Users.
+  operationId: getuser
+  summary: Get a user.
+  parameters:
+    - $ref: "../../parameters/path/id.yaml"
   responses:
     "200":
-      description: An array of Users.
+      description: Got a user.
       content:
         application/json:
           schema:
-            type: array
-            items:
-              $ref: "../../schemas/User.yaml"
+            $ref: "../../schemas/UserShort.yaml"
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "404":
+      $ref: "../../responses/Error.yaml"
     "500":
       $ref: "../../responses/Error.yaml"
     default:
       $ref: "../../responses/Error.yaml"
   tags:
     - users
-post:
-  operationId: addUser
-  summary: Add a User.
+put:
+  operationId: updateuser
+  summary: Update a user.
+  parameters:
+    - $ref: "../../parameters/path/id.yaml"
   requestBody:
     required: true
     content:
       application/json:
         schema:
-          $ref: "../../schemas/User.yaml"
+          $ref: "../../schemas/UserUpdate.yaml"
   responses:
-    "200":
-      description: Added a User.
-      content:
-        application/json:
-          schema:
-            $ref: "../../schemas/User.yaml"
+    "204":
+      description: Updated a user.
     "401":
+      $ref: "../../responses/Error.yaml"
+    "404":
+      $ref: "../../responses/Error.yaml"
+    "422":
+      $ref: "../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+    default:
       $ref: "../../responses/Error.yaml"
   tags:
     - users

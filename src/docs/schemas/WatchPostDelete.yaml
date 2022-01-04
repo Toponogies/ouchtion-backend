@@ -1,0 +1,9 @@
+title: WatchlistPost
+description: Schema for watchlist post.
+type: object
+properties:
+  product_id:
+    type: string
+    description: The ID of the Product.
+required:
+  - product_id

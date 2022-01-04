@@ -8,7 +8,7 @@ properties:
   password:
     type: string
     description: The password of a User.
-  name:
+  full_name:
     type: string
     description: The name of a User.
   address:
@@ -17,5 +17,5 @@ properties:
 required:
   - email
   - password
-  - name
+  - full_name
   - address
