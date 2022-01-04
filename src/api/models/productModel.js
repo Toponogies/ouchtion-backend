@@ -102,13 +102,13 @@ productModel.addImage = async function (product_id,path_image,is_primary) {
     {
         entity.is_primary = is_primary
     }
-    return db("product_images").insert(entity);
+    return await db("product_images").insert(entity);
 }
 productModel.addDescription = async function (entity) {
-    return db("product_descriptions").insert(entity);
+    return await db("product_descriptions").insert(entity);
 }
 productModel.deleteDescription = async function (product_id, description_id) {
-    return db("product_descriptions")
+    return await db("product_descriptions")
     .where("product_id", product_id)
     .where("product_description_id", description_id)
     .del();
@@ -123,7 +123,7 @@ productModel.findImage = async function (product_id, image_id) {
     return list[0];
 }
 productModel.findDescription = async function (product_id, description_id) {
-    const list =  db("product_descriptions")
+    const list = await  db("product_descriptions")
     .where("product_id", product_id)
     .where("product_description_id", description_id)
     if (list.length === 0)
@@ -133,52 +133,52 @@ productModel.findDescription = async function (product_id, description_id) {
 }
 
 productModel.deleteImage = async function (product_id, image_id) {
-    return db("product_images")
+    return await db("product_images")
     .where("product_id", product_id)
     .where("product_image_id", image_id)
     .del();
 }
 productModel.productsWon = async function (user_id) {
-    return db("products").leftJoin('biddings',"biddings.product_id","products.product_id")
+    return await db("products").leftJoin('biddings',"biddings.product_id","products.product_id")
     .groupBy("biddings.product_id")
     .count("biddings.product_id as bidding_count")
     .select("products.*")
     .where("buyer_id",user_id).andWhere("is_sold",true);
 }
 productModel.productsBidding = async function (user_id) {
-    return db('products').leftJoin('biddings',"biddings.product_id","products.product_id")
+    return await db('products').leftJoin('biddings',"biddings.product_id","products.product_id")
     .groupBy("biddings.product_id")
     .count("biddings.product_id as bidding_count")
     .select("products.*").where("user_id",user_id);
 }
 productModel.productsActive = async function (user_id) {
-    return db("products").leftJoin('biddings',"biddings.product_id","products.product_id")
+    return await db("products").leftJoin('biddings',"biddings.product_id","products.product_id")
     .groupBy("biddings.product_id")
     .count("biddings.product_id as bidding_count")
     .select("products.*").where("seller_id",user_id).andWhere("is_sold",0);
 }
 productModel.productsInActive = async function (user_id) {
-    return db("products").leftJoin('biddings',"biddings.product_id","products.product_id")
+    return await db("products").leftJoin('biddings',"biddings.product_id","products.product_id")
     .groupBy("biddings.product_id")
     .count("biddings.product_id as bidding_count")
     .select("products.*").where("seller_id",user_id).andWhere("is_sold",1);
 }
 productModel.getAllBidding = async function (product_id) {
-    return db("biddings").leftJoin('users',"users.user_id","biddings.user_id").where("product_id",product_id).andWhere("is_valid",1).select("biddings.*").select("full_name");
+    return await db("biddings").leftJoin('users',"users.user_id","biddings.user_id").where("product_id",product_id).andWhere("is_valid",1).select("biddings.*").select("full_name");
 }
 productModel.getAllProductEnd = async function () { // use to check won
-    return db("products").whereRaw("end_at < now()").andWhere("is_sold",0)
+    return await db("products").whereRaw("end_at < now()").andWhere("is_sold",0)
 }
 
 productModel.updateTimeWhenBidding = async function (product_id) { // use to update time end_at when <= 5 minute
-    return db.raw(`update products set end_at = DATE_ADD(now(), INTERVAL 10 minute)
+    return await db.raw(`update products set end_at = DATE_ADD(now(), INTERVAL 10 minute)
     where abs(TIMESTAMPDIFF(SECOND, end_at, now())) < 5 * 60 
     and end_at > now()
     and product_id = ${product_id}`)
 }
 
 productModel.updateEndAtEquaNow = async function (product_id) { // use to update time end_at when <= 5 minute
-    return db.raw(`update products set end_at = now()
+    return await db.raw(`update products set end_at = now()
     where product_id = ${product_id}`)
 }
 

@@ -66,7 +66,7 @@ biddingModel.addBidding= async function (body) {
 }
 
 biddingModel.findAllUserId = async function (product_id) {
-    const list = await db("bidding").where("product_id", product_id).select("user_id")
+    const list = await db("biddings").where("product_id", product_id).select("user_id").groupBy("user_id");
     return list
 }
 

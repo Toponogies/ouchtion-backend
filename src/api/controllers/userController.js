@@ -95,6 +95,15 @@ export default {
             if (n === 0) {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
             }
+
+            const newUser = await userModel.findById(user_id);
+
+            // socket emit
+            getIO().emit("updateUser",{
+                message:"User update",
+                data: newUser,
+            })
+
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
             console.log(err);
@@ -262,6 +271,15 @@ export default {
             }
 
             await userModel.patch(_userId,{email:_email})
+
+            const newUser = await userModel.findById(_userId);
+
+            // socket emit
+            getIO().emit("updateEmail",{
+                message:"Update email of user",
+                data: newUser,
+            })
+
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
             console.log(err);

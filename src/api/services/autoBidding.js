@@ -1,4 +1,5 @@
 import { biddingModel, productModel } from "../models";
+import { getIO } from "../helpers/constants/socketIO";
 
 export default async function autoBidding(){
     try {
@@ -35,6 +36,15 @@ export default async function autoBidding(){
                     })
                     // update time product end
                     await productModel.updateTimeWhenBidding(product.product_id);
+
+                    // socket emit
+                    getIO().emit("autoBiddingUpdatePrice",{
+                        message:"Auto bidding update price",
+                        data: {
+                            bidding_id:autoBidding.bidding_id,
+                            bid_price:price_need,
+                        },
+                    })
                 }
                 else{
                     await biddingModel.disableOneAutoBidding(autoBidding.bidding_id);
@@ -53,6 +63,16 @@ export default async function autoBidding(){
                     })
                     // update time product end
                     await productModel.updateTimeWhenBidding(product.product_id);
+
+                    // socket emit
+                    getIO().emit("autoBiddingUpdatePrice",{
+                        message:"Auto bidding update price",
+                        data: {
+                            bidding_id:autoBidding.bidding_id,
+                            product_id:autoBidding.product_id,
+                            bid_price:price_need,
+                        },
+                    })
                 }
             }
         });

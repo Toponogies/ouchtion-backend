@@ -209,7 +209,7 @@ export default {
                 var imageId = await productModel.addImage(req.params.id,path,req.query.is_primary)
                 imageId = imageId[0];
 
-                const image = await productModel.findImage(product_id,imageId);
+                const image = await productModel.findImage(product.product_id,imageId);
 
                 // socket emit
                 getIO().emit("newProductImage",{
@@ -281,11 +281,11 @@ export default {
             }
 
             // add description
-            var descripiontId = await productModel.addDescription(entity)
-            descripiontId= descripiontId[0];
+            var descriptionId = await productModel.addDescription(entity)
+            descriptionId= descriptionId[0];
 
             //find description
-            const description = await productModel.findDescription(product.product_id,descripiontId)
+            const description = await productModel.findDescription(product.product_id,descriptionId)
 
             // socket emit
             getIO().emit("newProductDescription",{
