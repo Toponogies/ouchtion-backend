@@ -1,0 +1,26 @@
+post:
+  operationId: addAutoBidding
+  summary: Add a auto bidding.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../schemas/AutoBiddingPost.yaml"
+  responses:
+    "204":
+      description: Added a auto bidding.
+    "400":
+      description: if user not have permission bidding this product
+      $ref: "../../responses/Error.yaml"
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "404":
+      description: not found the product
+      $ref: "../../responses/Error.yaml"
+    "422":
+      $ref: "../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - biddings
