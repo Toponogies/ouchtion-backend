@@ -1,5 +1,10 @@
 AccessToken:
   $ref: "./AccessToken.yaml"
+Category:
+  $ref: "./Category.yaml"
+CategoryPost:
+  $ref: "./CategoryPost.yaml"
+
 AutoBidding:
   $ref: "./AutoBiddingPost.yaml"
 Bidding:

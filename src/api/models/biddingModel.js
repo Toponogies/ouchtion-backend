@@ -13,10 +13,11 @@ biddingModel.addBidding= async function (body) {
         return false;
     }
 
+    const product = await productModel.getProductUseAutoBidding(body.product_id);
+
     // get bidding id bidding add
     var biddingId = await biddingModel.add(body);
     biddingId = biddingId[0];
-
     const product = await productModel.getProductUseAutoBidding(body.product_id);
 
     // update time product end
@@ -74,6 +75,7 @@ biddingModel.isHaveBiddingRequest= async function (body) {
 }
 
 biddingModel.isBiddingPermission= async function (body) {
+
     const product = await productModel.findById(body.product_id);
     if (product.is_sold !== 0){
         return false;
@@ -84,7 +86,6 @@ biddingModel.isBiddingPermission= async function (body) {
     {
         return false;
     }
-    
 
     const list = await db("bidding_permissions").where("user_id", body.user_id).andWhere("product_id",body.product_id);
     if (list.length === 0)

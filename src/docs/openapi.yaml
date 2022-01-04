@@ -54,6 +54,12 @@ paths:
   /auth/refresh:
     $ref: "./resources/auth/refresh.yaml"
 
+  /categorys:
+    $ref: "./resources/category/_index.yaml"
+  /categorys/{id}/childcategory:
+    $ref: "./resources/category/categoryId/childcategory.yaml"
+  /categorys/{id}:
+    $ref: "./resources/category/categoryId/_index.yaml"
   /biddings:
     $ref: "./resources/bidding/_index.yaml"
   /biddings/buyProduct:
