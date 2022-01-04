@@ -90,6 +90,9 @@ export default {
                 delete req.body.newPassword
                 req.body.password = bcrypt.hashSync(req.body.password, 10);
             }
+            else{
+                delete req.body.password
+            }
 
             const n = await userModel.patch(user_id,req.body)
             if (n === 0) {
