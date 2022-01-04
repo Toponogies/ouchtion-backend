@@ -2,7 +2,7 @@ import httpStatus from 'http-status-codes';
 import { BAD_DELETE, NOT_FOUND_FILE, NOT_FOUND_IMAGE, NOT_FOUND_PRODUCT, NOT_FOUND_USER, NOT_PERMISSION, UNEXPECTED_ERROR } from '../helpers/constants/Errors';
 import { formatDate } from '../helpers/constants/ISOtoDate';
 import removeFile from '../helpers/constants/removeFile';
-import { productModel, userModel } from "../models";
+import { productModel, userModel } from '../models';
 
 
 
@@ -53,8 +53,8 @@ export default {
     addProduct: async (req, res) => {
         try {
             // check role of user
-            if (req.accessTokenPayload.role !== "seller") {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            if (req.accessTokenPayload.role !== 'seller') {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
             }
         
             const file = req.file;
@@ -66,9 +66,9 @@ export default {
             const index = file.path.indexOf('\\');
             const path = file.path.substring(index + 1);
 
-            req.body.seller_id = req.accessTokenPayload.userId
-            req.body.avatar = path
-            req.body.end_at = formatDate(new Date(req.body.end_at))
+            req.body.seller_id = req.accessTokenPayload.userId;
+            req.body.avatar = path;
+            req.body.end_at = formatDate(new Date(req.body.end_at));
             req.body.current_price = req.body.init_price;
 
             // add product
@@ -95,7 +95,7 @@ export default {
 
             // check role
             if (req.accessTokenPayload.userId !== product.seller_id) {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
             }
 
             const file = req.file;
@@ -107,7 +107,7 @@ export default {
                 {
                     removeFile(process.env.PATH_FOLDER_PUBLIC + product.avatar);
                 }
-                req.body.avatar = path
+                req.body.avatar = path;
             }
 
             // update product
@@ -130,14 +130,14 @@ export default {
             }
 
             // check role only admin can delete
-            if (req.accessTokenPayload.role !== "admin") {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            if (req.accessTokenPayload.role !== 'admin') {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
             }
 
-            const inBidding = await productModel.isInBidding(req.params.id)
+            const inBidding = await productModel.isInBidding(req.params.id);
             if (inBidding === true)
             {
-                return res.status(httpStatus.BAD_REQUEST).send(BAD_DELETE)
+                return res.status(httpStatus.BAD_REQUEST).send(BAD_DELETE);
             }
 
             // remove product
@@ -148,7 +148,7 @@ export default {
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
             if (err.errno === 1451){
-                return res.status(httpStatus.BAD_REQUEST).send(BAD_DELETE)
+                return res.status(httpStatus.BAD_REQUEST).send(BAD_DELETE);
             }
             console.log(err);
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
@@ -166,7 +166,7 @@ export default {
 
             // check product of this seller
             if (req.accessTokenPayload.userId !== product.seller_id) {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
             }
 
             // upload with multer (async function)
@@ -182,7 +182,7 @@ export default {
             // use try catch because this is async function 
             try {
                 // add image to database
-                await productModel.addImage(req.params.id,path,req.query.is_primary)
+                await productModel.addImage(req.params.id,path,req.query.is_primary);
             }
             catch (err) {
                 console.log(err);
@@ -204,7 +204,7 @@ export default {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
             }
             const descriptions = await productModel.getDescriptions(req.params.id);
-            return res.json(descriptions)
+            return res.json(descriptions);
         } catch (err) {
             console.log(err);
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
@@ -220,7 +220,7 @@ export default {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
             }
             const images = await productModel.getImages(req.params.id);
-            return res.json(images)
+            return res.json(images);
         } catch (err) {
             console.log(err);
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
@@ -228,7 +228,7 @@ export default {
     },
     addDescription : async (req, res) => {
         try {
-             // get product by id
+            // get product by id
             const product = await productModel.findById(req.params.id);
 
             // check product exist
@@ -238,17 +238,17 @@ export default {
 
             // check product of this seller
             if (req.accessTokenPayload.userId !== product.seller_id) {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
             }
 
             // create entity
             const entity = {
                 product_id:req.params.id,
                 description:req.body.description,
-            }
+            };
 
             // add description
-            await productModel.addDescription(entity)
+            await productModel.addDescription(entity);
             
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
@@ -271,7 +271,7 @@ export default {
 
             // check product of this seller
             if (req.accessTokenPayload.userId !== product.seller_id) {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
             }
 
             const n = await productModel.deleteDescription(product_id,description_id);
@@ -307,10 +307,10 @@ export default {
 
             // check product of this seller
             if (req.accessTokenPayload.userId !== product.seller_id) {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
             }
 
-            removeFile(process.env.PATH_FOLDER_PUBLIC + image.path)
+            removeFile(process.env.PATH_FOLDER_PUBLIC + image.path);
             const n = await productModel.deleteImage(product_id,image_id);
             // not found this product
             if (n === 0) {
@@ -325,11 +325,11 @@ export default {
     productsWon: async (req, res) => {
         try {
             // check role bidder
-            if (req.accessTokenPayload.role !== "bidder") {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            if (req.accessTokenPayload.role !== 'bidder') {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
             }
 
-            console.log(req.accessTokenPayload)
+            console.log(req.accessTokenPayload);
 
             const products = await productModel.productsWon(req.accessTokenPayload.userId);
             return res.json(products);
@@ -341,8 +341,8 @@ export default {
     productsBidding: async (req, res) => {
         try {
             // check role bidder
-            if (req.accessTokenPayload.role !== "bidder") {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            if (req.accessTokenPayload.role !== 'bidder') {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
             }
 
             const products = await productModel.productsBidding(req.accessTokenPayload.userId);
@@ -355,8 +355,8 @@ export default {
     productsActive: async (req, res) => {
         try {
             // check role seller
-            if (req.accessTokenPayload.role !== "seller") {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            if (req.accessTokenPayload.role !== 'seller') {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
             }
 
             const products = await productModel.productsActive(req.accessTokenPayload.userId);
@@ -369,8 +369,8 @@ export default {
     productsInActive: async (req, res) => {
         try {
             // check role seller
-            if (req.accessTokenPayload.role !== "seller") {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            if (req.accessTokenPayload.role !== 'seller') {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
             }
 
             const products = await productModel.productsInActive(req.accessTokenPayload.userId);
@@ -389,4 +389,4 @@ export default {
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
         }
     }
-}
+};

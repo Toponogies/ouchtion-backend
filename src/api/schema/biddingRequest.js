@@ -1,9 +1,9 @@
 export const schema = {
-    type: "object",
+    type: 'object',
     properties: {
-        product_id: {format: "string-of-int"},
-        user_id: {format: "string-of-int"},
+        product_id: {format: 'string-of-int'},
+        user_id: {format: 'string-of-int'},
     },
-    required: ["product_id","user_id"],
+    required: ['product_id','user_id'],
     additionalProperties: false,
-}
+};

@@ -1,8 +1,8 @@
 export const schema = {
-    type: "object",
+    type: 'object',
     properties: {
-        reason: {type: "string",maxLength: 300},
+        reason: {type: 'string',maxLength: 300},
     },
-    required: ["reason"],
+    required: ['reason'],
     additionalProperties: false,
-}
+};

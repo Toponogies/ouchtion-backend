@@ -1,6 +1,6 @@
 import httpStatus from 'http-status-codes';
 import dotenv from 'dotenv';
-import { biddingModel,productModel } from "../models";
+import { biddingModel,productModel } from '../models';
 import { BAD_BIDDING, IS_EXIST, NOT_FOUND_BIDDING, NOT_FOUND_PRODUCT, NOT_PERMISSION, UNEXPECTED_ERROR } from '../helpers/constants/Errors';
 dotenv.config();
 
@@ -18,8 +18,8 @@ export default {
             req.body.bid_price = product.init_price;
             req.body.is_auto_process = 1;
             // check role only bidder
-            if (req.accessTokenPayload.role !== "bidder") {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            if (req.accessTokenPayload.role !== 'bidder') {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
             }
 
             const checkBiddingPermission = await biddingModel.isBiddingPermission(req.body);
@@ -37,7 +37,7 @@ export default {
     disableAutoBidding: async (req, res) => {
         try {
             // get user id from token
-            const user_id = req.accessTokenPayload.userId
+            const user_id = req.accessTokenPayload.userId;
             await biddingModel.disableAutoBiddingByUserIdBiddingId(user_id,req.params.id);
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
@@ -49,8 +49,8 @@ export default {
         try {
             req.body.user_id = req.accessTokenPayload.userId;
             // check role only bidder
-            if (req.accessTokenPayload.role !== "bidder") {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            if (req.accessTokenPayload.role !== 'bidder') {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
             }
 
             // check product exist
@@ -62,7 +62,7 @@ export default {
 
             const check = await biddingModel.addBidding(req.body);
             if (check === false){
-                return res.status(httpStatus.BAD_REQUEST).send(BAD_BIDDING)
+                return res.status(httpStatus.BAD_REQUEST).send(BAD_BIDDING);
             }
 
             return res.status(httpStatus.NO_CONTENT).send();
@@ -75,8 +75,8 @@ export default {
         try {
             req.body.user_id = req.accessTokenPayload.userId;
             // check role only bidder
-            if (req.accessTokenPayload.role !== "bidder") {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            if (req.accessTokenPayload.role !== 'bidder') {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
             }
 
             // check product exist
@@ -101,8 +101,8 @@ export default {
         try {
             req.body.user_id = req.accessTokenPayload.userId;
             // check role only bidder
-            if (req.accessTokenPayload.role !== "bidder") {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            if (req.accessTokenPayload.role !== 'bidder') {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
             }
 
             // check product exist
@@ -128,8 +128,8 @@ export default {
     getBiddingRequests: async(req, res) =>{
         try {
             // check role only bidder
-            if (req.accessTokenPayload.role !== "seller") {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            if (req.accessTokenPayload.role !== 'seller') {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
             }
 
             const biddingRequests = await biddingModel.getBiddingRequests(req.accessTokenPayload.userId);
@@ -142,8 +142,8 @@ export default {
     permissionBidding: async(req, res) =>{
         try {
             // check role only bidder
-            if (req.accessTokenPayload.role !== "seller") {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            if (req.accessTokenPayload.role !== 'seller') {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
             }
 
             // get product with id and check the seller
@@ -153,7 +153,7 @@ export default {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
             }
             if (req.accessTokenPayload.userId !== product.seller_id) {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
             }
 
             await biddingModel.permissionBidding(req.body);
@@ -172,8 +172,8 @@ export default {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
             }
 
-            const biddingPermissions = await biddingModel.getBiddingPermissionProduct(req.body.product_id)
-            return res.json(biddingPermissions)
+            const biddingPermissions = await biddingModel.getBiddingPermissionProduct(req.body.product_id);
+            return res.json(biddingPermissions);
         } catch (err) {
             console.log(err);
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
@@ -182,8 +182,8 @@ export default {
     notAllowBidding: async(req, res) =>{
         try {
             // check role only bidder
-            if (req.accessTokenPayload.role !== "seller") {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            if (req.accessTokenPayload.role !== 'seller') {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
             }
 
             // get product with id and check the seller
@@ -193,7 +193,7 @@ export default {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
             }
             if (req.accessTokenPayload.userId !== product.seller_id) {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
             }
 
             await biddingModel.notAllowBidding(req.body);
@@ -206,11 +206,11 @@ export default {
     rejectBidding: async(req, res) =>{
         try {
             // check role only bidder
-            if (req.accessTokenPayload.role !== "seller") {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            if (req.accessTokenPayload.role !== 'seller') {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
             }
 
-            const bidding = await biddingModel.findById(req.params.id)
+            const bidding = await biddingModel.findById(req.params.id);
             if (bidding === null)
             {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_BIDDING);
@@ -223,14 +223,14 @@ export default {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
             }
             if (req.accessTokenPayload.userId !== product.seller_id) {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
             }
 
             // if product end check = false
             const check = await biddingModel.rejectBidding(bidding.bidding_id);
             if (check === false)
             {
-                return res.status(httpStatus.BAD_REQUEST).send(NOT_PERMISSION)
+                return res.status(httpStatus.BAD_REQUEST).send(NOT_PERMISSION);
             }
 
             return res.status(httpStatus.NO_CONTENT).send();
@@ -239,4 +239,4 @@ export default {
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
         }
     },
-}
+};

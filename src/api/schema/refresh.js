@@ -1,9 +1,9 @@
 export const schema = {
-    type: "object",
+    type: 'object',
     properties: {
-      accessToken: {type: "string"},
-      refreshToken: {type: "string"}
+        accessToken: {type: 'string'},
+        refreshToken: {type: 'string'}
     },
-    required: ["accessToken","refreshToken"],
+    required: ['accessToken','refreshToken'],
     additionalProperties: false,
-}
+};

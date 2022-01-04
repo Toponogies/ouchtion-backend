@@ -1,9 +1,9 @@
 export const schema = {
-    type: "object",
+    type: 'object',
     properties: {
-        product_id: {format: "string-of-int"},
-        max_price: {format: "string-of-int"},
+        product_id: {format: 'string-of-int'},
+        max_price: {format: 'string-of-int'},
     },
-    required: ["product_id","max_price"],
+    required: ['product_id','max_price'],
     additionalProperties: false,
-}
+};

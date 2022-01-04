@@ -1,11 +1,11 @@
 import httpStatus from 'http-status-codes';
-import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcrypt';
 dotenv.config();
 
 import { ACCOUNT_NOT_ACTIVE, DB_QUERY_ERROR, EXPIRED_REFRESHTOKEN, EXPIRED_VERIFYTOKEN, INVAILD_REFRESHTOKEN, INVAILD_VERIFYTOKEN, LOGIN_ERROR, NOTFOUND_REDIS, UNEXPECTED_ERROR } from '../helpers/constants/Errors';
-import { setRedis,getRedis, delRedis, setExRedis } from '../helpers/constants/redisClient';
+import { getRedis, delRedis, setExRedis } from '../helpers/constants/redisClient';
 import userModel from '../models/userModel';
 import sendEmail from '../helpers/constants/sendEmail';
 
@@ -25,16 +25,16 @@ export default {
             //find user by email
             const user = await userModel.findByEmail(req.body.email);
             if (user === null) {
-                return res.status(httpStatus.UNAUTHORIZED).send(LOGIN_ERROR)
+                return res.status(httpStatus.UNAUTHORIZED).send(LOGIN_ERROR);
             }
             //check account user active
             if (!user.is_active){
-                return res.status(httpStatus.UNAUTHORIZED).send(ACCOUNT_NOT_ACTIVE)
+                return res.status(httpStatus.UNAUTHORIZED).send(ACCOUNT_NOT_ACTIVE);
             }
             
             // check password
             if (bcrypt.compareSync(req.body.password, user.password) === false) {
-                return res.status(httpStatus.UNAUTHORIZED).send(LOGIN_ERROR)
+                return res.status(httpStatus.UNAUTHORIZED).send(LOGIN_ERROR);
             }
 
             // create access token and refresh token
@@ -53,7 +53,7 @@ export default {
             // set value from redis
             await setExRedis(user.user_id,process.env.REDIS_EXPIRED_REFRESHTOKEN_SECOND,{ 
                 refreshToken: refreshToken,
-            })
+            });
 
             // return access token and refresh token
             return res.json({
@@ -71,16 +71,16 @@ export default {
             ignoreExpiration: true
         };
 
-        var _userId = -1
-        var _role = -1
+        var _userId = -1;
+        var _role = -1;
 
         // verify token and get user id
         try {
             const { userId,role } = jwt.verify(accessToken, process.env.SERET_KEY, opts);
             _userId = userId;
-            _role = role
+            _role = role;
         } catch (err) {
-            return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_REFRESHTOKEN)
+            return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_REFRESHTOKEN);
         }
 
         // get value from redis
@@ -98,17 +98,18 @@ export default {
         // check refresh token and redis refresh token
         if (value.refreshToken !== refreshToken)
         {
-            return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_REFRESHTOKEN)
+            return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_REFRESHTOKEN);
         }
 
         // check expired and valid of refresh token
         try {
-            const { userId, role, userEmail } = jwt.verify(refreshToken, process.env.SERET_KEY, opts);
+            // const { userId, role, userEmail } = 
+            jwt.verify(refreshToken, process.env.SERET_KEY, opts);
         } catch (err) {
-            if (err.name === "TokenExpiredError")
-                return res.status(httpStatus.UNAUTHORIZED).send(EXPIRED_REFRESHTOKEN)
+            if (err.name === 'TokenExpiredError')
+                return res.status(httpStatus.UNAUTHORIZED).send(EXPIRED_REFRESHTOKEN);
             else
-                return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_REFRESHTOKEN)
+                return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_REFRESHTOKEN);
         }
 
         // create new access token
@@ -122,33 +123,33 @@ export default {
         });
     },
     logout: async (req, res) =>{
-        const { accessToken, refreshToken } = req.body;
+        const { accessToken } = req.body;
         const opts = {
             ignoreExpiration: true
         };
         try {
-            const { userId,role } = jwt.verify(accessToken, process.env.SERET_KEY, opts);
+            const { userId } = jwt.verify(accessToken, process.env.SERET_KEY, opts);
             
             // delete data of user have userId in redis
             await delRedis(userId);
 
-            return res.status(httpStatus.NO_CONTENT).send()
+            return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
-            return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_REFRESHTOKEN)
+            return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_REFRESHTOKEN);
         }
     },
     register: async(req, res) =>{
         //hash pass
         req.body.password = bcrypt.hashSync(req.body.password, 10);
-        var user = null
+        var user = null;
 
         //add user
         try {
-            user = await userModel.add(req.body)
+            user = await userModel.add(req.body);
         } catch (err) {
             if (err.sqlState === '23000')
-                return res.status(httpStatus.CONFLICT).send(DB_QUERY_ERROR)
-            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR)
+                return res.status(httpStatus.CONFLICT).send(DB_QUERY_ERROR);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
         }
 
         // create access token and refresh token
@@ -162,9 +163,9 @@ export default {
         try{
             await setExRedis(user[0],process.env.REDIS_EXPIRED_VERIFYTOKEN_SECOND,{ 
                 verifyToken: verifyToken,
-            })
+            });
         }catch(err){
-            console.log(err)
+            console.log(err);
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
         }
 
@@ -177,23 +178,23 @@ export default {
         };
 
         // send email to user
-        sendEmail(mailOptions)
+        sendEmail(mailOptions);
 
-        return res.status(httpStatus.NO_CONTENT).send()
+        return res.status(httpStatus.NO_CONTENT).send();
     },
     verify: async(req, res) =>{
-        const verifyToken = req.query.token
+        const verifyToken = req.query.token;
 
-        var _userId = -1
+        var _userId = -1;
         // check vaild
         try {
             const { userId} = jwt.verify(verifyToken, process.env.SERET_KEY);
-            _userId = userId
+            _userId = userId;
         } catch (err) {
-            if (err.name === "TokenExpiredError")
-                return res.status(httpStatus.UNAUTHORIZED).send(EXPIRED_VERIFYTOKEN)
+            if (err.name === 'TokenExpiredError')
+                return res.status(httpStatus.UNAUTHORIZED).send(EXPIRED_VERIFYTOKEN);
             else
-                return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_VERIFYTOKEN)
+                return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_VERIFYTOKEN);
         }
 
         // get value and del value from redis
@@ -211,9 +212,9 @@ export default {
             }
 
             // del value redis
-            await delRedis(_userId)
+            await delRedis(_userId);
         }catch(err){
-            console.log(err)
+            console.log(err);
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
         }
 
@@ -221,15 +222,15 @@ export default {
         await userModel.patch(_userId, {
             is_active: true
         });
-        return res.status(httpStatus.NO_CONTENT).send()
+        return res.status(httpStatus.NO_CONTENT).send();
     },
     resetByEmail: async(req, res) =>{
-        const email = req.query.email
+        const email = req.query.email;
         const user = await userModel.findByEmail(email);
         
         // check user exist
         if (user === null) {
-            return res.status(httpStatus.UNAUTHORIZED).send(LOGIN_ERROR)
+            return res.status(httpStatus.UNAUTHORIZED).send(LOGIN_ERROR);
         }
 
         // create verify token
@@ -243,7 +244,7 @@ export default {
         try{
             await setExRedis(user.user_id,process.env.REDIS_EXPIRED_VERIFYTOKEN_SECOND,{ 
                 verifyToken: verifyToken,
-            })
+            });
         }catch(err){
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
         }
@@ -255,13 +256,13 @@ export default {
             text: `Link reset pass token : http://localhost:3000/reset?token=${verifyToken}`
         };
         // send email to yser
-        sendEmail(mailOptions)
+        sendEmail(mailOptions);
 
-        return res.status(httpStatus.NO_CONTENT).send()
+        return res.status(httpStatus.NO_CONTENT).send();
     },
     resetPass: async(req,res) =>{
         req.body.password = bcrypt.hashSync(req.body.password, 10);
-        const {password, token} = req.body
+        const {password, token} = req.body;
         var _userId = -1;
 
         // get userId and check jwt
@@ -269,10 +270,10 @@ export default {
             const { userId } = jwt.verify(token, process.env.SERET_KEY, optsVerify);
             _userId = userId;
         } catch (err) {
-            if (err.name === "TokenExpiredError")
-                return res.status(httpStatus.UNAUTHORIZED).send(EXPIRED_VERIFYTOKEN)
+            if (err.name === 'TokenExpiredError')
+                return res.status(httpStatus.UNAUTHORIZED).send(EXPIRED_VERIFYTOKEN);
             else
-                return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_VERIFYTOKEN)
+                return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_VERIFYTOKEN);
         }
 
         // get value and del value from redis
@@ -289,9 +290,9 @@ export default {
                 return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_VERIFYTOKEN);
             }
             // del value redis
-            await delRedis(_userId)
+            await delRedis(_userId);
         }catch(err){
-            console.log(err)
+            console.log(err);
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
         }
 
@@ -299,6 +300,6 @@ export default {
             password: password
         });
 
-        return res.status(httpStatus.NO_CONTENT).send()
+        return res.status(httpStatus.NO_CONTENT).send();
     }
 };

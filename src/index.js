@@ -29,8 +29,8 @@ app.use(morgan('dev'));
 router(app);
 
 // Service
-checkWon()
-autoBidding()
+checkWon();
+autoBidding();
 
 // Make app listen at port
 app.listen(PORT, () => {
