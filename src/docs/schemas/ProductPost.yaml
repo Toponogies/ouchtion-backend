@@ -1,0 +1,35 @@
+type: object
+title: ProductPost
+description: Schema for a product request.
+properties:
+  category_id:
+    type: string
+    description: The password of a category.
+  avatar:
+    type: string
+    format: binary
+    description: avatar of the product
+  name:
+    type: string
+    description: The name of a product.
+  end_at:
+    type: string
+    format: date-time
+    description: The timestamp end bidding product.
+  init_price:
+    type: integer
+    format: int64
+    description: The init price.
+  step_price:
+    type: integer
+    format: int64
+    description: The price step, if not have default is 0
+  buy_price:
+    type: string
+    description: The price bidder can buy and close this bidding, if not need default is null.
+required:
+  - category_id
+  - avatar
+  - name
+  - end_at
+  - init_price

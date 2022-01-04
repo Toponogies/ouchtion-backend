@@ -20,7 +20,12 @@ export const NOTFOUND_ERROR = {
 
 export const LOGIN_ERROR = {
     title: 'UNAUTHORIZED',
-    detail: 'Enter a invaild email or password .'
+    detail: 'Enter a invalid email or password .'
+};
+
+export const WRONG_PASSWORD = {
+    title: 'WRONG_PASSWORD',
+    detail: 'Password invalid.'
 };
 
 export const DB_QUERY_ERROR = {
@@ -86,6 +91,11 @@ export const NOT_FOUND_PRODUCT = {
     detail: "Not found product"
 };
 
+export const NOT_FOUND_WATCH = {
+    title: "NOT_FOUND_WATCH",
+    detail: "Not found watch"
+};
+
 export const NOT_FOUND_IMAGE = {
     title: "NOT_FOUND_IMAGE",
     detail: "Not found image"
@@ -107,6 +117,10 @@ export const NOT_FOUND_CATEGORY = {
 }
 
 
+export const NOT_FOUND_USER = {
+    title: "NOT_FOUND_USER",
+    detail: "Not found a user"
+}
 
 export const IS_EXIST = {
     title: "IS_EXIST",
@@ -116,4 +130,28 @@ export const IS_EXIST = {
 export const BAD_BIDDING = {
     title: "BAD_BIDDING",
     detail: "You don't have permission bidding or bad bidding request"
+}
+export const SEND_REQUEST_EXIST = {
+    title: "IS_EXIST",
+    detail: "Only send one request per week"
+}
+
+export const BAD_BIDDING = {
+    title: "BAD_BIDDING",
+    detail: "You don't have permission bidding or bad bidding request"
+}
+
+export const BAD_DELETE = {
+    title: "BAD_DELETE",
+    detail: "You don't remove when it have foreign key in database"
+}
+
+export const BAD_REQUEST = {
+    title: "BAD_REQUEST",
+    detail: "Some key not same with foreign key"
+}
+
+export const PRODUCT_NOT_END = {
+    title: "PRODUCT_NOT_END",
+    detail: "Product bidding not finish"
 }

@@ -7,9 +7,9 @@ productModel.findBySellerId = async function (seller_id) {
     return row;
 }
 productModel.search = async function (query,sort,page,category,number_product) {
-    let SQLquery = db('products').join('biddings',"biddings.product_id","products.product_id")
-    .groupBy("products.product_id")
-    .count("products.product_id as bidding_count")
+    let SQLquery = db('products').leftJoin('biddings',"biddings.product_id","products.product_id")
+    .groupBy("biddings.product_id")
+    .count("biddings.product_id as bidding_count")
     .select("products.*")
     // search query
     if (query) {
@@ -44,7 +44,7 @@ productModel.search = async function (query,sort,page,category,number_product) {
     return row;
 }
 productModel.getProduct = async function (product_id) {
-    let SQLquery = db('products').join('biddings',"biddings.product_id","products.product_id")
+    let SQLquery = db('products').leftJoin('biddings',"biddings.product_id","products.product_id")
     .groupBy("products.product_id")
     .count("products.product_id as bidding_count")
     .select("products.*")
@@ -82,14 +82,12 @@ productModel.isInBidding = async function (product_id) {
         return true;
     return false;
 }
-productModel.removeProduct = async function (product_id) {
-    await db('product_images').where('product_id', product_id).del();
-    await db('product_descriptions').where('product_id', product_id).del();
-    await db('products').where('product_id', product_id).del();
-}
 productModel.getImages = async function (product_id) {
     const row = await db('product_images').where('product_id', product_id).select("product_image_id","path","is_primary");
     return row;
+}
+productModel.removeProduct = async function (product_id) {
+    await db('products').where('product_id', product_id).del();
 }
 productModel.getDescriptions = async function (product_id) {
     const row = await db('product_descriptions').where('product_id', product_id).orderBy('upload_date', 'desc').select("product_description_id","description","upload_date");
@@ -131,33 +129,33 @@ productModel.deleteImage = async function (product_id, image_id) {
     .del();
 }
 productModel.productsWon = async function (user_id) {
-    return db("products").join('biddings',"biddings.product_id","products.product_id")
-    .groupBy("products.product_id")
-    .count("products.product_id as bidding_count")
+    return db("products").leftJoin('biddings',"biddings.product_id","products.product_id")
+    .groupBy("biddings.product_id")
+    .count("biddings.product_id as bidding_count")
     .select("products.*")
     .where("buyer_id",user_id).andWhere("is_sold",true);
 }
 productModel.productsBidding = async function (user_id) {
-    return db('products').join('biddings',"biddings.product_id","products.product_id")
-    .groupBy("products.product_id")
-    .count("products.product_id as bidding_count")
+
+    return db('products').leftJoin('biddings',"biddings.product_id","products.product_id")
+    .groupBy("biddings.product_id")
+    .count("biddings.product_id as bidding_count")
     .select("products.*").where("user_id",user_id);
 }
 productModel.productsActive = async function (user_id) {
-    return db("products").join('biddings',"biddings.product_id","products.product_id")
-    .groupBy("products.product_id")
-    .count("products.product_id as bidding_count")
-    .select("products.*").where("seller_id",user_id).andWhere("is_sold",1);
-}
-productModel.productsInActive = async function (user_id) {
-    return db("products").join('biddings',"biddings.product_id","products.product_id")
-    .groupBy("products.product_id")
-    .count("products.product_id as bidding_count")
+    return db("products").leftJoin('biddings',"biddings.product_id","products.product_id")
+    .groupBy("biddings.product_id")
+    .count("biddings.product_id as bidding_count")
     .select("products.*").where("seller_id",user_id).andWhere("is_sold",0);
 }
+productModel.productsInActive = async function (user_id) {
+    return db("products").leftJoin('biddings',"biddings.product_id","products.product_id")
+    .groupBy("biddings.product_id")
+    .count("biddings.product_id as bidding_count")
+    .select("products.*").where("seller_id",user_id).andWhere("is_sold",1);
+}
 productModel.getAllBidding = async function (product_id) {
-    return db("biddings").join('biddings',"biddings.product_id","products.product_id")
-    .select("biddings.*").where("products.product_id",product_id)
+    return db("biddings").leftJoin('users',"users.user_id","biddings.user_id").where("product_id",product_id).andWhere("is_valid",1).select("biddings.*").select("full_name");
 }
 productModel.getAllProductEnd = async function () { // use to check won
     return db("products").whereRaw("end_at < now()").andWhere("is_sold",0)
@@ -168,6 +166,11 @@ productModel.updateTimeWhenBidding = async function (product_id) { // use to upd
     where abs(TIMESTAMPDIFF(SECOND, end_at, now())) < 5 * 60 
     and end_at > now()
     and product_id = ${product_id}`)
+}
+
+productModel.updateEndAtEquaNow = async function (product_id) { // use to update time end_at when <= 5 minute
+    return db.raw(`update products set end_at = now()
+    where product_id = ${product_id}`)
 }
 
 export default productModel;

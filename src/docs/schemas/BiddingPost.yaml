@@ -1,0 +1,14 @@
+type: object
+title: Bidding
+description: Schema for a bidding request.
+properties:
+  product_id:
+    type: string
+    description: The id of a product.
+  bid_price:
+    type: integer
+    format: int64
+    description: The price of a bidding.
+required:
+  - bid_price
+  - product_id

@@ -1,0 +1,20 @@
+delete:
+  operationId: deleteBidding
+  summary: reject a bidding and set deny to user permission.
+  parameters:
+    - $ref: "../../../parameters/path/id.yaml"
+  responses:
+    "204":
+      description: Added a bidding.
+    "400":
+      description: if product end
+      $ref: "../../../responses/Error.yaml"
+    "401":
+      $ref: "../../../responses/Error.yaml"
+    "404":
+      description: not found the product or bidding
+      $ref: "../../../responses/Error.yaml"
+    "500":
+      $ref: "../../../responses/Error.yaml"
+  tags:
+    - biddings

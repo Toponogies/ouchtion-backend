@@ -1,0 +1,22 @@
+type: object
+title: BiddingPermission
+description: Schema for a bidding permission request.
+properties:
+  user_id:
+    type: string
+    description: The id of a user.
+  product_id:
+    type: string
+    description: The id of a product.
+  type:
+    type: string
+    default: APPROVE
+    description: The type of a bidding permission.
+  reason:
+    type: string
+    description: The reason of a bidding permission.
+required:
+  - type
+  - user_id
+  - product_id
+  - reason

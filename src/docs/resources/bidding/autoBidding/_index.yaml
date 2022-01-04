@@ -1,0 +1,14 @@
+delete:
+  operationId: deleteAutoBidding
+  summary: disable one autobidding.
+  parameters:
+    - $ref: "../../../parameters/path/id.yaml"
+  responses:
+    "204":
+      description: disable a auto bidding.
+    "401":
+      $ref: "../../../responses/Error.yaml"
+    "500":
+      $ref: "../../../responses/Error.yaml"
+  tags:
+    - biddings

@@ -1,0 +1,53 @@
+type: object
+title: Product
+description: Schema for a product request.
+properties:
+  product_id:
+    type: string
+    description: The id of a product.
+  category_id:
+    type: string
+    description: The password of a category.
+  seller_id:
+    type: string
+    description: The password of a category.
+  name:
+    type: string
+    description: The name of a product.
+  avatar:
+    type: string
+    description: The path of a avatar.
+  start_at:
+    type: string
+    format: date-time
+    description: The timestamp create product.
+  end_at:
+    type: string
+    format: date-time
+    description: The timestamp end bidding product.
+  init_price:
+    type: integer
+    format: int64
+    description: The init price.
+  step_price:
+    type: integer
+    format: int64
+    description: The price step, if not have default is 0
+  buyer_id:
+    type: string
+    description: The id of buyer, who stand 1st in bidding
+  is_sold:
+    type: boolean
+    description: The boolean check bidding end.
+  buy_price:
+    type: string
+    description: The price bidder can buy and close this bidding, if not need default is null.
+  current_price:
+    type: integer
+    description: Current price of this product
+required:
+  - category_id
+  - seller_id
+  - name
+  - end_at
+  - init_price
