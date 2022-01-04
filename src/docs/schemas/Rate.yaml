@@ -1,0 +1,21 @@
+title: Rate
+description: Schema for rate.
+type: object
+properties:
+  rate_id:
+    type: string
+    description: The id of the rate.
+  product_id:
+    type: string
+    description: The id of the product.
+  type:
+    type: string
+    description: The type of the rate.
+    default: BUYER-SELLER
+  rate:
+    type: integer
+    description: The type of the rate only 1 or -1.
+    default: 1
+  comment:
+    type: string
+    description: Comment of one rate

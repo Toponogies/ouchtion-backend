@@ -1,0 +1,9 @@
+type: object
+title: BuyProductRequest
+description: Schema for a buy product request.
+properties:
+  product_id:
+    type: string
+    description: The id of a product.
+required:
+  - product_id

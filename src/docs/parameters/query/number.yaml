@@ -1,0 +1,5 @@
+in: query
+name: number
+description: The number of product get when search.
+schema:
+  type: string

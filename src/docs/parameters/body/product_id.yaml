@@ -1,0 +1,9 @@
+type: object
+title: product id
+description: Schema for an product id.
+properties:
+  product_id:
+    type: string
+    description: The product id.
+required:
+  - product_id

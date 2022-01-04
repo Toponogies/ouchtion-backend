@@ -1,0 +1,35 @@
+post:
+  operationId: getProductsSeller
+  summary: Get all Products of one seller.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          title: SellerId
+          description: Schema for an SellerId.
+          properties:
+            seller_id:
+              type: string
+              description: The id of seller.
+          required:
+            - seller_id
+  responses:
+    "200":
+      description: An array of Products.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../schemas/Product.yaml"
+    "404":
+      description: Not found seller id
+      $ref: "../../responses/Error.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+    default:
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - products

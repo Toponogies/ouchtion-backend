@@ -136,6 +136,7 @@ productModel.productsWon = async function (user_id) {
         .where('buyer_id',user_id).andWhere('is_sold',true);
 };
 productModel.productsBidding = async function (user_id) {
+
     return db('products').leftJoin('biddings','biddings.product_id','products.product_id')
         .groupBy('biddings.product_id')
         .count('biddings.product_id as bidding_count')

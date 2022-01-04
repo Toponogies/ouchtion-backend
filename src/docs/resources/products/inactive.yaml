@@ -1,0 +1,20 @@
+get:
+  operationId: getProductsInActive
+  summary: Get all products of a seller which finish (sort by time)
+  responses:
+    "200":
+      description: An array of products.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../schemas/Product.yaml"
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+    default:
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - products

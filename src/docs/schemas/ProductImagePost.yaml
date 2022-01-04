@@ -1,0 +1,11 @@
+type: object
+title: ProductImagePost
+description: Schema for a product image post.
+properties:
+  image:
+    type: string
+    format: binary
+    description: Upload source of a image to server.
+  is_primary:
+    type: boolean
+    description: Check image is primary.

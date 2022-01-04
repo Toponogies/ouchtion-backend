@@ -1,0 +1,5 @@
+in: query
+name: sort
+description: The sort of a search.
+schema:
+  type: string

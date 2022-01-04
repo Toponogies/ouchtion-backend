@@ -1,3 +1,4 @@
+
 export const UNEXPECTED_ERROR = {
     title: 'INTERNAL_SERVER_ERROR',
     detail: 'Something is wrong.'
@@ -116,6 +117,7 @@ export const NOT_FOUND_CATEGORY = {
     detail: 'Not found a category'
 };
 
+
 export const NOT_FOUND_USER = {
     title: 'NOT_FOUND_USER',
     detail: 'Not found a user'
@@ -126,14 +128,13 @@ export const IS_EXIST = {
     detail: 'This is exist'
 };
 
-export const SEND_REQUEST_EXIST = {
-    title: 'IS_EXIST',
-    detail: 'Only send one request per week'
-};
-
 export const BAD_BIDDING = {
     title: 'BAD_BIDDING',
     detail: 'You don\'t have permission bidding or bad bidding request'
+};
+export const SEND_REQUEST_EXIST = {
+    title: 'IS_EXIST',
+    detail: 'Only send one request per week'
 };
 
 export const BAD_DELETE = {

@@ -1,0 +1,41 @@
+post:
+  operationId: PostNewEmail
+  summary: send token to new email.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../schemas/UserUpdateEmail.yaml"
+  responses:
+    "204":
+      description: Send token to new email
+    "400":
+      description: if email is exist
+      $ref: "../../responses/Error.yaml"
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "404":
+      $ref: "../../responses/Error.yaml"
+    "422":
+      $ref: "../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - users
+put:
+  operationId: UpdateNewEmail
+  summary: Update new email for a User (public endpoint).
+  parameters:
+    - $ref: "../../parameters/query/token.yaml"
+  responses:
+    "204":
+      description: Checks token and changes email.
+    "404":
+      $ref: "../../responses/Error.yaml"
+    "422":
+      $ref: "../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - users

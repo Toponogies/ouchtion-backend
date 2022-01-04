@@ -1,0 +1,48 @@
+get:
+  operationId: getProducts
+  summary: Get all Products.
+  parameters:
+    - $ref: "../../parameters/query/query.yaml"
+    - $ref: "../../parameters/query/sort.yaml"
+    - $ref: "../../parameters/query/category.yaml"
+    - $ref: "../../parameters/query/page.yaml"
+    - $ref: "../../parameters/query/number.yaml"
+  responses:
+    "200":
+      description: An array of Products.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "../../schemas/Product.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+    default:
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - products
+post:
+  operationId: addProduct
+  summary: Add a Product.
+  requestBody:
+    required: true
+    content:
+      multipart/form-data:
+        schema:
+          $ref: "../../schemas/ProductPost.yaml"
+  responses:
+    "200":
+      description: Added a productr.
+      content:
+        application/json:
+          schema:
+            $ref: "../../schemas/Product.yaml"
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "422":
+      $ref: "../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - products

@@ -1,0 +1,18 @@
+get:
+  operationId: getUsePoint
+  summary: Get point of a user (public endpoint).
+  responses:
+    "200":
+      description: An user point.
+      content:
+        application/json:
+          schema:
+            $ref: "../../../schemas/UserPoint.yaml"
+    "404":
+      $ref: "../../../responses/Error.yaml"
+    "500":
+      $ref: "../../../responses/Error.yaml"
+    default:
+      $ref: "../../../responses/Error.yaml"
+  tags:
+    - users

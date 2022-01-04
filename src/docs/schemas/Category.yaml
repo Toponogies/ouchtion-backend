@@ -1,0 +1,13 @@
+type: object
+title: Category
+description: Schema for a category.
+properties:
+  category_id:
+    type: string
+    description: Id of a category
+  parent_category_id:
+    type: string
+    description: Id of a category parent
+  name:
+    type: string
+    description: Name of a category
