@@ -1,4 +1,4 @@
-import sendMail from '../helpers/constants/sendEmail';
+import sendEmail from '../helpers/classes/sendEmail';
 import { productModel, userModel } from '../models';
 
 export default async function checkWon(){
@@ -17,7 +17,7 @@ export default async function checkWon(){
                 subject: 'Product end',
                 text: `Your product name ${product.name} has end`
             };
-            sendMail(mailSellerOptions);
+            sendEmail(mailSellerOptions);
 
 
             if (bidder !== null) {
@@ -28,7 +28,7 @@ export default async function checkWon(){
                     subject: 'Won product',
                     text: `You won product name ${product.name}`
                 };
-                sendMail(mailBidderOptions);
+                sendEmail(mailBidderOptions);
             }
         });
     }

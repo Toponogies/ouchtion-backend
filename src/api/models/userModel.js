@@ -15,10 +15,10 @@ userModel.getPoint = async function (user_id) {
     const sum_like = row1[0].sum_like ? row1[0].sum_like : 0;
     const count_rate = row2[0].count_rate ? row2[0].count_rate : 1;
     const user = await this.findById(user_id);
-    user.point = (sum_like / count_rate).toFixed(2) * 100;
+    user.point = (sum_like / count_rate * 10).toFixed(1);
     return {
         full_name: user.full_name,
-        point: user.point
+        point: user.point,
     };
 };
 userModel.getAllBidding = async function (user_id) {
@@ -113,19 +113,6 @@ userModel.sendUpgrageSellerRequest = async function (body) {
 
 userModel.getAllRequestSeller = async function () {
     return await db('upgrage_seller_request');
-};
-
-userModel.getPoint = async function (user_id) {
-    const row1 = await db('products').join('rates','rates.product_id','products.product_id').sum('rate as sum_like').whereRaw(`((products.buyer_id= ${user_id} and type = 'SELLER-BUYER') or (products.seller_id= ${user_id} and type = 'BUYER-SELLER')) and rate > 0`);
-    const row2 = await db('products').join('rates','rates.product_id','products.product_id').count('rate as count_rate').whereRaw(`(products.buyer_id= ${user_id} and type = 'SELLER-BUYER') or (products.seller_id= ${user_id} and type = 'BUYER-SELLER')`);
-    const sum_like = row1[0].sum_like ? row1[0].sum_like : 0;
-    const count_rate = row2[0].count_rate ? row2[0].count_rate : 1;
-    const user = await this.findById(user_id);
-    user.point = (sum_like / count_rate).toFixed(2) * 100;
-    return {
-        full_name: user.full_name,
-        point: user.point
-    };
 };
 
 export default userModel;
