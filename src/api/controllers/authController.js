@@ -21,7 +21,7 @@ import {
     setExRedis,
 } from '../helpers/constants/redisClient';
 import userModel from '../models/userModel';
-import sendEmail from '../helpers/constants/sendEmail';
+import sendEmail from '../helpers/classes/sendEmail';
 
 const optsAccess = {
     expiresIn: process.env.EXPIRED_ACCESSTOKEN,
