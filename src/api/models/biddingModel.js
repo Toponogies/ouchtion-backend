@@ -90,7 +90,7 @@ biddingModel.isBiddingPermission= async function (body) {
     if (list.length === 0)
     {
         const {full_name,point} = await userModel.getPoint(body.user_id);
-        if (point > 80)
+        if (point > 8)
             return true;
         return false;
     }
