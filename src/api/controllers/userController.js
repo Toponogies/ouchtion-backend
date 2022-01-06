@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 dotenv.config();
 import { EXPIRED_VERIFYTOKEN, INVAILD_VERIFYTOKEN, IS_EXIST, NOT_FOUND_USER, NOT_FOUND_WATCH, NOT_PERMISSION, PRODUCT_NOT_END, SEND_REQUEST_EXIST, UNEXPECTED_ERROR, WRONG_PASSWORD } from '../helpers/constants/Errors';
-import sendMail from '../helpers/constants/sendEmail';
+import sendEmail from '../helpers/classes/sendEmail';
 import { biddingModel, userModel } from '../models';
 
 
@@ -223,7 +223,7 @@ export default {
                 text: `Link to update email : http://localhost:3000/updateEmail?token=${token}`
             };
 
-            sendMail(mailOptions);
+            sendEmail(mailOptions);
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
             console.log(err);

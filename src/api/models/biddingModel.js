@@ -1,5 +1,5 @@
 import db from '../helpers/constants/db.js';
-import sendMail from '../helpers/constants/sendEmail.js';
+import sendEmail from '../helpers/classes/sendEmail';
 import generate from './generic.model.js';
 import productModel from './productModel.js';
 import userModel from './userModel.js';
@@ -42,7 +42,7 @@ biddingModel.addBidding= async function (body) {
             subject: 'Product have new bidding',
             text: `Your product name ${product.name} has new bidding from user id ${body.user_id}`
         };
-        sendMail(mailSellerOptions);
+        sendEmail(mailSellerOptions);
 
         let mailBidderOptions = { // mail to bidding's bidder
             from: 'norely@gmail.com',
@@ -50,7 +50,7 @@ biddingModel.addBidding= async function (body) {
             subject: 'Bidding success',
             text: `Your bididng of product name ${product.name} has success`
         };
-        sendMail(mailBidderOptions);
+        sendEmail(mailBidderOptions);
         if (price_hoder)
         {
             let mailPriceHoderOptions = { // mail to current price buyer
@@ -59,7 +59,7 @@ biddingModel.addBidding= async function (body) {
                 subject: 'Product have new bidding',
                 text: `Product name ${product.name} has new bidding`
             };
-            sendMail(mailPriceHoderOptions);
+            sendEmail(mailPriceHoderOptions);
         }
     }
     return true;
@@ -90,7 +90,7 @@ biddingModel.isBiddingPermission= async function (body) {
     if (list.length === 0)
     {
         const {full_name,point} = await userModel.getPoint(body.user_id);
-        if (point > 80)
+        if (point > 8)
             return true;
         return false;
     }
@@ -185,7 +185,7 @@ biddingModel.rejectBidding = async function(bidding_id){
         subject: 'Bidding reject',
         text: `All your bididng of product name ${product.name} has deny, you can't bidding in this product`
     };
-    sendMail(mailBidderOptions);
+    sendEmail(mailBidderOptions);
 
     if (product.buyer_id === bidding.user_id)
     {

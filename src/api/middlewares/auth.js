@@ -10,7 +10,7 @@ export default function auth(req, res, next) {
     }
     if (accessToken) {
         try {
-            var result = jwt.verify(accessToken, process.env.SERET_KEY);
+            var result = jwt.verify(accessToken, process.env.SECRET_KEY);
             req.accessTokenPayload = result;
             return next();
         } catch (err) {
