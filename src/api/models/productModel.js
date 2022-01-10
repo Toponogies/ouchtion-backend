@@ -105,10 +105,10 @@ productModel.addImage = async function (product_id,path_image,is_primary) {
     return await db("product_images").insert(entity);
 }
 productModel.addDescription = async function (entity) {
-    return db('product_descriptions').insert(entity);
+    return await db('product_descriptions').insert(entity);
 };
 productModel.deleteDescription = async function (product_id, description_id) {
-    return db('product_descriptions')
+    return await db('product_descriptions')
         .where('product_id', product_id)
         .where('product_description_id', description_id)
         .del();
