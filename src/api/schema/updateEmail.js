@@ -1,8 +1,8 @@
 export var schema = {
-    type: "object",
+    type: 'object',
     properties: {
-      token: {type: "string"},
+        token: {type: 'string'},
     },
-    required: ["token"],
+    required: ['token'],
     additionalProperties: false,
-}
+};

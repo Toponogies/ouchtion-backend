@@ -7,11 +7,11 @@ var storageAvatar = multer.diskStorage({
         cb(null, 'localdata/product_avatar');
     },
     filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-        cb(null, uniqueSuffix + path.extname(file.originalname))
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + path.extname(file.originalname));
     }
 });
-export const uploadAvatar = multer({ storage: storageAvatar })
+export const uploadAvatar = multer({ storage: storageAvatar });
 
 // create multer
 var storageImage = multer.diskStorage({
@@ -19,15 +19,15 @@ var storageImage = multer.diskStorage({
         if (!fs.existsSync(`localdata/product_image/${req.params.id}`)) {
             fs.mkdir(`localdata/product_image/${req.params.id}`, { recursive: true }, (err) => {
                 if (err){
-                    console.log("Can't create directory");
+                    console.log('Can\'t create directory');
                 }
             });
         }
         cb(null, `localdata/product_image/${req.params.id}`);
     },
     filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-        cb(null, uniqueSuffix + path.extname(file.originalname))
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + path.extname(file.originalname));
     }
 });
 export const uploadImage = multer({ storage: storageImage });

@@ -1,0 +1,44 @@
+get:
+  operationId: getAllRequestSeller
+  summary: Get all request seller (only admin use)
+  responses:
+    "200":
+      description: Got a array request seller.
+      content:
+        application/json:
+          schema:
+            $ref: "../../schemas/RequestSeller.yaml"
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "404":
+      $ref: "../../responses/Error.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+    default:
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - users
+post:
+  operationId: addRequestSeller
+  summary: add request seller of user.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../schemas/RequestSellerPost.yaml"
+  responses:
+    "204":
+      description: Updated a user.
+    "401":
+      $ref: "../../responses/Error.yaml"
+    "404":
+      $ref: "../../responses/Error.yaml"
+    "422":
+      $ref: "../../responses/ValidationError.yaml"
+    "500":
+      $ref: "../../responses/Error.yaml"
+    default:
+      $ref: "../../responses/Error.yaml"
+  tags:
+    - users

@@ -5,14 +5,14 @@ export default async function autoBidding(){
     try {
         const list = await biddingModel.getAllAutoBiddingValid();
         list.forEach(async autoBidding => {
-            var product = await productModel.getProductUseAutoBidding(autoBidding.product_id,autoBidding.bidding_id)
+            var product = await productModel.getProductUseAutoBidding(autoBidding.product_id,autoBidding.bidding_id);
             if (product === null)
             {
                 product = await productModel.findById(autoBidding.product_id);
             }
             if (product.is_sold == 1){
                 await biddingModel.disableOneAutoBidding(autoBidding.bidding_id);
-                return
+                return;
             }
             // max all autobidding
             product.current_max_price = product.current_max_price && product.current_max_price !== null ? product.current_max_price : 0;
@@ -30,10 +30,10 @@ export default async function autoBidding(){
                     await productModel.patch(autoBidding.product_id,{
                         buyer_id:autoBidding.user_id,
                         current_price:price_need
-                    })
+                    });
                     await biddingModel.patch(autoBidding.bidding_id,{
                         bid_price:price_need
-                    })
+                    });
                     // update time product end
                     await productModel.updateTimeWhenBidding(product.product_id);
 
@@ -57,10 +57,10 @@ export default async function autoBidding(){
                     // update current_price
                     await productModel.patch(autoBidding.product_id,{
                         current_price:price_need
-                    })
+                    });
                     await biddingModel.patch(autoBidding.bidding_id,{
                         bid_price:price_need
-                    })
+                    });
                     // update time product end
                     await productModel.updateTimeWhenBidding(product.product_id);
 

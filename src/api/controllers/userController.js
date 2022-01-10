@@ -1,12 +1,14 @@
 import httpStatus from 'http-status-codes';
-import jwt from 'jsonwebtoken'
-import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 dotenv.config();
 import { EXPIRED_VERIFYTOKEN, INVAILD_VERIFYTOKEN, IS_EXIST, NOT_FOUND_USER, NOT_FOUND_WATCH, NOT_PERMISSION, PRODUCT_NOT_END, SEND_REQUEST_EXIST, UNEXPECTED_ERROR, WRONG_PASSWORD } from '../helpers/constants/Errors';
-import sendMail from '../helpers/constants/sendEmail';
-import { biddingModel, userModel } from "../models";
+
+import sendEmail from '../helpers/classes/sendEmail';
+import { biddingModel, userModel } from '../models';
 import { getIO } from "../helpers/constants/socketIO"
+
 
 export default {
     getPoint: async (req, res) => {
@@ -19,8 +21,8 @@ export default {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
             }
 
-            const result = await userModel.getPoint(req.params.id)
-            res.json(result)
+            const result = await userModel.getPoint(req.params.id);
+            res.json(result);
         } catch (err) {
             console.log(err);
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
@@ -29,7 +31,7 @@ export default {
     getUser: async (req, res) => {
         try{
             // get user id from token
-            const user_id = req.accessTokenPayload.userId
+            const user_id = req.accessTokenPayload.userId;
             // get user by id
             const user = await userModel.findById(user_id);
 
@@ -38,11 +40,11 @@ export default {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
             }
 
-            delete user.password
-            delete user.is_active
-            delete user.role
+            delete user.password;
+            delete user.is_active;
+            delete user.role;
 
-            res.json(user)
+            res.json(user);
         } catch (err) {
             console.log(err);
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
@@ -51,7 +53,7 @@ export default {
     getAllBidding: async (req, res) => {
         try{
             // get user id from token
-            const user_id = req.accessTokenPayload.userId
+            const user_id = req.accessTokenPayload.userId;
             // get user by id
             const user = await userModel.findById(user_id);
 
@@ -60,8 +62,8 @@ export default {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
             }
 
-            const biddings = await biddingModel.getAllBiddingUser(user_id)
-            res.json(biddings)
+            const biddings = await biddingModel.getAllBiddingUser(user_id);
+            res.json(biddings);
         } catch (err) {
             console.log(err);
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
@@ -70,7 +72,7 @@ export default {
     updateUser: async (req, res) => {
         try{
             // get user id from token
-            const user_id = req.accessTokenPayload.userId
+            const user_id = req.accessTokenPayload.userId;
             // get user by id
             const user = await userModel.findById(user_id);
 
@@ -81,20 +83,20 @@ export default {
 
             // check password
             if (bcrypt.compareSync(req.body.password, user.password) === false) {
-                return res.status(httpStatus.UNAUTHORIZED).send(WRONG_PASSWORD)
+                return res.status(httpStatus.UNAUTHORIZED).send(WRONG_PASSWORD);
             }
 
             if (req.body.newPassword)
             {
                 req.body.password = req.body.newPassword;
-                delete req.body.newPassword
+                delete req.body.newPassword;
                 req.body.password = bcrypt.hashSync(req.body.password, 10);
             }
             else{
-                delete req.body.password
+                delete req.body.password;
             }
 
-            const n = await userModel.patch(user_id,req.body)
+            const n = await userModel.patch(user_id,req.body);
             if (n === 0) {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
             }
@@ -115,7 +117,7 @@ export default {
     },
     sendUpgrageSellerRequest: async (req,res) =>{
         try{
-            const user_id = req.accessTokenPayload.userId
+            const user_id = req.accessTokenPayload.userId;
             // get user by id
             const user = await userModel.findById(user_id);
 
@@ -123,9 +125,9 @@ export default {
             if (user === null) {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
             }
-            req.body.user_id = user_id
+            req.body.user_id = user_id;
 
-            const check = await userModel.isHaveUpgrageSellerRequest(user_id)
+            const check = await userModel.isHaveUpgrageSellerRequest(user_id);
             if (check === true)
             {
                 return res.status(httpStatus.BAD_REQUEST).send(SEND_REQUEST_EXIST);
@@ -147,11 +149,11 @@ export default {
     },
     getAllRequestSeller: async (req,res) =>{
         try{
-            if (req.accessTokenPayload.role !== "admin") {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            if (req.accessTokenPayload.role !== 'admin') {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
             }
 
-            const requestSellers = await userModel.getAllRequestSeller()
+            const requestSellers = await userModel.getAllRequestSeller();
             return res.json(requestSellers);
         } catch (err) {
             console.log(err);
@@ -163,8 +165,8 @@ export default {
             // get user id from token
             const user_id = req.body.user_id;
 
-            if (req.accessTokenPayload.role !== "admin") {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            if (req.accessTokenPayload.role !== 'admin') {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
             }
 
             // get user by id
@@ -175,7 +177,7 @@ export default {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
             }
 
-            const n = await userModel.patch(user_id,req.body)
+            const n = await userModel.patch(user_id,req.body);
             if (n === 0) {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
             }
@@ -194,10 +196,10 @@ export default {
     },
     getAllUser: async (req, res) => {
         try{
-            if (req.accessTokenPayload.role !== "admin") {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            if (req.accessTokenPayload.role !== 'admin') {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
             }
-            const users = await userModel.findAll()
+            const users = await userModel.findAll();
             return res.json(users);
         } catch (err) {
             console.log(err);
@@ -208,7 +210,7 @@ export default {
         try{
             const email = req.body.email;
             // get user id from token
-            const user_id = req.accessTokenPayload.userId
+            const user_id = req.accessTokenPayload.userId;
 
             //find user by email
             const userEmail = await userModel.findByEmail(email);
@@ -224,7 +226,7 @@ export default {
 
             // check password
             if (bcrypt.compareSync(req.body.password, user.password) === false) {
-                return res.status(httpStatus.UNAUTHORIZED).send(WRONG_PASSWORD)
+                return res.status(httpStatus.UNAUTHORIZED).send(WRONG_PASSWORD);
             }
 
             // create new token
@@ -246,7 +248,7 @@ export default {
                 text: `Link to update email : http://localhost:3000/updateEmail?token=${token}`
             };
 
-            sendMail(mailOptions)
+            sendEmail(mailOptions);
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
             console.log(err);
@@ -255,10 +257,10 @@ export default {
     },
     updateEmail: async (req, res) => {
         try{
-            const token = req.query.token
+            const token = req.query.token;
             // 2 temp variable
             var _userId = -1;
-            var _email = "";
+            var _email = '';
 
             // verify token and get user id
             try {
@@ -266,11 +268,11 @@ export default {
                 _userId = userId;
                 _email = email;
             } catch (err) {
-                console.log(err)
-                if (err.name === "TokenExpiredError")
-                    return res.status(httpStatus.UNAUTHORIZED).send(EXPIRED_VERIFYTOKEN)
+                console.log(err);
+                if (err.name === 'TokenExpiredError')
+                    return res.status(httpStatus.UNAUTHORIZED).send(EXPIRED_VERIFYTOKEN);
                 else
-                    return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_VERIFYTOKEN)
+                    return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_VERIFYTOKEN);
             }
 
             await userModel.patch(_userId,{email:_email})
@@ -292,7 +294,7 @@ export default {
     getAllRate: async (req, res) => {
         try{
             // get user id from token
-            const user_id = req.accessTokenPayload.userId
+            const user_id = req.accessTokenPayload.userId;
             // get user by id
             const user = await userModel.findById(user_id);
             // check product exist
@@ -300,8 +302,8 @@ export default {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
             }
 
-            const rates = await userModel.getAllRate(user_id)
-            return res.send(rates)
+            const rates = await userModel.getAllRate(user_id);
+            return res.send(rates);
         } catch (err) {
             console.log(err);
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
@@ -310,7 +312,7 @@ export default {
     getAllProductNotRate: async (req, res) => {
         try{
             // get user id from token
-            const user_id = req.accessTokenPayload.userId
+            const user_id = req.accessTokenPayload.userId;
             // get user by id
             const user = await userModel.findById(user_id);
 
@@ -320,19 +322,19 @@ export default {
             }
 
             // check if user is bidder
-            if (req.accessTokenPayload.role === "bidder")
+            if (req.accessTokenPayload.role === 'bidder')
             {
-                const products = await userModel.getAllProductBidderNotRate(user_id)
-                return res.send(products)
+                const products = await userModel.getAllProductBidderNotRate(user_id);
+                return res.send(products);
             }
 
             //check if user is seller
-            if (req.accessTokenPayload.role === "seller")
+            if (req.accessTokenPayload.role === 'seller')
             {
-                const products = await userModel.getAllProductSellerNotRate(user_id)
-                return res.send(products)
+                const products = await userModel.getAllProductSellerNotRate(user_id);
+                return res.send(products);
             }
-            return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION)
+            return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
         } catch (err) {
             console.log(err);
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
@@ -341,7 +343,7 @@ export default {
     getWatchList: async (req, res) => {
         try{
             // get user id from token
-            const user_id = req.accessTokenPayload.userId
+            const user_id = req.accessTokenPayload.userId;
             // get user by id
             const user = await userModel.findById(user_id);
 
@@ -350,8 +352,8 @@ export default {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
             }
 
-            const watchlist = await userModel.getWatchList(user_id)
-            return res.send(watchlist)
+            const watchlist = await userModel.getWatchList(user_id);
+            return res.send(watchlist);
         } catch (err) {
             console.log(err);
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
@@ -360,7 +362,7 @@ export default {
     postRate: async (req, res) => {
         try{
             // get user id from token
-            const user_id = req.accessTokenPayload.userId
+            const user_id = req.accessTokenPayload.userId;
             // get user by id
             const user = await userModel.findById(user_id);
 
@@ -370,16 +372,16 @@ export default {
             }
 
             // if user is bidder
-            if (req.accessTokenPayload.role === "bidder")
+            if (req.accessTokenPayload.role === 'bidder')
             {
                 // check product finish
-                const isCanRate = await userModel.isBidderCanRate(user_id,req.body.product_id)
+                const isCanRate = await userModel.isBidderCanRate(user_id,req.body.product_id);
                 if (!isCanRate){
                     return res.status(httpStatus.BAD_REQUEST).send(PRODUCT_NOT_END);
                 }
 
                 // check rate exist
-                const isInRate = await userModel.isBidderInRate(user_id,req.body.product_id)
+                const isInRate = await userModel.isBidderInRate(user_id,req.body.product_id);
                 if (isInRate){
                     return res.status(httpStatus.BAD_REQUEST).send(IS_EXIST);
                 }
@@ -393,21 +395,21 @@ export default {
                     message:"new rate add",
                     data: req.body,
                 })
-
+              
                 return res.status(httpStatus.NO_CONTENT).send();
             }
 
             //if user is seller
-            if (req.accessTokenPayload.role === "seller")
+            if (req.accessTokenPayload.role === 'seller')
             {
                 // check product finish
-                const isCanRate = await userModel.isSellerCanRate(user_id,req.body.product_id)
+                const isCanRate = await userModel.isSellerCanRate(user_id,req.body.product_id);
                 if (!isCanRate){
                     return res.status(httpStatus.BAD_REQUEST).send(PRODUCT_NOT_END);
                 }
 
                 // check rate exist
-                const isInRate = await userModel.isSellerInRate(user_id,req.body.product_id)
+                const isInRate = await userModel.isSellerInRate(user_id,req.body.product_id);
                 if (isInRate){
                     return res.status(httpStatus.BAD_REQUEST).send(IS_EXIST);
                 }
@@ -432,7 +434,7 @@ export default {
     addWatch: async (req, res) => {
         try{
             // get user id from token
-            const user_id = req.accessTokenPayload.userId
+            const user_id = req.accessTokenPayload.userId;
             // get user by id
             const user = await userModel.findById(user_id);
 
@@ -442,11 +444,11 @@ export default {
             }
 
             // check watch exist
-            const isInWatchList = await userModel.isInWatchList(user_id,req.body.product_id)
+            const isInWatchList = await userModel.isInWatchList(user_id,req.body.product_id);
             if (isInWatchList){
                 return res.status(httpStatus.BAD_REQUEST).send(IS_EXIST);
             }
-            await userModel.addWatch(user_id,req.body.product_id)
+            await userModel.addWatch(user_id,req.body.product_id);
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
             console.log(err);
@@ -456,7 +458,7 @@ export default {
     deleteWatch:  async (req, res) => {
         try{
             // get user id from token
-            const user_id = req.accessTokenPayload.userId
+            const user_id = req.accessTokenPayload.userId;
             // get user by id
             const user = await userModel.findById(user_id);
 
@@ -465,7 +467,7 @@ export default {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
             }
 
-            const n = await userModel.deleteWatch(user_id,req.body.product_id)
+            const n = await userModel.deleteWatch(user_id,req.body.product_id);
             if (n === 0) {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_WATCH);
             }
@@ -475,4 +477,4 @@ export default {
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
         }
     },
-}    
+};    

@@ -1,8 +1,8 @@
 export const schema = {
-    type: "object",
+    type: 'object',
     properties: {
-      name: {type: "string"},
-      category_id: {type: "string"},
+        name: {type: 'string'},
+        category_id: {type: 'string'},
     },
     additionalProperties: false,
-}
+};

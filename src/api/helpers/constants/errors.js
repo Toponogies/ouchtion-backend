@@ -1,3 +1,4 @@
+
 export const UNEXPECTED_ERROR = {
     title: 'INTERNAL_SERVER_ERROR',
     detail: 'Something is wrong.'
@@ -34,119 +35,119 @@ export const DB_QUERY_ERROR = {
 };
 
 export const INVAILD_ACCESSTOKEN = {
-    title: "INVAILD_ACCESSTOKEN",
-    detail: "Invalid access token."
+    title: 'INVAILD_ACCESSTOKEN',
+    detail: 'Invalid access token.'
 };
 
 export const NOTFOUND_ACCESSTOKEN = {
-    title: "NOTFOUND_ACCESSTOKEN",
-    detail: "Not found access token."
+    title: 'NOTFOUND_ACCESSTOKEN',
+    detail: 'Not found access token.'
 };
 
 export const INVAILD_REFRESHTOKEN = {
-    title: "INVAILD_REFRESHTOKEN.",
-    detail: "Invalid refresh token."
+    title: 'INVAILD_REFRESHTOKEN.',
+    detail: 'Invalid refresh token.'
 };
 
 export const EXPIRED_ACCESSTOKEN = {
-    title: "EXPIRED_ACCESSTOKEN",
-    detail: "Access token is expried"
+    title: 'EXPIRED_ACCESSTOKEN',
+    detail: 'Access token is expried'
 };
 
 export const EXPIRED_REFRESHTOKEN = {
-    title: "EXPIRED_REFRESHTOKEN",
-    detail: "Refresh token is expried"
+    title: 'EXPIRED_REFRESHTOKEN',
+    detail: 'Refresh token is expried'
 };
 
 export const INVAILD_VERIFYTOKEN = {
-    title: "INVAILD_VERIFYTOKEN",
-    detail: "Invalid verify token."
+    title: 'INVAILD_VERIFYTOKEN',
+    detail: 'Invalid verify token.'
 };
 
 export const EXPIRED_VERIFYTOKEN = {
-    title: "EXPIRED_VERIFYTOKEN",
-    detail: "Verify token is expried"
+    title: 'EXPIRED_VERIFYTOKEN',
+    detail: 'Verify token is expried'
 };
 
 export const ACCOUNT_NOT_ACTIVE = {
-    title: "ACCOUNT_NOT_ACTIVE",
-    detail: "Account not active"
+    title: 'ACCOUNT_NOT_ACTIVE',
+    detail: 'Account not active'
 };
 
 export const NOT_PERMISSION = {
-    title: "NOT_PERMISSION",
-    detail: "Not permission access endpoint"
+    title: 'NOT_PERMISSION',
+    detail: 'Not permission access endpoint'
 };
 
 export function VALIDATION_ERROR(validate_err){
     return {
-        title: "VALIDATION_ERROR",
-        detail: "Can't validation this request",
+        title: 'VALIDATION_ERROR',
+        detail: 'Can\'t validation this request',
         field: validate_err
     };
 }
 
 export const NOT_FOUND_PRODUCT = {
-    title: "NOT_FOUND_PRODUCT",
-    detail: "Not found product"
+    title: 'NOT_FOUND_PRODUCT',
+    detail: 'Not found product'
 };
 
 export const NOT_FOUND_WATCH = {
-    title: "NOT_FOUND_WATCH",
-    detail: "Not found watch"
+    title: 'NOT_FOUND_WATCH',
+    detail: 'Not found watch'
 };
 
 export const NOT_FOUND_IMAGE = {
-    title: "NOT_FOUND_IMAGE",
-    detail: "Not found image"
+    title: 'NOT_FOUND_IMAGE',
+    detail: 'Not found image'
 };
 
 export const NOT_FOUND_FILE = {
-    title: "NOT_FOUND_FILE",
-    detail: "Not found file"
-}
+    title: 'NOT_FOUND_FILE',
+    detail: 'Not found file'
+};
 
 export const NOT_FOUND_BIDDING = {
-    title: "NOT_FOUND_BIDDING",
-    detail: "Not found bidding"
-}
+    title: 'NOT_FOUND_BIDDING',
+    detail: 'Not found bidding'
+};
 
 export const NOT_FOUND_CATEGORY = {
-    title: "NOT_FOUND_CATEGORY",
-    detail: "Not found a category"
-}
+    title: 'NOT_FOUND_CATEGORY',
+    detail: 'Not found a category'
+};
+
 
 export const NOT_FOUND_USER = {
-    title: "NOT_FOUND_USER",
-    detail: "Not found a user"
-}
+    title: 'NOT_FOUND_USER',
+    detail: 'Not found a user'
+};
 
 export const IS_EXIST = {
-    title: "IS_EXIST",
-    detail: "This is exist"
-}
-
-export const SEND_REQUEST_EXIST = {
-    title: "IS_EXIST",
-    detail: "Only send one request per week"
-}
+    title: 'IS_EXIST',
+    detail: 'This is exist'
+};
 
 export const BAD_BIDDING = {
-    title: "BAD_BIDDING",
-    detail: "You don't have permission bidding or bad bidding request"
-}
+    title: 'BAD_BIDDING',
+    detail: 'You don\'t have permission bidding or bad bidding request'
+};
+export const SEND_REQUEST_EXIST = {
+    title: 'IS_EXIST',
+    detail: 'Only send one request per week'
+};
 
 export const BAD_DELETE = {
-    title: "BAD_DELETE",
-    detail: "You don't remove when it have foreign key in database"
-}
+    title: 'BAD_DELETE',
+    detail: 'You don\'t remove when it have foreign key in database'
+};
 
 export const BAD_REQUEST = {
-    title: "BAD_REQUEST",
-    detail: "Some key not same with foreign key"
-}
+    title: 'BAD_REQUEST',
+    detail: 'Some key not same with foreign key'
+};
 
 export const PRODUCT_NOT_END = {
-    title: "PRODUCT_NOT_END",
-    detail: "Product bidding not finish"
-}
+    title: 'PRODUCT_NOT_END',
+    detail: 'Product bidding not finish'
+};

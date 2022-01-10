@@ -1,0 +1,14 @@
+type: object
+title: Bidding
+description: Schema for a bidding request.
+properties:
+  product_id:
+    type: string
+    description: The id of a product.
+  max_price:
+    type: integer
+    format: int64
+    description: The max price of a autobidding.
+required:
+  - max_price
+  - product_id

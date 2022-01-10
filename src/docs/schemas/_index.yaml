@@ -1,18 +1,82 @@
 AccessToken:
   $ref: "./AccessToken.yaml"
+Category:
+  $ref: "./Category.yaml"
+CategoryPost:
+  $ref: "./CategoryPost.yaml"
+
+AutoBidding:
+  $ref: "./AutoBiddingPost.yaml"
+Bidding:
+  $ref: "./Bidding.yaml"
+BiddingPermission:
+  $ref: "./BiddingPermission.yaml"
+BiddingPermissionGet:
+  $ref: "./BiddingPermissionPost.yaml"
+BiddingPost:
+  $ref: "./BiddingPost.yaml"
+BiddingRequest:
+  $ref: "./BiddingRequest.yaml"
+BiddingRequestPostDelete:
+  $ref: "./BiddingRequestPostDelete.yaml"
+BuyProduct:
+  $ref: "./BuyProduct.yaml"
+# Bidding:
+#   $ref: "./BiddingOfUser.yaml"
+  # $ref: "./BiddingOfProduct.yaml"
 Error:
   $ref: "./Error.yaml"
+Image:
+  $ref: "./Image.yaml"
 Login:
   $ref: "./Login.yaml"
+ProductCanRate:
+  $ref: "./ProductCanRate.yaml"
+Rate:
+  $ref: "./Rate.yaml"
+RatePost:
+  $ref: "./RatePost.yaml"
+Product:
+  $ref: "./Product.yaml"
+ProductDescription:
+  $ref: "./ProductDescription.yaml"
+ProductDescriptionPost:
+  $ref: "./ProductDescriptionPost.yaml"
+ProductImage:
+  $ref: "./ProductImage.yaml"
+ProductImagePost:
+  $ref: "./ProductImagePost.yaml"
+ProductPost:
+  $ref: "./ProductUpdate.yaml"
+ProductUpdate:
+  $ref: "./ProductPost.yaml"
 RefreshToken:
   $ref: "./RefreshToken.yaml"
 Register:
   $ref: "./Register.yaml"
+RequestSeller:
+  $ref: "./RequestSeller.yaml"
+RequestSellerPost:
+  $ref: "./RequestSellerPost.yaml"
 ResetPassword:
   $ref: "./ResetPassword.yaml"
+Role:
+  $ref: "./Role.yaml"
 Tokens:
   $ref: "./Tokens.yaml"
 User:
   $ref: "./User.yaml"
+UserPoint:
+  $ref: "./UserPoint.yaml"
+UserShort:  
+  $ref: "./UserShort.yaml"
+UserUpdate:
+  $ref: "./UserUpdate.yaml"
+UserUpdateEmail:
+  $ref: "./UserUpdateEmail.yaml"
 ValidationError:
   $ref: "./ValidationError.yaml"
+Watch:
+  $ref: "./Watch.yaml"
+WatchPostDelete:
+  $ref: "./WatchPostDelete.yaml"

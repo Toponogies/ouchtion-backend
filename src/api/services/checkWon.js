@@ -1,12 +1,12 @@
-import sendMail from "../helpers/constants/sendEmail";
-import { productModel, userModel } from "../models";
+import sendEmail from '../helpers/classes/sendEmail';
+import { productModel, userModel } from '../models';
 
 export default async function checkWon(){
     try {
         const list = await productModel.getAllProductEnd();
         list.forEach(async product => {
             // update field product end
-            await productModel.patch(product.product_id, { is_sold: 1 })
+            await productModel.patch(product.product_id, { is_sold: 1 });
             // find seller and bidder 
             const seller = await userModel.findById(product.seller_id);
             const bidder = await userModel.findById(product.buyer_id);
@@ -17,7 +17,7 @@ export default async function checkWon(){
                 subject: 'Product end',
                 text: `Your product name ${product.name} has end`
             };
-            sendMail(mailSellerOptions)
+            sendEmail(mailSellerOptions);
 
 
             if (bidder !== null) {
@@ -28,7 +28,7 @@ export default async function checkWon(){
                     subject: 'Won product',
                     text: `You won product name ${product.name}`
                 };
-                sendMail(mailBidderOptions)
+                sendEmail(mailBidderOptions);
             }
         });
     }

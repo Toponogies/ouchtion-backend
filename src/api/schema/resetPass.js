@@ -1,9 +1,9 @@
 export var schema = {
-    type: "object",
+    type: 'object',
     properties: {
-      password: {type: "string"},
-      token: {type: "string"}
+        password: {type: 'string'},
+        token: {type: 'string'}
     },
-    required: ["password","token"],
+    required: ['password','token'],
     additionalProperties: false,
-}
+};

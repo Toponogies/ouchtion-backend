@@ -31,8 +31,8 @@ app.use(morgan('dev'));
 router(app);
 
 // Service
-checkWon()
-autoBidding()
+checkWon();
+autoBidding();
 
 // socket
 var server = http.createServer(app);
