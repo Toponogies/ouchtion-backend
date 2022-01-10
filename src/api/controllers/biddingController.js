@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import { biddingModel,productModel } from '../models';
 import { BAD_BIDDING, IS_EXIST, NOT_FOUND_BIDDING, NOT_FOUND_PRODUCT, NOT_PERMISSION, UNEXPECTED_ERROR } from '../helpers/constants/Errors';
 dotenv.config();
+import {getIO} from "../helpers/constants/socketIO"
 
 export default {
     addAutoBidding: async (req, res) => {
@@ -65,6 +66,18 @@ export default {
                 return res.status(httpStatus.BAD_REQUEST).send(BAD_BIDDING);
             }
 
+            const bidding = await biddingModel.findById(check);
+            const users = await biddingModel.findAllUserId(product.product_id);
+
+            // socket emit
+            getIO().emit("addBidding",{
+                message:"new bidding add",
+                data:{
+                    bidding: bidding,
+                    users: users,
+                },
+            })
+
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
             console.log(err);
@@ -119,6 +132,13 @@ export default {
             }
 
             await biddingModel.addBiddingRequest(req.body);
+
+            // socket emit
+            getIO().emit("addBiddingRequest",{
+                message:"new bidding request",
+                data: req.body,
+            })
+
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
             console.log(err);
@@ -157,6 +177,13 @@ export default {
             }
 
             await biddingModel.permissionBidding(req.body);
+
+            // socket emit
+            getIO().emit("addBiddingPermission",{
+                message:"new bidding permission",
+                data: req.body,
+            })
+
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
             console.log(err);
@@ -197,6 +224,13 @@ export default {
             }
 
             await biddingModel.notAllowBidding(req.body);
+
+            // socket emit
+            getIO().emit("rejectBiddingRequest",{
+                message:"reject bidding request",
+                data: req.body,
+            })
+
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
             console.log(err);
@@ -232,6 +266,12 @@ export default {
             {
                 return res.status(httpStatus.BAD_REQUEST).send(NOT_PERMISSION);
             }
+
+            // socket emit
+            getIO().emit("rejectBidding",{
+                message:"reject bidding this product",
+                data: bidding,
+            })
 
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {

@@ -62,8 +62,13 @@ biddingModel.addBidding= async function (body) {
             sendEmail(mailPriceHoderOptions);
         }
     }
-    return true;
-};
+    return biddingId;
+}
+
+biddingModel.findAllUserId = async function (product_id) {
+    const list = await db("biddings").where("product_id", product_id).select("user_id").groupBy("user_id");
+    return list
+}
 
 biddingModel.isHaveBiddingRequest= async function (body) {
     const list = await db('bidding_approval_requests').where('user_id', body.user_id).andWhere('product_id',body.product_id);
