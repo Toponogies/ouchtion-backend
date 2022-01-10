@@ -4,8 +4,10 @@ import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 dotenv.config();
 import { EXPIRED_VERIFYTOKEN, INVAILD_VERIFYTOKEN, IS_EXIST, NOT_FOUND_USER, NOT_FOUND_WATCH, NOT_PERMISSION, PRODUCT_NOT_END, SEND_REQUEST_EXIST, UNEXPECTED_ERROR, WRONG_PASSWORD } from '../helpers/constants/Errors';
+
 import sendEmail from '../helpers/classes/sendEmail';
 import { biddingModel, userModel } from '../models';
+import { getIO } from "../helpers/constants/socketIO"
 
 
 export default {
@@ -98,6 +100,15 @@ export default {
             if (n === 0) {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
             }
+
+            const newUser = await userModel.findById(user_id);
+
+            // socket emit
+            getIO().emit("updateUser",{
+                message:"User update",
+                data: newUser,
+            })
+
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
             console.log(err);
@@ -122,7 +133,14 @@ export default {
                 return res.status(httpStatus.BAD_REQUEST).send(SEND_REQUEST_EXIST);
             }
 
-            await userModel.sendUpgrageSellerRequest(req.body);
+            await userModel.sendUpgrageSellerRequest(req.body)
+
+            // socket emit
+            getIO().emit("addRequestUpgrage",{
+                message:"new request upgrade seller add",
+                data: req.body,
+            })
+
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
             console.log(err);
@@ -152,7 +170,7 @@ export default {
             }
 
             // get user by id
-            const user = await userModel.findById(user_id);
+            var user = await userModel.findById(user_id);
 
             // check product exist
             if (user === null) {
@@ -163,6 +181,13 @@ export default {
             if (n === 0) {
                 return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
             }
+
+            // socket emit
+            getIO().emit("updateRole",{
+                message:"new role update",
+                data: req.body,
+            })
+
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
             console.log(err);
@@ -250,7 +275,16 @@ export default {
                     return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_VERIFYTOKEN);
             }
 
-            await userModel.patch(_userId,{email:_email});
+            await userModel.patch(_userId,{email:_email})
+
+            const newUser = await userModel.findById(_userId);
+
+            // socket emit
+            getIO().emit("updateEmail",{
+                message:"Update email of user",
+                data: newUser,
+            })
+
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
             console.log(err);
@@ -353,8 +387,15 @@ export default {
                 }
 
                 // add rate
-                req.body.type = 'BUYER-SELLER';
-                await userModel.postRate(req.body);
+                req.body.type = "BUYER-SELLER"
+                await userModel.postRate(req.body)
+
+                // socket emit
+                getIO().emit("newRate",{
+                    message:"new rate add",
+                    data: req.body,
+                })
+              
                 return res.status(httpStatus.NO_CONTENT).send();
             }
 
@@ -374,8 +415,15 @@ export default {
                 }
 
                 // add rate
-                req.body.type = 'SELLER-BUYER';
-                await userModel.postRate(req.body);
+                req.body.type = "SELLER-BUYER"
+                await userModel.postRate(req.body)
+
+                // socket emit
+                getIO().emit("newRate",{
+                    message:"new rate add",
+                    data: req.body,
+                })
+
                 return res.status(httpStatus.NO_CONTENT).send();
             }
         } catch (err) {

@@ -5,6 +5,8 @@ import morgan from 'morgan';
 import cors from 'cors';
 import checkWon from './api/services/checkWon';
 import autoBidding from './api/services/autoBidding';
+import http from 'http';
+import {initialize} from './api/helpers/constants/socketIO';
 
 dotenv.config();
 const app = express();
@@ -32,7 +34,11 @@ router(app);
 checkWon();
 autoBidding();
 
+// socket
+var server = http.createServer(app);
+initialize(server);
+
 // Make app listen at port
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`App listening on port ${PORT}!`);
 });
