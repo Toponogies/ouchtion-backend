@@ -150,7 +150,7 @@ productModel.productsBidding = async function (user_id) {
     return await db('products').leftJoin('biddings',"biddings.product_id","products.product_id")
     .groupBy("biddings.product_id")
     .count("biddings.product_id as bidding_count")
-    .select("products.*").where("user_id",user_id);
+    .select("products.*").where("user_id",user_id).andWhere("is_sold",0);;
 }
 productModel.productsActive = async function (user_id) {
     return await db("products").leftJoin('biddings',"biddings.product_id","products.product_id")
