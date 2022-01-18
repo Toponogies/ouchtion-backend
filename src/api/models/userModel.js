@@ -24,8 +24,8 @@ userModel.getPoint = async function (user_id) {
 userModel.getAllBidding = async function (user_id) {
     return db('biddings').where('user_id',user_id).orderBy('time','desc');
 };
-userModel.getAllRate = async function () {
-    return await db('products').join('rates','rates.product_id','products.product_id');
+userModel.getAllRate = async function (user_id) {
+    return await db('products').join('rates','rates.product_id','products.product_id').whereRaw(`(products.buyer_id= ${user_id}) or (products.seller_id= ${user_id})`);
 };
 userModel.getAllProductBidderNotRate = async function (user_id) {
     return await db('products').whereRaw(`products.buyer_id= ${user_id} and is_sold = 1 and product_id not in(
