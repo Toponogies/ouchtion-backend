@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import httpStatus from 'http-status-codes';
 import dotenv from 'dotenv';
-import { INVAILD_ACCESSTOKEN, NOTFOUND_ACCESSTOKEN } from '../helpers/constants/Errors';
+import { EXPIRED_ACCESSTOKEN, INVAILD_ACCESSTOKEN, NOTFOUND_ACCESSTOKEN } from '../helpers/constants/Errors';
 dotenv.config();
 export default function auth(req, res, next) {
     var accessToken =  req.headers['authorization'];
@@ -15,6 +15,8 @@ export default function auth(req, res, next) {
             return next();
         } catch (err) {
             console.log(err);
+            if (err.name === 'TokenExpiredError')
+                return res.status(httpStatus.UNAUTHORIZED).send(EXPIRED_ACCESSTOKEN);
             return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_ACCESSTOKEN);
         }
     }

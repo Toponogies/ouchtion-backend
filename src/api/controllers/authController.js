@@ -9,8 +9,10 @@ import {
     DB_QUERY_ERROR,
     EXPIRED_REFRESHTOKEN,
     EXPIRED_VERIFYTOKEN,
+    EXPIRED_ACCESSTOKEN,
     INVAILD_REFRESHTOKEN,
     INVAILD_VERIFYTOKEN,
+    INVAILD_ACCESSTOKEN,
     LOGIN_ERROR,
     NOTFOUND_REDIS,
     UNEXPECTED_ERROR,
@@ -113,7 +115,9 @@ export default {
             _userId = userId;
             _role = role;
         } catch (err) {
-            return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_REFRESHTOKEN);
+            if (err.name === 'TokenExpiredError')
+                return res.status(httpStatus.UNAUTHORIZED).send(EXPIRED_ACCESSTOKEN);
+            return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_ACCESSTOKEN);
         }
 
         // get value from redis
@@ -221,7 +225,7 @@ export default {
             from: 'norely@gmail.com',
             to: req.body.email,
             subject: 'Verify token',
-            text: `Link verify token : http://localhost:3000/verify?token=${verifyToken}`,
+            text: `Link verify token : ${process.env.URL_FRONTEND}/verify?token=${verifyToken}`,
         };
 
         // send email to user
@@ -312,7 +316,7 @@ export default {
             from: 'norely@gmail.com',
             to: email,
             subject: 'Reset pass token',
-            text: `Link reset pass token : http://localhost:3000/reset?token=${verifyToken}`,
+            text: `Link reset pass token : ${process.env.URL_FRONTEND}/reset?token=${verifyToken}`,
         };
         // send email to yser
         sendEmail(mailOptions);
