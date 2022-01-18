@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 dotenv.config();
-import { EXPIRED_VERIFYTOKEN, INVAILD_VERIFYTOKEN, IS_EXIST, NOT_FOUND_USER, NOT_FOUND_WATCH, NOT_PERMISSION, PRODUCT_NOT_END, SEND_REQUEST_EXIST, UNEXPECTED_ERROR, WRONG_PASSWORD } from '../helpers/constants/Errors';
+import { BAD_DELETE, EXPIRED_VERIFYTOKEN, INVAILD_VERIFYTOKEN, IS_EXIST, NOT_FOUND_USER, NOT_FOUND_WATCH, NOT_PERMISSION, PRODUCT_NOT_END, SEND_REQUEST_EXIST, UNEXPECTED_ERROR, WRONG_PASSWORD } from '../helpers/constants/Errors';
 
 import sendEmail from '../helpers/classes/sendEmail';
 import { biddingModel, userModel } from '../models';
@@ -472,6 +472,84 @@ export default {
             }
             return res.status(httpStatus.NO_CONTENT).send();
         } catch (err) {
+            console.log(err);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+        }
+    },
+    addUserAdmin:  async (req, res) => {
+        try{
+            // check role only admin can delete
+            if (req.accessTokenPayload.role !== 'admin') {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
+            }
+
+            // Hash pass
+            req.body.password = bcrypt.hashSync(req.body.password, 10);
+            var user = null;
+
+            // Add user
+            try {
+                user = await userModel.add(req.body);
+            } catch (err) {
+                if (err.sqlState === '23000') // conflict email
+                    return res.status(httpStatus.CONFLICT).send(DB_QUERY_ERROR);
+                return res
+                    .status(httpStatus.INTERNAL_SERVER_ERROR)
+                    .send(UNEXPECTED_ERROR);
+            }
+            return res.status(httpStatus.NO_CONTENT).send();
+        } catch (err) {
+            console.log(err);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+        }
+    },
+    updateUserAdmin:  async (req, res) => {
+        try{
+            // check role only admin can delete
+            if (req.accessTokenPayload.role !== 'admin') {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
+            }
+
+            // get user id from param
+            const user_id = req.params.id;
+
+            // if have password
+            if (req.body.password){
+                // Hash pass
+                req.body.password = bcrypt.hashSync(req.body.password, 10);
+            }
+
+            const n = await userModel.patch(user_id,req.body);
+            if (n === 0) {
+                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
+            }
+
+            return res.status(httpStatus.NO_CONTENT).send();
+        } catch (err) {
+            console.log(err);
+            return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+        }
+    },
+    deleteUserAdmin:  async (req, res) => {
+        try{
+            // check role only admin can delete
+            if (req.accessTokenPayload.role !== 'admin') {
+                return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
+            }
+
+            // get user id from param
+            const user_id = req.params.id;
+
+            const n = await userModel.removeById(user_id);
+            if (n === 0) {
+                return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
+            }
+
+            return res.status(httpStatus.NO_CONTENT).send();
+        } catch (err) {
+            if (err.errno >= 1450 && err.errno <= 1460){
+                return res.status(httpStatus.BAD_REQUEST).send(BAD_DELETE);
+            }
             console.log(err);
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
         }
