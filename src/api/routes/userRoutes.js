@@ -7,6 +7,8 @@ import {schema as rateSchema} from '../schema/rate';
 import {schema as watchSchema} from '../schema/watch';
 import {schema as sendNewEmailSchema} from '../schema/sendNewEmail';
 import {schema as updateUserSchema} from '../schema/updateUser';
+import {schema as updateUserAdminSchema} from '../schema/updateUserAdmin';
+import {schema as registerUserAdminSchema} from '../schema/registerAdmin';
 
 router.get('/', userController.getUser);
 router.get('/bidding', userController.getAllBidding);
@@ -15,6 +17,10 @@ router.post('/email',validate(sendNewEmailSchema), userController.sendNewEmail);
 
 // admin
 router.get('/all', userController.getAllUser);
+router.post('/user',validate(registerUserAdminSchema) , userController.addUserAdmin);
+router.put('/user/:id',validate(updateUserAdminSchema), userController.updateUserAdmin);
+router.delete('/user/:id', userController.deleteUserAdmin);
+
 router.put('/role',validate(updateRoleSchema), userController.updateRole);
 router.get('/requestSeller', userController.getAllRequestSeller);
 
