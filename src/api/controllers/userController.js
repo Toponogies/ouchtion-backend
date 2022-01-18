@@ -42,7 +42,6 @@ export default {
 
             delete user.password;
             delete user.is_active;
-            delete user.role;
 
             res.json(user);
         } catch (err) {
@@ -245,7 +244,7 @@ export default {
                 from: 'norely@gmail.com', 
                 to: email, 
                 subject: 'Update email token',
-                text: `Link to update email : http://localhost:3000/updateEmail?token=${token}`
+                text: `Link to update email : ${process.env.URL_FRONTEND}/updateEmail?token=${token}`
             };
 
             sendEmail(mailOptions);
