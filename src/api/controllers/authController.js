@@ -57,7 +57,6 @@ export default {
 
 		const verifyToken = jwt.sign(verifyTokenPayload, process.env.SECRET_KEY, optsVerify);
 
-		// TODO: Move this to redis mq
 		// Mail option
 		let mailOptions = {
 			from: 'norely@gmail.com',
@@ -119,7 +118,6 @@ export default {
 
 		const verifyToken = jwt.sign(verifyTokenPayload, process.env.SECRET_KEY, optsVerify);
 
-		// TODO: Move this to redis mq
 		// Mail option
 		let mailOptions = {
 			from: 'norely@gmail.com',
@@ -227,17 +225,40 @@ export default {
 			ignoreExpiration: true,
 		};
 		try {
+			const isInt = (value) => {
+				return (
+					!isNaN(value) &&
+					(function (x) {
+						return (x | 0) === x;
+					})(parseFloat(value))
+				);
+			};
+
 			// Validate and revoke tokens
-			jwt.verify(access_token, process.env.SECRET_KEY, opts, function (err, decode) {
+			jwt.verify(access_token, process.env.SECRET_KEY, opts, async function (err, decode) {
 				if (err) throw err;
-				redisClient.expireAt(access_token, 0, Date.now() - decode.exp);
+				let expiresIn = decode.exp * 1000 - new Date().getTime();
+				expiresIn = Math.floor(expiresIn / 1000);
+				try {
+					if (expiresIn > 0) await redisClient.setEx(access_token, expiresIn, '0');
+				} catch (err) {
+					throw err;
+				}
 			});
-			jwt.verify(refresh_token, process.env.SECRET_KEY, function (err, decode) {
+
+			jwt.verify(refresh_token, process.env.SECRET_KEY, async function (err, decode) {
 				if (err) throw err;
-				redisClient.expireAt(refresh_token, 0, Date.now() - decode.exp);
+				let expiresIn = decode.exp * 1000 - new Date().getTime();
+				expiresIn = Math.floor(expiresIn / 1000);
+				try {
+					if (expiresIn > 0) await redisClient.setEx(refresh_token, expiresIn, '0');
+				} catch (err) {
+					throw err;
+				}
 			});
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
+			console.log(err);
 			return res.status(httpStatus.UNAUTHORIZED).send(INVALID_TOKEN);
 		}
 	},
