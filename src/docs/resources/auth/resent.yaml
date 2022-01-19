@@ -1,0 +1,15 @@
+post:
+  operationId: ResentEmail
+  summary: Resent verify email for a User.
+  security: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../schemas/Email.yaml"
+  responses:
+    "204":
+      description: Check email and verifies email.
+  tags:
+    - auth

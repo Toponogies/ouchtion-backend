@@ -2,8 +2,8 @@ const router = require('express').Router();
 import productController from '../controllers/productController.js';
 import validate from '../middlewares/validate.js';
 import validateQuery from '../middlewares/validateQuery';
-import {schema as productSellerSchema} from '../schema/productSellerId';
-import {schema as productSearchSchema} from '../schema/productSearch';
+import {schema as productSellerSchema} from '../schemas/productSellerId';
+import {schema as productSearchSchema} from '../schemas/productSearch';
 
 router.get('/',validateQuery(productSearchSchema), productController.searchProduct);
 router.post('/seller',validate(productSellerSchema),productController.getAllProductBySellerId);

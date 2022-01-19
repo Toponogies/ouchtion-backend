@@ -1,12 +1,13 @@
 post:
   operationId: RefreshToken
   summary: Refreshs tokens for a User.
+  security: []
   requestBody:
     required: true
     content:
       application/json:
         schema:
-          $ref: "../../schemas/Tokens.yaml"
+          $ref: "../../schemas/RefreshToken.yaml"
   responses:
     "200":
       description: Returns new access token and expand refresh token.
@@ -14,11 +15,5 @@ post:
         application/json:
           schema:
             $ref: "../../schemas/Tokens.yaml"
-    "401":
-      $ref: "../../responses/Error.yaml"
-    "422":
-      $ref: "../../responses/ValidationError.yaml"
-    "500":
-      $ref: "../../responses/Error.yaml"
   tags:
     - auth

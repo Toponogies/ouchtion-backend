@@ -1,0 +1,9 @@
+type: object
+title: RefreshPasswordEmail
+description: Schema for a reset password email.
+properties:
+  email:
+    type: string
+    description: The email.
+required:
+  - email

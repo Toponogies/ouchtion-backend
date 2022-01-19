@@ -26,11 +26,11 @@ components:
     refreshAuth:
       type: http
       scheme: bearer
-      bearerFormat: JWT   
+      bearerFormat: JWT
     tokenAuth:
       type: http
       scheme: bearer
-      bearerFormat: JWT   
+      bearerFormat: JWT
   schemas:
     $ref: "./schemas/_index.yaml"
   parameters:
@@ -39,7 +39,7 @@ components:
     $ref: "./responses/_index.yaml"
 security:
   - accessAuth: []
-  - refreshAuth: []   
+  - refreshAuth: []
 paths:
   /auth/:
     $ref: "./resources/auth/_index.yaml"
@@ -53,6 +53,8 @@ paths:
     $ref: "./resources/auth/logout.yaml"
   /auth/refresh:
     $ref: "./resources/auth/refresh.yaml"
+  /auth/resent:
+    $ref: "./resources/auth/resent.yaml"
 
   /categorys:
     $ref: "./resources/category/_index.yaml"
@@ -83,7 +85,7 @@ paths:
     $ref: "./resources/users/_index.yaml"
   /users/Email:
     $ref: "./resources/users/email.yaml"
-    
+
   /users/all:
     $ref: "./resources/users/all.yaml"
   /users/role:

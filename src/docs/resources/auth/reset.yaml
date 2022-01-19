@@ -2,20 +2,21 @@ post:
   operationId: SendResetPasswordEmail
   summary: Sends reset password email.
   security: []
-  parameters:
-    - $ref: "../../parameters/query/email.yaml"
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../schemas/Email.yaml"
   responses:
     "204":
       description: Sends reset email.
-    "500":
-      $ref: "../../responses/Error.yaml"
   tags:
     - auth
 put:
   operationId: ResetPassword
   summary: Resets password for a User.
-  security:
-    - tokenAuth: []
+  security: []
   requestBody:
     required: true
     content:
@@ -25,11 +26,5 @@ put:
   responses:
     "204":
       description: Checks token and changes password.
-    "401":
-      $ref: "../../responses/Error.yaml"
-    "422":
-      $ref: "../../responses/ValidationError.yaml"
-    "500":
-      $ref: "../../responses/Error.yaml"
   tags:
     - auth

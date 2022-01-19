@@ -11,11 +11,5 @@ post:
   responses:
     "204":
       description: Creates a User and waits for email verification.
-    "409":
-      $ref: "../../responses/Error.yaml"
-    "422":
-      $ref: "../../responses/ValidationError.yaml"
-    "500":
-      $ref: "../../responses/Error.yaml"
   tags:
     - auth

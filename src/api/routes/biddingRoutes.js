@@ -1,12 +1,12 @@
 const router = require('express').Router();
 import biddingController from '../controllers/biddingController.js';
 import validate from '../middlewares/validate.js';
-import {schema as biddingSchema} from '../schema/bidding';
-import {schema as autobiddingSchema} from '../schema/autoBidding';
-import {schema as biddingRequestSchema} from '../schema/biddingRequest';
-import {schema as biddingRequestPostSchema} from '../schema/biddingRequestPost';
-import {schema as biddingPermissionSchema} from '../schema/biddingPermission';
-import {schema as buyProductSchema} from '../schema/buyProduct';
+import {schema as biddingSchema} from '../schemas/bidding';
+import {schema as autobiddingSchema} from '../schemas/autoBidding';
+import {schema as biddingRequestSchema} from '../schemas/biddingRequest';
+import {schema as biddingRequestPostSchema} from '../schemas/biddingRequestPost';
+import {schema as biddingPermissionSchema} from '../schemas/biddingPermission';
+import {schema as buyProductSchema} from '../schemas/buyProduct';
 
 router.post('/',validate(biddingSchema), biddingController.addBidding); // create a bididng
 router.post('/autoBidding', validate(autobiddingSchema), biddingController.addAutoBidding); // create a auto bididng

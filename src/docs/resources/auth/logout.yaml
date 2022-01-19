@@ -1,6 +1,7 @@
 delete:
   operationId: Logout
   summary: Logs a User out.
+  security: []
   requestBody:
     required: true
     content:

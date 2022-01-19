@@ -15,11 +15,5 @@ post:
         application/json:
           schema:
             $ref: "../../schemas/Tokens.yaml"
-    "401":
-      $ref: "../../responses/Error.yaml"
-    "422":
-      $ref: "../../responses/ValidationError.yaml"
-    "500":
-      $ref: "../../responses/Error.yaml"
   tags:
     - auth

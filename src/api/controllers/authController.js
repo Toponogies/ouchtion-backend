@@ -5,365 +5,297 @@ import bcrypt from 'bcrypt';
 dotenv.config();
 
 import {
-    ACCOUNT_NOT_ACTIVE,
-    DB_QUERY_ERROR,
-    EXPIRED_REFRESHTOKEN,
-    EXPIRED_VERIFYTOKEN,
-    EXPIRED_ACCESSTOKEN,
-    INVAILD_REFRESHTOKEN,
-    INVAILD_VERIFYTOKEN,
-    INVAILD_ACCESSTOKEN,
-    LOGIN_ERROR,
-    NOTFOUND_REDIS,
-    UNEXPECTED_ERROR,
-} from '../helpers/constants/Errors';
-import {
-    getRedis,
-    delRedis,
-    setExRedis,
-} from '../helpers/constants/redisClient';
+	ACCOUNT_NOT_ACTIVE,
+	DB_QUERY_ERROR,
+	EXPIRED_REFRESHTOKEN,
+	EXPIRED_VERIFYTOKEN,
+	INVALID_REFRESHTOKEN,
+	INVALID_VERIFYTOKEN,
+	LOGIN_ERROR,
+	UNEXPECTED_ERROR,
+	INVALID_TOKEN,
+	NOT_FOUND_USER,
+} from '../helpers/constants/errors';
+import redisClient from '../connection/redisClient';
 import userModel from '../models/userModel';
 import sendEmail from '../helpers/classes/sendEmail';
 
 const optsAccess = {
-    expiresIn: process.env.EXPIRED_ACCESSTOKEN,
+	expiresIn: process.env.EXPIRED_ACCESSTOKEN,
 };
+
 const optsVerify = {
-    expiresIn: process.env.EXPIRED_VERIFYTOKEN,
-};
-const optsRefresh = {
-    expiresIn: process.env.EXPIRED_REFRESHTOKEN,
+	expiresIn: process.env.EXPIRED_VERIFYTOKEN,
 };
 
 export default {
-    login: async (req, res) => {
-        try {
-            //find user by email
-            const user = await userModel.findByEmail(req.body.email);
-            if (user === null) {
-                return res.status(httpStatus.UNAUTHORIZED).send(LOGIN_ERROR);
-            }
-            //check account user active
-            if (!user.is_active) {
-                return res.status(httpStatus.UNAUTHORIZED).send(ACCOUNT_NOT_ACTIVE);
-            }
+	register: async (req, res) => {
+		let user = req.body;
 
-            // check password
-            if (bcrypt.compareSync(req.body.password, user.password) === false) {
-                return res.status(httpStatus.UNAUTHORIZED).send(LOGIN_ERROR);
-            }
+		// Hash the password
+		user.password = bcrypt.hashSync(req.body.password, 10);
 
-            // create access token and refresh token
-            const payloadAccessToken = {
-                userId: user.user_id,
-                role: user.role,
-            };
-            const payloadRefreshToken = {
-                userId: user.user_id,
-                role: user.role,
-                userEmail: user.email,
-            };
-            const accessToken = jwt.sign(
-                payloadAccessToken,
-                process.env.SECRET_KEY,
-                optsAccess
-            );
-            const refreshToken = jwt.sign(
-                payloadRefreshToken,
-                process.env.SECRET_KEY,
-                optsRefresh
-            );
+		// Set the role
+		user.role = 'bidder';
 
-            // set value from redis
-            await setExRedis(
-                user.user_id,
-                process.env.REDIS_EXPIRED_REFRESHTOKEN_SECOND,
-                {
-                    refreshToken: refreshToken,
-                }
-            );
+		let userIds;
+		// Add user to database
+		try {
+			userIds = await userModel.add(user);
+			console.log(user);
+		} catch (err) {
+			if (err.sqlState === '23000') {
+				return res.status(httpStatus.CONFLICT).send(DB_QUERY_ERROR);
+			}
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
 
-            // return access token and refresh token
-            return res.json({
-                accessToken,
-                refreshToken,
-            });
-        } catch (err) {
-            console.log(err);
-            return res
-                .status(httpStatus.INTERNAL_SERVER_ERROR)
-                .send(UNEXPECTED_ERROR);
-        }
-    },
+		// Generate tokens
+		const verifyTokenPayload = {
+			userId: userIds[0],
+		};
 
-    refresh: async (req, res) => {
-        const { accessToken, refreshToken } = req.body;
-        const opts = {
-            ignoreExpiration: true,
-        };
+		const verifyToken = jwt.sign(verifyTokenPayload, process.env.SECRET_KEY, optsVerify);
 
-        var _userId = -1;
-        var _role = -1;
+		// TODO: Move this to redis mq
+		// Mail option
+		let mailOptions = {
+			from: 'norely@gmail.com',
+			to: user.email,
+			subject: 'Verify token',
+			text: `Link verify token : ${process.env.URL_FRONTEND}/verify?token=${verifyToken}`,
+		};
+		sendEmail(mailOptions);
 
-        // verify token and get user id
-        try {
-            const { userId, role } = jwt.verify(
-                accessToken,
-                process.env.SECRET_KEY,
-                opts
-            );
-            _userId = userId;
-            _role = role;
-        } catch (err) {
-            if (err.name === 'TokenExpiredError')
-                return res.status(httpStatus.UNAUTHORIZED).send(EXPIRED_ACCESSTOKEN);
-            return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_ACCESSTOKEN);
-        }
+		return res.status(httpStatus.NO_CONTENT).send();
+	},
 
-        // get value from redis
-        var value = null;
-        try {
-            value = await getRedis(_userId);
-        } catch (err) {
-            return res
-                .status(httpStatus.INTERNAL_SERVER_ERROR)
-                .send(UNEXPECTED_ERROR);
-        }
-        if (!value) {
-            return res.status(httpStatus.UNAUTHORIZED).send(NOTFOUND_REDIS);
-        }
+	verify: async (req, res) => {
+		const { token } = req.body;
 
-        // check refresh token and redis refresh token
-        if (value.refreshToken !== refreshToken) {
-            return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_REFRESHTOKEN);
-        }
+		let _userId = -1;
 
-        // check expired and valid of refresh token
-        try {
-            // const { userId, role, userEmail } =
-            jwt.verify(refreshToken, process.env.SECRET_KEY, opts);
-        } catch (err) {
-            if (err.name === 'TokenExpiredError')
-                return res.status(httpStatus.UNAUTHORIZED).send(EXPIRED_REFRESHTOKEN);
-            else
-                return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_REFRESHTOKEN);
-        }
+		// Verify token
+		try {
+			const { userId } = jwt.verify(token, process.env.SECRET_KEY, optsVerify);
+			_userId = userId;
+		} catch (err) {
+			if (err.name === 'TokenExpiredError') return res.status(httpStatus.UNAUTHORIZED).send(EXPIRED_VERIFYTOKEN);
+			return res.status(httpStatus.UNAUTHORIZED).send(INVALID_VERIFYTOKEN);
+		}
 
-        // create new access token
-        const payload = { _userId, _role };
-        const new_accessToken = jwt.sign(
-            payload,
-            process.env.SECRET_KEY,
-            optsAccess
-        );
+		// Update account status
+		try {
+			await userModel.patch(_userId, {
+				is_active: true,
+			});
+			return res.status(httpStatus.NO_CONTENT).send();
+		} catch (err) {
+			console.log(err);
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
+	},
 
-        // return new access token and refresh token
-        return res.json({
-            accessToken: new_accessToken,
-            refreshToken: refreshToken,
-        });
-    },
+	resent: async (req, res) => {
+		const { email } = req.body;
 
-    logout: async (req, res) => {
-        const { accessToken } = req.body;
-        const opts = {
-            ignoreExpiration: true,
-        };
-        try {
-            const { userId } = jwt.verify(accessToken, process.env.SECRET_KEY, opts);
+		let _userId = -1;
 
-            // delete data of user have userId in redis
-            await delRedis(userId);
+		// Check if email existed in db
+		try {
+			const user = await userModel.findByEmail(email);
+			if (user === null) {
+				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
+			}
+			_userId = user.user_id;
+		} catch (err) {
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
 
-            return res.status(httpStatus.NO_CONTENT).send();
-        } catch (err) {
-            return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_REFRESHTOKEN);
-        }
-    },
+		// Generate tokens
+		const verifyTokenPayload = {
+			userId: _userId,
+		};
 
-    register: async (req, res) => {
-        // Hash pass
-        req.body.password = bcrypt.hashSync(req.body.password, 10);
-        var user = null;
+		const verifyToken = jwt.sign(verifyTokenPayload, process.env.SECRET_KEY, optsVerify);
 
-        // Add user
-        try {
-            user = await userModel.add(req.body);
-        } catch (err) {
-            if (err.sqlState === '23000')
-                return res.status(httpStatus.CONFLICT).send(DB_QUERY_ERROR);
-            return res
-                .status(httpStatus.INTERNAL_SERVER_ERROR)
-                .send(UNEXPECTED_ERROR);
-        }
+		// TODO: Move this to redis mq
+		// Mail option
+		let mailOptions = {
+			from: 'norely@gmail.com',
+			to: email,
+			subject: 'Verify token',
+			text: `Link verify token : ${process.env.URL_FRONTEND}/verify?token=${verifyToken}`,
+		};
 
-        // Create access token and refresh token
-        const payloadVerifyToken = {
-            userId: user[0],
-        };
+		sendEmail(mailOptions);
 
-        const verifyToken = jwt.sign(
-            payloadVerifyToken,
-            process.env.SECRET_KEY,
-            optsVerify
-        );
+		return res.status(httpStatus.NO_CONTENT).send();
+	},
 
-        // save verifyToken in redis
-        try {
-            await setExRedis(user[0], process.env.REDIS_EXPIRED_VERIFYTOKEN_SECOND, {
-                verifyToken: verifyToken,
-            });
-        } catch (err) {
-            console.log(err);
-            return res
-                .status(httpStatus.INTERNAL_SERVER_ERROR)
-                .send(UNEXPECTED_ERROR);
-        }
+	login: async (req, res) => {
+		try {
+			// Find user by email
+			const user = await userModel.findByEmail(req.body.email);
+			if (user === null) {
+				return res.status(httpStatus.UNAUTHORIZED).send(LOGIN_ERROR);
+			}
 
-        // mail option
-        let mailOptions = {
-            from: 'norely@gmail.com',
-            to: req.body.email,
-            subject: 'Verify token',
-            text: `Link verify token : ${process.env.URL_FRONTEND}/verify?token=${verifyToken}`,
-        };
+			// Check if account is active
+			if (!user.is_active) {
+				return res.status(httpStatus.UNAUTHORIZED).send(ACCOUNT_NOT_ACTIVE);
+			}
 
-        // send email to user
-        sendEmail(mailOptions);
+			// Check password
+			if (!bcrypt.compareSync(req.body.password, user.password)) {
+				return res.status(httpStatus.UNAUTHORIZED).send(LOGIN_ERROR);
+			}
 
-        return res.status(httpStatus.NO_CONTENT).send();
-    },
+			// Generate tokens
+			const accessTokenPayload = {
+				userId: user.user_id,
+				userRole: user.role,
+			};
+			const refreshTokenPayload = {
+				userId: user.user_id,
+				userRole: user.role,
+				userPassHash: user.password.substring(0, 10),
+			};
 
-    verify: async (req, res) => {
-        const verifyToken = req.query.token;
+			const accessToken = jwt.sign(accessTokenPayload, process.env.SECRET_KEY, optsAccess);
+			const refreshToken = jwt.sign(refreshTokenPayload, process.env.SECRET_KEY);
 
-        var _userId = -1;
-        // check vaild
-        try {
-            const { userId } = jwt.verify(verifyToken, process.env.SECRET_KEY);
-            _userId = userId;
-        } catch (err) {
-            if (err.name === 'TokenExpiredError')
-                return res.status(httpStatus.UNAUTHORIZED).send(EXPIRED_VERIFYTOKEN);
-            else return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_VERIFYTOKEN);
-        }
+			return res.status(httpStatus.OK).send({
+				access_token: accessToken,
+				refresh_token: refreshToken,
+			});
+		} catch (err) {
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
+	},
 
-        // get value and del value from redis
-        try {
-            // get value
-            var value = await getRedis(_userId);
-            if (!value) {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOTFOUND_REDIS);
-            }
+	refresh: async (req, res) => {
+		let { refresh_token } = req.body;
 
-            // check verifytoken with value in redis
-            if (value.verifyToken !== verifyToken) {
-                return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_VERIFYTOKEN);
-            }
+		let _userId = -1;
+		let _userRole = -1;
 
-            // del value redis
-            await delRedis(_userId);
-        } catch (err) {
-            console.log(err);
-            return res
-                .status(httpStatus.INTERNAL_SERVER_ERROR)
-                .send(UNEXPECTED_ERROR);
-        }
+		// Check if refresh token is valid
+		try {
+			let { userId, userRole, userPassHash } = jwt.verify(refresh_token, process.env.SECRET_KEY);
+			_userId = userId;
+			_userRole = userRole;
+			let user = await userModel.findById(userId);
+			if (userPassHash !== user.password.substring(0, 10)) {
+				return res.status(httpStatus.UNAUTHORIZED).send(INVALID_REFRESHTOKEN);
+			}
+		} catch (err) {
+			console.log(err);
+			if (err.name === 'TokenExpiredError') {
+				return res.status(httpStatus.UNAUTHORIZED).send(EXPIRED_REFRESHTOKEN);
+			}
+			return res.status(httpStatus.UNAUTHORIZED).send(INVALID_REFRESHTOKEN);
+		}
 
-        // update new password
-        await userModel.patch(_userId, {
-            is_active: true,
-        });
-        return res.status(httpStatus.NO_CONTENT).send();
-    },
+		// Check if revoked
+		try {
+			let data = await redisClient.get(refresh_token);
+			if (data !== null) {
+				return res.status(httpStatus.UNAUTHORIZED).send(INVALID_REFRESHTOKEN);
+			}
+		} catch (err) {
+			console.log(err);
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
 
-    resetByEmail: async (req, res) => {
-        const email = req.query.email;
-        const user = await userModel.findByEmail(email);
+		// Create new access token
+		const accessTokenPayload = {
+			userId: _userId,
+			userRole: _userRole,
+		};
+		const newAccessToken = jwt.sign(accessTokenPayload, process.env.SECRET_KEY, optsAccess);
 
-        // check user exist
-        if (user === null) {
-            return res.status(httpStatus.UNAUTHORIZED).send(LOGIN_ERROR);
-        }
+		return res.status(httpStatus.OK).send({
+			access_token: newAccessToken,
+			refresh_token: refresh_token,
+		});
+	},
 
-        // create verify token
-        const payloadVerifyToken = {
-            userId: user.user_id,
-        };
+	logout: async (req, res) => {
+		const { access_token, refresh_token } = req.body;
+		const opts = {
+			ignoreExpiration: true,
+		};
+		try {
+			// Validate and revoke tokens
+			jwt.verify(access_token, process.env.SECRET_KEY, opts, function (err, decode) {
+				if (err) throw err;
+				redisClient.expireAt(access_token, 0, Date.now() - decode.exp);
+			});
+			jwt.verify(refresh_token, process.env.SECRET_KEY, function (err, decode) {
+				if (err) throw err;
+				redisClient.expireAt(refresh_token, 0, Date.now() - decode.exp);
+			});
+			return res.status(httpStatus.NO_CONTENT).send();
+		} catch (err) {
+			return res.status(httpStatus.UNAUTHORIZED).send(INVALID_TOKEN);
+		}
+	},
 
-        const verifyToken = jwt.sign(
-            payloadVerifyToken,
-            process.env.SECRET_KEY,
-            optsVerify
-        );
+	resetByEmail: async (req, res) => {
+		const { email } = req.body;
+		const user = await userModel.findByEmail(email);
 
-        // save verifyToken in redis
-        try {
-            await setExRedis(
-                user.user_id,
-                process.env.REDIS_EXPIRED_VERIFYTOKEN_SECOND,
-                {
-                    verifyToken: verifyToken,
-                }
-            );
-        } catch (err) {
-            return res
-                .status(httpStatus.INTERNAL_SERVER_ERROR)
-                .send(UNEXPECTED_ERROR);
-        }
-        //
-        let mailOptions = {
-            from: 'norely@gmail.com',
-            to: email,
-            subject: 'Reset pass token',
-            text: `Link reset pass token : ${process.env.URL_FRONTEND}/reset?token=${verifyToken}`,
-        };
-        // send email to yser
-        sendEmail(mailOptions);
+		// Check user exist
+		if (user === null) {
+			return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
+		}
 
-        return res.status(httpStatus.NO_CONTENT).send();
-    },
+		// Create verify token
+		const payloadVerifyToken = {
+			userId: user.user_id,
+		};
 
-    resetPass: async (req, res) => {
-        req.body.password = bcrypt.hashSync(req.body.password, 10);
-        const { password, token } = req.body;
-        var _userId = -1;
+		const verifyToken = jwt.sign(payloadVerifyToken, process.env.SECRET_KEY, optsVerify);
 
-        // get userId and check jwt
-        try {
-            const { userId } = jwt.verify(token, process.env.SECRET_KEY, optsVerify);
-            _userId = userId;
-        } catch (err) {
-            if (err.name === 'TokenExpiredError')
-                return res.status(httpStatus.UNAUTHORIZED).send(EXPIRED_VERIFYTOKEN);
-            else return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_VERIFYTOKEN);
-        }
+		// TODO: Move this to rmq
+		let mailOptions = {
+			from: 'norely@gmail.com',
+			to: email,
+			subject: 'Reset pass token',
+			text: `Link reset pass token : ${process.env.URL_FRONTEND}/reset?token=${verifyToken}`,
+		};
+		// send email to yser
+		sendEmail(mailOptions);
 
-        // get value and del value from redis
-        try {
-            // get value
-            var value = await getRedis(_userId);
-            if (!value) {
-                return res.status(httpStatus.UNAUTHORIZED).send(NOTFOUND_REDIS);
-            }
+		return res.status(httpStatus.NO_CONTENT).send();
+	},
 
-            // check verifytoken with value in redis
-            if (value.verifyToken !== token) {
-                return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_VERIFYTOKEN);
-            }
-            // del value redis
-            await delRedis(_userId);
-        } catch (err) {
-            console.log(err);
-            return res
-                .status(httpStatus.INTERNAL_SERVER_ERROR)
-                .send(UNEXPECTED_ERROR);
-        }
+	resetPass: async (req, res) => {
+		let { password, token } = req.body;
 
-        await userModel.patch(_userId, {
-            password: password,
-        });
+		password = bcrypt.hashSync(password, 10);
+		var _userId = -1;
 
-        return res.status(httpStatus.NO_CONTENT).send();
-    },
+		// Get userId and check jwt
+		try {
+			const { userId } = jwt.verify(token, process.env.SECRET_KEY, optsVerify);
+			_userId = userId;
+		} catch (err) {
+			if (err.name === 'TokenExpiredError') {
+				return res.status(httpStatus.UNAUTHORIZED).send(EXPIRED_VERIFYTOKEN);
+			}
+			return res.status(httpStatus.UNAUTHORIZED).send(INVALID_VERIFYTOKEN);
+		}
+
+		try {
+			await userModel.patch(_userId, {
+				password: password,
+			});
+		} catch (err) {
+			res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
+
+		return res.status(httpStatus.NO_CONTENT).send();
+	},
 };

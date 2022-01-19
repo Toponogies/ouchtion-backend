@@ -1,0 +1,9 @@
+type: object
+title: Token
+description: Schema for a token.
+properties:
+  token:
+    type: string
+    description: The token.
+required:
+  - token
