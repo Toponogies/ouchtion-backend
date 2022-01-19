@@ -2,9 +2,9 @@ type: object
 title: RefreshToken
 description: Schema for a refresh token.
 properties:
-  refreshToken:
+  refresh_token:
     type: string
     description: The refresh token.
 required:
-  - refreshToken
+  - refresh_token
 # May be deleted in the future

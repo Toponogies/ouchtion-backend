@@ -4,7 +4,6 @@ Category:
   $ref: "./Category.yaml"
 CategoryPost:
   $ref: "./CategoryPost.yaml"
-
 AutoBidding:
   $ref: "./AutoBiddingPost.yaml"
 Bidding:
@@ -23,9 +22,11 @@ BuyProduct:
   $ref: "./BuyProduct.yaml"
 # Bidding:
 #   $ref: "./BiddingOfUser.yaml"
-  # $ref: "./BiddingOfProduct.yaml"
+# $ref: "./BiddingOfProduct.yaml"
 Error:
   $ref: "./Error.yaml"
+Email:
+  $ref: "./Email.yaml"
 Image:
   $ref: "./Image.yaml"
 Login:
@@ -62,13 +63,15 @@ ResetPassword:
   $ref: "./ResetPassword.yaml"
 Role:
   $ref: "./Role.yaml"
+Token:
+  $ref: "./Token.yaml"
 Tokens:
   $ref: "./Tokens.yaml"
 User:
   $ref: "./User.yaml"
 UserPoint:
   $ref: "./UserPoint.yaml"
-UserShort:  
+UserShort:
   $ref: "./UserShort.yaml"
 UserUpdate:
   $ref: "./UserUpdate.yaml"

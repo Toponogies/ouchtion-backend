@@ -1,9 +1,9 @@
 const router = require('express').Router();
 import productController from '../controllers/productController.js';
 import validate from '../middlewares/validate.js';
-import {schema as productUpdateSchema} from '../schema/productUpdate';
-import {schema as productDescriptionSchema} from '../schema/productDescription';
-import {schema as productPostSchema} from '../schema/productPost';
+import {schema as productUpdateSchema} from '../schemas/productUpdate';
+import {schema as productDescriptionSchema} from '../schemas/productDescription';
+import {schema as productPostSchema} from '../schemas/productPost';
 import { uploadAvatar, uploadImage } from '../helpers/constants/multer.js';
 
 // upload type multipart/form

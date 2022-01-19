@@ -1,6 +1,6 @@
 const router = require('express').Router();
 import validate from '../middlewares/validate.js';
-import {schema as categorySchema} from '../schema/category';
+import {schema as categorySchema} from '../schemas/category';
 import auth from '../middlewares/auth';
 import categoryController from '../controllers/categoryController.js';
 

@@ -1,14 +1,14 @@
 const router = require('express').Router();
 import userController from '../controllers/userController.js';
 import validate from '../middlewares/validate.js';
-import {schema as updateRoleSchema} from '../schema/updateRole';
-import {schema as upgrageSellerRequestSchema} from '../schema/upgrageSellerRequest';
-import {schema as rateSchema} from '../schema/rate';
-import {schema as watchSchema} from '../schema/watch';
-import {schema as sendNewEmailSchema} from '../schema/sendNewEmail';
-import {schema as updateUserSchema} from '../schema/updateUser';
-import {schema as updateUserAdminSchema} from '../schema/updateUserAdmin';
-import {schema as registerUserAdminSchema} from '../schema/registerAdmin';
+import {schema as updateRoleSchema} from '../schemas/updateRole';
+import {schema as upgrageSellerRequestSchema} from '../schemas/upgrageSellerRequest';
+import {schema as rateSchema} from '../schemas/rate';
+import {schema as watchSchema} from '../schemas/watch';
+import {schema as sendNewEmailSchema} from '../schemas/sendNewEmail';
+import {schema as updateUserSchema} from '../schemas/updateUser';
+import {schema as updateUserAdminSchema} from '../schemas/updateUserAdmin';
+import {schema as registerUserAdminSchema} from '../schemas/registerAdmin';
 
 router.get('/', userController.getUser);
 router.get('/bidding', userController.getAllBidding);
