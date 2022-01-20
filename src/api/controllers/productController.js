@@ -7,12 +7,15 @@ import {
 	NOT_FOUND_PRODUCT,
 	NOT_FOUND_USER,
 	NOT_PERMISSION,
+	PRODUCT_NOT_END,
 	UNEXPECTED_ERROR,
 } from '../helpers/constants/errors';
 import { formatDate } from '../helpers/constants/ISOtoDate';
 import removeFile from '../helpers/constants/removeFile';
 import { ProductModel, UserModel } from '../models';
 import { getIO } from '../helpers/constants/socketIO';
+import res from 'express/lib/response';
+import productModel from '../models/productModel';
 
 export default {
 	searchProduct: async (req, res) => {
@@ -484,6 +487,54 @@ export default {
 			return res.json(products);
 		} catch (err) {
 			console.log(err);
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
+	},
+
+	getRate: async (req, res) => {
+		try {
+			const product = await ProductModel.findById(req.params.id);
+			if (product === null) {
+				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
+			}
+
+			const finishedProduct = await ProductModel.checkFinishedProduct(req.params.id);
+
+			if (finishedProduct.length !== 0) {
+				return res.status(httpStatus.BAD_REQUEST).send(PRODUCT_NOT_END);
+			}
+
+			const rates = await ProductModel.getRate(req.params.id);
+
+			return res.status(httpStatus.OK).send(rates);
+		} catch (err) {
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
+	},
+
+	getTopEnding: async (req, res) => {
+		try {
+			const products = ProductModel.search(null, 'time_desc', 1, null, 8);
+			return res.status(httpStatus.OK).send(products);
+		} catch (err) {
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
+	},
+
+	getTopPrice: async (req, res) => {
+		try {
+			const products = ProductModel.search(null, 'price_desc', 1, null, 8);
+			return res.status(httpStatus.OK).send(products);
+		} catch (err) {
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
+	},
+
+	getTopBiddingCount: async (req, res) => {
+		try {
+			const products = ProductModel.search(null, 'bidding_desc', 1, null, 8);
+			return res.status(httpStatus.OK).send(products);
+		} catch (err) {
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
 		}
 	},
