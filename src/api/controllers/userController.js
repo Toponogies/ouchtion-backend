@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 import {
 	BAD_DELETE,
+	DB_QUERY_ERROR,
 	EXPIRED_VERIFYTOKEN,
 	INVAILD_VERIFYTOKEN,
 	IS_EXIST,
@@ -192,7 +193,7 @@ export default {
 			// Add user
 			user = await UserModel.add(req.body);
 
-			return res.status(httpStatus.NO_CONTENT).send();
+			return res.json({user_id:user[0]});
 		} catch (err) {
 			if (err.sqlState === '23000') {
 				return res.status(httpStatus.CONFLICT).send(DB_QUERY_ERROR);
@@ -254,6 +255,15 @@ export default {
 		try {
 			const requestSellers = await UserModel.getAllRequestSeller();
 			return res.status(httpStatus.OK).send(requestSellers);
+		} catch (err) {
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
+	},
+
+	rejectRequest: async (req, res) => {
+		try {
+			await UserModel.deleteRequestSeller(req.params.id);
+			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
 		}
