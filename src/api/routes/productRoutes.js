@@ -1,34 +1,43 @@
 const router = require('express').Router();
 import { ProductController } from '../controllers';
 import validate from '../middlewares/validate.js';
-import { schema as productUpdateSchema } from '../schemas/productUpdate';
-import { schema as productDescriptionSchema } from '../schemas/productDescription';
-import { schema as productPostSchema } from '../schemas/productPost';
-import { schema as watchSchema } from '../schemas/watch';
+import { WatchSchema, ProductUpdateSchema, ProductPostSchema, ProductDescriptionSchema } from '../schemas';
 import { uploadAvatar, uploadImage } from '../helpers/constants/multer.js';
 import isBidder from '../middlewares/isBidder';
 import isSeller from '../middlewares/isSeller';
-
-// upload type multipart/form
-router.post('/:id/image', uploadImage.single('image'), ProductController.uploadImage);
-router.post('/', uploadAvatar.single('avatar'), validate(productPostSchema), ProductController.addProduct);
-router.put('/:id', uploadAvatar.single('avatar'), validate(productUpdateSchema), ProductController.updateProduct);
-
-// json type
-router.delete('/:id', ProductController.deleteProduct);
-router.post('/:id/description', validate(productDescriptionSchema), ProductController.addDescription);
-router.delete('/:id/description/:descriptionId', ProductController.deleteDescription);
-router.delete('/:id/image/:imageId', ProductController.deleteImage);
-
-// Per bidder
-router.get('/ongoingBids', isBidder, ProductController.getBiddingProducts);
-router.get('/completedBids', isBidder, ProductController.getHasWonProducts);
-router.get('/watchlist', isBidder, ProductController.getWatchList);
-router.post('/watchlist', isBidder, validate(watchSchema), ProductController.addWatch);
-router.delete('/watchlist', isBidder, validate(watchSchema), ProductController.deleteWatch);
+import isAdmin from '../middlewares/isSeller';
+import isProductOwner from '../middlewares/isProductOwner.js';
 
 // Per seller
-router.get('/ongoingProducts', isSeller, ProductController.productsActive);
-router.get('/soldProducts', isSeller, ProductController.productsInActive);
+// upload type multipart/form
+router.post('/:id/images', isSeller, isProductOwner, uploadImage.single('image'), ProductController.uploadImage);
+router.post('/', isSeller, uploadAvatar.single('avatar'), validate(ProductPostSchema), ProductController.addProduct);
+router.put(
+	'/:id',
+	isSeller,
+	isProductOwner,
+	uploadAvatar.single('avatar'),
+	validate(ProductUpdateSchema),
+	ProductController.updateProduct
+);
+
+// json type
+router.post('/:id/descriptions', isSeller, isProductOwner, validate(ProductDescriptionSchema), ProductController.addDescription);
+router.delete('/:id/descriptions/:descriptionId', isSeller, isProductOwner, ProductController.deleteDescription);
+router.delete('/:id/images/:imageId', isSeller, isProductOwner, ProductController.deleteImage);
+
+// Per admin
+router.delete('/:id', isAdmin, ProductController.deleteProduct);
+
+// Per bidder
+router.get('/bidders/ongoingBids', isBidder, ProductController.getBiddingProducts);
+router.get('/bidders/completedBids', isBidder, ProductController.getHasWonProducts);
+router.get('/bidders/watchlist', isBidder, ProductController.getWatchList);
+router.post('/bidders/watchlist', isBidder, validate(WatchSchema), ProductController.addWatch);
+router.delete('/biddlers/watchlist', isBidder, validate(WatchSchema), ProductController.deleteWatch);
+
+// Per seller
+router.get('/sellers/ongoingProducts', isSeller, ProductController.productsActive);
+router.get('/sellers/finishedProducts', isSeller, ProductController.productsInActive);
 
 export default router;

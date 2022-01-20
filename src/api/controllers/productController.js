@@ -1,17 +1,21 @@
 import httpStatus from 'http-status-codes';
 import {
 	BAD_DELETE,
+	INVALID_AUCTION_END_DATE,
 	NOT_FOUND_FILE,
 	NOT_FOUND_IMAGE,
 	NOT_FOUND_PRODUCT,
 	NOT_FOUND_USER,
 	NOT_PERMISSION,
+	PRODUCT_NOT_END,
 	UNEXPECTED_ERROR,
 } from '../helpers/constants/errors';
 import { formatDate } from '../helpers/constants/ISOtoDate';
 import removeFile from '../helpers/constants/removeFile';
 import { ProductModel, UserModel } from '../models';
 import { getIO } from '../helpers/constants/socketIO';
+import res from 'express/lib/response';
+import productModel from '../models/productModel';
 
 export default {
 	searchProduct: async (req, res) => {
@@ -64,11 +68,6 @@ export default {
 
 	addProduct: async (req, res) => {
 		try {
-			// check role of user
-			if (req.accessTokenPayload.role !== 'seller') {
-				return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
-			}
-
 			const file = req.file;
 			if (!file) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_FILE);
@@ -78,9 +77,15 @@ export default {
 			const index = file.path.indexOf('\\');
 			const path = file.path.substring(index + 1);
 
+			// Check valid end_at
+			const endAt = new Date(req.body.end_at);
+			if (endAt.getTime() < new Date().getTime()) {
+				return res.status(httpStatus.BAD_REQUEST).send(INVALID_AUCTION_END_DATE);
+			}
+
 			req.body.seller_id = req.accessTokenPayload.userId;
 			req.body.avatar = path;
-			req.body.end_at = formatDate(new Date(req.body.end_at));
+			req.body.end_at = formatDate(endAt);
 			req.body.current_price = req.body.init_price;
 
 			// add product
@@ -90,10 +95,10 @@ export default {
 			const product = await ProductModel.findById(product_id);
 
 			// socket emit
-			getIO().emit('addProduct', {
-				message: 'new product add',
-				data: product,
-			});
+			// getIO().emit('addProduct', {
+			// 	message: 'new product add',
+			// 	data: product,
+			// });
 
 			return res.json(product);
 		} catch (err) {
@@ -105,17 +110,8 @@ export default {
 	updateProduct: async (req, res) => {
 		try {
 			// get product with id
-			const product = await ProductModel.findById(req.params.id);
-
-			// check product exist
-			if (product === null) {
-				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
-			}
-
-			// check role
-			if (req.accessTokenPayload.userId !== product.seller_id) {
-				return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
-			}
+			// const product = await ProductModel.findById(req.params.id);
+			const product = req.product;
 
 			const file = req.file;
 			if (file) {
@@ -123,7 +119,7 @@ export default {
 				const index = file.path.indexOf('\\');
 				const path = file.path.substring(index + 1);
 				if (product.avatar) {
-					removeFile(process.env.PATH_FOLDER_PUBLIC + product.avatar);
+					await removeFile(process.env.PATH_FOLDER_PUBLIC + product.avatar);
 				}
 				req.body.avatar = path;
 			}
@@ -134,13 +130,13 @@ export default {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
 			}
 
-			const productNew = await ProductModel.findById(product_id);
+			const productNew = await ProductModel.findById(req.params.id);
 
 			// socket emit
-			getIO().emit('updateProduct', {
-				message: 'Update product',
-				data: productNew,
-			});
+			// getIO().emit('updateProduct', {
+			// 	message: 'Update product',
+			// 	data: productNew,
+			// });
 
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
@@ -174,10 +170,10 @@ export default {
 			}
 
 			// socket emit
-			getIO().emit('deleteProduct', {
-				message: 'Delete product',
-				data: product,
-			});
+			// getIO().emit('deleteProduct', {
+			// 	message: 'Delete product',
+			// 	data: product,
+			// });
 
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
@@ -192,17 +188,8 @@ export default {
 	uploadImage: async (req, res) => {
 		try {
 			// get product by id
-			const product = await ProductModel.findById(req.params.id);
-
-			// check product exist
-			if (product === null) {
-				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
-			}
-
-			// check product of this seller
-			if (req.accessTokenPayload.userId !== product.seller_id) {
-				return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
-			}
+			// const product = await ProductModel.findById(req.params.id);
+			const product = req.product;
 
 			// upload with multer (async function)
 			const file = req.file;
@@ -223,10 +210,10 @@ export default {
 				const image = await ProductModel.findImage(product.product_id, imageId);
 
 				// socket emit
-				getIO().emit('newProductImage', {
-					message: 'New product image',
-					data: image,
-				});
+				// getIO().emit('newProductImage', {
+				// 	message: 'New product image',
+				// 	data: image,
+				// });
 			} catch (err) {
 				console.log(err);
 				return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
@@ -274,17 +261,8 @@ export default {
 	addDescription: async (req, res) => {
 		try {
 			// get product by id
-			const product = await ProductModel.findById(req.params.id);
-
-			// check product exist
-			if (product === null) {
-				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
-			}
-
-			// check product of this seller
-			if (req.accessTokenPayload.userId !== product.seller_id) {
-				return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
-			}
+			// const product = await ProductModel.findById(req.params.id);
+			const product = req.product;
 
 			// create entity
 			const entity = {
@@ -300,10 +278,10 @@ export default {
 			const description = await ProductModel.findDescription(product.product_id, descriptionId);
 
 			// socket emit
-			getIO().emit('newProductDescription', {
-				message: 'New product description',
-				data: description,
-			});
+			// getIO().emit('newProductDescription', {
+			// 	message: 'New product description',
+			// 	data: description,
+			// });
 
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
@@ -318,17 +296,8 @@ export default {
 			const description_id = req.params.descriptionId;
 
 			// get product by id
-			const product = await ProductModel.findById(product_id);
-
-			// check product exist
-			if (product === null) {
-				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
-			}
-
-			// check product of this seller
-			if (req.accessTokenPayload.userId !== product.seller_id) {
-				return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
-			}
+			// const product = await ProductModel.findById(product_id);
+			const product = req.product;
 
 			const n = await ProductModel.deleteDescription(product_id, description_id);
 			// not found this product
@@ -348,7 +317,9 @@ export default {
 			const image_id = req.params.imageId;
 
 			// get product by id
-			const product = await ProductModel.findById(product_id);
+			// const product = await ProductModel.findById(product_id);
+			const product = req.product;
+
 			// get image
 			const image = await ProductModel.findImage(product_id, image_id);
 
@@ -362,12 +333,7 @@ export default {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_IMAGE);
 			}
 
-			// check product of this seller
-			if (req.accessTokenPayload.userId !== product.seller_id) {
-				return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
-			}
-
-			removeFile(process.env.PATH_FOLDER_PUBLIC + image.path);
+			await removeFile(process.env.PATH_FOLDER_PUBLIC + image.path);
 			const n = await ProductModel.deleteImage(product_id, image_id);
 			// not found this product
 			if (n === 0) {
@@ -375,44 +341,12 @@ export default {
 			}
 
 			// socket emit
-			getIO().emit('deleteProductImage', {
-				message: 'Delete product image',
-				data: image,
-			});
+			// getIO().emit('deleteProductImage', {
+			// 	message: 'Delete product image',
+			// 	data: image,
+			// });
 
 			return res.status(httpStatus.NO_CONTENT).send();
-		} catch (err) {
-			console.log(err);
-			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
-		}
-	},
-
-	productsWon: async (req, res) => {
-		try {
-			// check role bidder
-			if (req.accessTokenPayload.role !== 'bidder') {
-				return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
-			}
-
-			console.log(req.accessTokenPayload);
-
-			const products = await ProductModel.productsWon(req.accessTokenPayload.userId);
-			return res.json(products);
-		} catch (err) {
-			console.log(err);
-			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
-		}
-	},
-
-	productsBidding: async (req, res) => {
-		try {
-			// check role bidder
-			if (req.accessTokenPayload.role !== 'bidder') {
-				return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
-			}
-
-			const products = await ProductModel.productsBidding(req.accessTokenPayload.userId);
-			return res.json(products);
 		} catch (err) {
 			console.log(err);
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
@@ -553,6 +487,54 @@ export default {
 			return res.json(products);
 		} catch (err) {
 			console.log(err);
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
+	},
+
+	getRate: async (req, res) => {
+		try {
+			const product = await ProductModel.findById(req.params.id);
+			if (product === null) {
+				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
+			}
+
+			const finishedProduct = await ProductModel.checkFinishedProduct(req.params.id);
+
+			if (finishedProduct.length !== 0) {
+				return res.status(httpStatus.BAD_REQUEST).send(PRODUCT_NOT_END);
+			}
+
+			const rates = await ProductModel.getRate(req.params.id);
+
+			return res.status(httpStatus.OK).send(rates);
+		} catch (err) {
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
+	},
+
+	getTopEnding: async (req, res) => {
+		try {
+			const products = ProductModel.search(null, 'time_desc', 1, null, 8);
+			return res.status(httpStatus.OK).send(products);
+		} catch (err) {
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
+	},
+
+	getTopPrice: async (req, res) => {
+		try {
+			const products = ProductModel.search(null, 'price_desc', 1, null, 8);
+			return res.status(httpStatus.OK).send(products);
+		} catch (err) {
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
+	},
+
+	getTopBiddingCount: async (req, res) => {
+		try {
+			const products = ProductModel.search(null, 'bidding_desc', 1, null, 8);
+			return res.status(httpStatus.OK).send(products);
+		} catch (err) {
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
 		}
 	},

@@ -164,3 +164,8 @@ export const SUB_ENTITY_EXIST = {
 	title: 'SUB_ENTITY_EXIST',
 	detail: 'There are child categories.',
 };
+
+export const INVALID_AUCTION_END_DATE = {
+  title: 'INVALID_AUCTION_END_DATE',
+  detail: 'End auction date must be after start date',
+}

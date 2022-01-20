@@ -16,3 +16,7 @@ export { default as UpgradeSellerRequestSchema } from './upgrageSellerRequestSch
 export { default as RegisterAdminSchema } from './registerAdminSchema';
 export { default as UpdateRoleSchema } from './updateRoleSchema';
 export { default as RateSchema } from './rateSchema';
+export { default as ProductPostSchema } from './productPostSchema';
+export { default as WatchSchema } from './watchSchema';
+export { default as ProductDescriptionSchema } from './productDescriptionSchema';
+export { default as ProductUpdateSchema } from './productUpdateSchema';

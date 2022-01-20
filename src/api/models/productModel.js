@@ -13,7 +13,8 @@ productModel.search = async (query, sort, page, category, number_product) => {
 		.leftJoin('biddings', 'biddings.product_id', 'products.product_id')
 		.groupBy('biddings.product_id')
 		.count('biddings.product_id as bidding_count')
-		.select('products.*');
+		.select('products.*')
+		.where('is_sold', 0);
 
 	// Search query
 	if (query) {
@@ -27,8 +28,11 @@ productModel.search = async (query, sort, page, category, number_product) => {
 
 	// Sort
 	if (sort) {
+		if (sort === 'time_asc') SQLquery = SQLquery.orderBy('end_at', 'asc');
 		if (sort === 'time_desc') SQLquery = SQLquery.orderBy('end_at', 'desc');
 		if (sort === 'price_asc') SQLquery = SQLquery.orderBy('current_price', 'asc');
+		if (sort === 'price_desc') SQLquery = SQLquery.orderBy('current_price', 'desc');
+		if (sort === 'bidding_asc') SQLquery = SQLquery.orderBy('bidding_count', 'asc');
 		if (sort === 'bidding_desc') SQLquery = SQLquery.orderBy('bidding_count', 'desc');
 	}
 
@@ -213,6 +217,14 @@ productModel.getBiddingProducts = async (user_id) => {
 
 productModel.getHasWonProducts = async function (user_id) {
 	return await db('products').where('buyer_id', user_id).andWhere('is_sold', 1).select('products.*');
+};
+
+productModel.getFinishedProduct = async function (product_id) {
+	return await db('products').select('products.*').where('is_sold', 1).andWhere('product_id', product_id);
+};
+
+productModel.getRate = async (product_id) => {
+	return await db('rates').select('rates.*').where('product_id', product_id);
 };
 
 export default productModel;
