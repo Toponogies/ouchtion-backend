@@ -1,12 +1,12 @@
 import httpStatus from 'http-status-codes';
 import { BAD_DELETE, BAD_REQUEST, NOT_FOUND_CATEGORY, UNEXPECTED_ERROR, SUB_ENTITY_EXIST } from '../helpers/constants/errors';
-import categoryModel from '../models/categoryModel';
+import { CategoryModel } from '../models';
 import { getIO } from '../helpers/constants/socketIO';
 
 export default {
 	getCategories: async (_req, res) => {
 		try {
-			const categories = await categoryModel.findAll();
+			const categories = await CategoryModel.findAll();
 			return res.status(httpStatus.OK).send(categories);
 		} catch (err) {
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
@@ -16,7 +16,7 @@ export default {
 	addCategory: async (req, res) => {
 		try {
 			let category = req.body;
-			let categoryIds = await categoryModel.add(category);
+			let categoryIds = await CategoryModel.add(category);
 			category.category_id = categoryIds[0];
 
 			// // socket emit
@@ -38,7 +38,7 @@ export default {
 		try {
 			let id = req.params.id;
 			let category = req.body;
-			categoryModel.patch(id, category);
+			CategoryModel.patch(id, category);
 			category.category_id = id;
 
 			// // socket emit
@@ -61,16 +61,16 @@ export default {
 		try {
 			const id = req.params.id;
 			// Check if category exist
-			const category = await categoryModel.findById(id);
+			const category = await CategoryModel.findById(id);
 			if (category === null) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_CATEGORY);
 			}
 
-			const childCategory = await categoryModel.getAllChildCategory(id);
+			const childCategory = await CategoryModel.getAllChildCategory(id);
 			if (childCategory.length !== 0) {
 				return res.status(httpStatus.BAD_REQUEST).send(SUB_ENTITY_EXIST);
 			}
-			await categoryModel.removeById(id);
+			await CategoryModel.removeById(id);
 
 			// socket emit
 			// getIO().emit('deleteCategory', {
