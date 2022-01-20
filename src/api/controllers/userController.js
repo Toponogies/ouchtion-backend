@@ -12,6 +12,7 @@ import {
 	NOT_FOUND_USER,
 	NOT_PERMISSION,
 	PRODUCT_NOT_END,
+	RELATED_ENTITY,
 	SEND_REQUEST_EXIST,
 	UNEXPECTED_ERROR,
 	WRONG_PASSWORD,
@@ -244,7 +245,7 @@ export default {
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
 			if (err.errno >= 1450 && err.errno <= 1460) {
-				return res.status(httpStatus.BAD_REQUEST).send(BAD_DELETE);
+				return res.status(httpStatus.BAD_REQUEST).send(RELATED_ENTITY);
 			}
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
 		}
