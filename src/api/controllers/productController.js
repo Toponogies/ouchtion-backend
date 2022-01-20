@@ -403,6 +403,7 @@ export default {
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
 		}
 	},
+
 	productsBidding: async (req, res) => {
 		try {
 			// check role bidder
@@ -418,13 +419,126 @@ export default {
 		}
 	},
 
-	productsActive: async (req, res) => {
+	getAllBidding: async (req, res) => {
 		try {
-			// check role seller
-			if (req.accessTokenPayload.role !== 'seller') {
-				return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
+			const biddings = await ProductModel.getAllBidding(req.params.id);
+			return res.json(biddings);
+		} catch (err) {
+			console.log(err);
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
+	},
+
+	getBiddingProducts: async (req, res) => {
+		try {
+			// Get user id
+			const user_id = req.accessTokenPayload.userId;
+
+			// Get user by id
+			const user = await UserModel.findById(user_id);
+
+			// Check user exist
+			if (user === null) {
+				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
 			}
 
+			const products = await ProductModel.getBiddingProducts(user_id);
+
+			res.status(httpStatus.OK).send(products);
+		} catch (err) {
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
+	},
+
+	getHasWonProducts: async (req, res) => {
+		try {
+			// Get user id
+			const user_id = req.accessTokenPayload.userId;
+
+			// Get user by id
+			const user = await UserModel.findById(user_id);
+
+			// Check user exist
+			if (user === null) {
+				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
+			}
+
+			const products = await ProductModel.getHasWonProducts(user_id);
+
+			res.status(httpStatus.OK).send(products);
+		} catch (err) {
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
+	},
+
+	getWatchList: async (req, res) => {
+		try {
+			// Get user id from token
+			const user_id = req.accessTokenPayload.userId;
+
+			// Get user by id
+			const user = await UserModel.findById(user_id);
+
+			// Check user exist
+			if (user === null) {
+				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
+			}
+
+			const watchlist = await UserModel.getWatchList(user_id);
+			return res.send(watchlist);
+		} catch (err) {
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
+	},
+
+	addWatch: async (req, res) => {
+		try {
+			// get user id from token
+			const user_id = req.accessTokenPayload.userId;
+			// get user by id
+			const user = await UserModel.findById(user_id);
+
+			// check product exist
+			if (user === null) {
+				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
+			}
+
+			// check watch exist
+			const isInWatchList = await UserModel.isInWatchList(user_id, req.body.product_id);
+			if (isInWatchList) {
+				return res.status(httpStatus.BAD_REQUEST).send(IS_EXIST);
+			}
+			await UserModel.addWatch(user_id, req.body.product_id);
+			return res.status(httpStatus.NO_CONTENT).send();
+		} catch (err) {
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
+	},
+
+	deleteWatch: async (req, res) => {
+		try {
+			// get user id from token
+			const user_id = req.accessTokenPayload.userId;
+			// get user by id
+			const user = await UserModel.findById(user_id);
+
+			// check product exist
+			if (user === null) {
+				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
+			}
+
+			const n = await UserModel.deleteWatch(user_id, req.body.product_id);
+			if (n === 0) {
+				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_WATCH);
+			}
+			return res.status(httpStatus.NO_CONTENT).send();
+		} catch (err) {
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
+	},
+
+	productsActive: async (req, res) => {
+		try {
 			const products = await ProductModel.productsActive(req.accessTokenPayload.userId);
 			return res.json(products);
 		} catch (err) {
@@ -435,23 +549,8 @@ export default {
 
 	productsInActive: async (req, res) => {
 		try {
-			// check role seller
-			if (req.accessTokenPayload.role !== 'seller') {
-				return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
-			}
-
 			const products = await ProductModel.productsInActive(req.accessTokenPayload.userId);
 			return res.json(products);
-		} catch (err) {
-			console.log(err);
-			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
-		}
-	},
-
-	getAllBidding: async (req, res) => {
-		try {
-			const biddings = await ProductModel.getAllBidding(req.params.id);
-			return res.json(biddings);
 		} catch (err) {
 			console.log(err);
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);

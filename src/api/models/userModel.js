@@ -33,39 +33,39 @@ userModel.getPoint = async function (user_id) {
 		point: user.point,
 	};
 };
+
 userModel.getAllBidding = async function (user_id) {
 	return db('biddings').where('user_id', user_id).orderBy('time', 'desc');
 };
+
 userModel.getAllRate = async function (user_id) {
 	return await db('products')
 		.join('rates', 'rates.product_id', 'products.product_id')
-		.whereRaw(
-			`(products.buyer_id= ${user_id}) or (products.seller_id= ${user_id})`
-		);
+		.whereRaw(`(products.buyer_id= ${user_id}) or (products.seller_id= ${user_id})`);
 };
+
 userModel.getAllProductBidderNotRate = async function (user_id) {
-	return await db('products')
-		.whereRaw(`products.buyer_id= ${user_id} and is_sold = 1 and product_id not in(
+	return await db('products').whereRaw(`products.buyer_id= ${user_id} and is_sold = 1 and product_id not in(
     select products.product_id from products join rates on rates.product_id = products.product_id 
     where products.buyer_id= ${user_id} and type = 'BUYER-SELLER')`);
 };
+
 userModel.getAllProductSellerNotRate = async function (user_id) {
-	return await db('products')
-		.whereRaw(`products.seller_id= ${user_id} and is_sold = 1 and product_id not in(
+	return await db('products').whereRaw(`products.seller_id= ${user_id} and is_sold = 1 and product_id not in(
     select products.product_id from products join rates on rates.product_id = products.product_id 
     where products.seller_id= ${user_id} and type = 'SELLER-BUYER')`);
 };
+
 userModel.isBidderInRate = async function (user_id, product_id) {
 	const row = await db('products')
 		.join('rates', 'rates.product_id', 'products.product_id')
-		.whereRaw(
-			`products.product_id = ${product_id} and products.buyer_id= ${user_id} and type = 'BUYER-SELLER'`
-		);
+		.whereRaw(`products.product_id = ${product_id} and products.buyer_id= ${user_id} and type = 'BUYER-SELLER'`);
 	if (row && row.length > 0) {
 		return true;
 	}
 	return false;
 };
+
 userModel.isBidderCanRate = async function (user_id, product_id) {
 	const row = await db('products').whereRaw(
 		`products.product_id = ${product_id} and products.buyer_id= ${user_id} and is_sold = 1`
@@ -75,17 +75,17 @@ userModel.isBidderCanRate = async function (user_id, product_id) {
 	}
 	return false;
 };
+
 userModel.isSellerInRate = async function (user_id, product_id) {
 	const row = await db('products')
 		.join('rates', 'rates.product_id', 'products.product_id')
-		.whereRaw(
-			`products.product_id = ${product_id} and products.seller_id= ${user_id} and type = 'SELLER-BUYER'`
-		);
+		.whereRaw(`products.product_id = ${product_id} and products.seller_id= ${user_id} and type = 'SELLER-BUYER'`);
 	if (row && row.length > 0) {
 		return true;
 	}
 	return false;
 };
+
 userModel.isSellerCanRate = async function (user_id, product_id) {
 	const row = await db('products').whereRaw(
 		`products.product_id = ${product_id} and products.seller_id= ${user_id} and is_sold = 1`
@@ -95,41 +95,40 @@ userModel.isSellerCanRate = async function (user_id, product_id) {
 	}
 	return false;
 };
+
 userModel.isInWatchList = async function (user_id, product_id) {
-	const row = await db('watchlists')
-		.where('user_id', user_id)
-		.andWhere('product_id', product_id);
+	const row = await db('watchlists').where('user_id', user_id).andWhere('product_id', product_id);
 	if (row && row.length > 0) {
 		return true;
 	}
 	return false;
 };
+
 userModel.getWatchList = async function (user_id) {
 	return await db('watchlists').where('user_id', user_id);
 };
+
 userModel.biddingHistory = async function (product_id) {
 	return await db('biddings').where('product_id', product_id);
 };
+
 userModel.postRate = async function (entity) {
 	return await db('rates').insert(entity);
 };
+
 userModel.addWatch = async function (user_id, product_id) {
 	return await db('watchlists').insert({
 		user_id: user_id,
 		product_id: product_id,
 	});
 };
+
 userModel.deleteWatch = async function (user_id, product_id) {
-	return await db('watchlists')
-		.where('user_id', user_id)
-		.andWhere('product_id', product_id)
-		.del();
+	return await db('watchlists').where('user_id', user_id).andWhere('product_id', product_id).del();
 };
 
 userModel.isHaveUpgrageSellerRequest = async function (user_id) {
-	const row = await db('upgrage_seller_request')
-		.where('user_id', user_id)
-		.whereRaw('abs(TIMESTAMPDIFF(DAY, time, now())) < 7');
+	const row = await db('upgrage_seller_request').where('user_id', user_id).whereRaw('abs(TIMESTAMPDIFF(DAY, time, now())) < 7');
 	if (row && row.length > 0) {
 		return true;
 	}
