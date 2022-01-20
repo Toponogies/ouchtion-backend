@@ -14,7 +14,8 @@ productModel.search = async (query, sort, page, category, number_product) => {
 		.groupBy('biddings.product_id')
 		.count('biddings.product_id as bidding_count')
 		.select('products.*')
-		.where('is_sold', 0);
+		.where('is_sold', 0)
+		.andWhereRaw('end_at > now()');
 
 	// Search query
 	if (query) {
