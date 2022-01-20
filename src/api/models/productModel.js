@@ -83,6 +83,7 @@ productModel.getProductUseAutoBidding = async function (product_id, bidding_id =
 
 	return row[0];
 };
+
 productModel.isInBidding = async function (product_id) {
 	const row = await db('biddings').where('product_id', product_id);
 	if (row && row.length > 0) return true;
@@ -116,9 +117,11 @@ productModel.addImage = async function (product_id, path_image, is_primary) {
 	}
 	return await db('product_images').insert(entity);
 };
+
 productModel.addDescription = async function (entity) {
 	return await db('product_descriptions').insert(entity);
 };
+
 productModel.deleteDescription = async function (product_id, description_id) {
 	return await db('product_descriptions').where('product_id', product_id).where('product_description_id', description_id).del();
 };
@@ -129,6 +132,7 @@ productModel.findImage = async function (product_id, image_id) {
 
 	return list[0];
 };
+
 productModel.findDescription = async function (product_id, description_id) {
 	const list = await db('product_descriptions').where('product_id', product_id).where('product_description_id', description_id);
 	if (list.length === 0) return null;
@@ -139,15 +143,7 @@ productModel.findDescription = async function (product_id, description_id) {
 productModel.deleteImage = async function (product_id, image_id) {
 	return await db('product_images').where('product_id', product_id).where('product_image_id', image_id).del();
 };
-productModel.productsWon = async function (user_id) {
-	return await db('products')
-		.leftJoin('biddings', 'biddings.product_id', 'products.product_id')
-		.groupBy('biddings.product_id')
-		.count('biddings.product_id as bidding_count')
-		.select('products.*')
-		.where('buyer_id', user_id)
-		.andWhere('is_sold', true);
-};
+
 productModel.productsBidding = async function (user_id) {
 	return await db('products')
 		.leftJoin('biddings', 'biddings.product_id', 'products.product_id')
@@ -157,6 +153,7 @@ productModel.productsBidding = async function (user_id) {
 		.where('user_id', user_id)
 		.andWhere('is_sold', 0);
 };
+
 productModel.productsActive = async function (user_id) {
 	return await db('products')
 		.leftJoin('biddings', 'biddings.product_id', 'products.product_id')
@@ -166,6 +163,7 @@ productModel.productsActive = async function (user_id) {
 		.where('seller_id', user_id)
 		.andWhere('is_sold', 0);
 };
+
 productModel.productsInActive = async function (user_id) {
 	return await db('products')
 		.leftJoin('biddings', 'biddings.product_id', 'products.product_id')
@@ -175,6 +173,7 @@ productModel.productsInActive = async function (user_id) {
 		.where('seller_id', user_id)
 		.andWhere('is_sold', 1);
 };
+
 productModel.getAllBidding = async function (product_id) {
 	return await db('biddings')
 		.leftJoin('users', 'users.user_id', 'biddings.user_id')
@@ -183,6 +182,7 @@ productModel.getAllBidding = async function (product_id) {
 		.select('biddings.*')
 		.select('full_name');
 };
+
 productModel.getAllProductEnd = async function () {
 	// use to check won
 	return await db('products').whereRaw('end_at < now()').andWhere('is_sold', 0);
@@ -200,6 +200,19 @@ productModel.updateEndAtEquaNow = async function (product_id) {
 	// use to update time end_at when <= 5 minute
 	return await db.raw(`update products set end_at = now()
     where product_id = ${product_id}`);
+};
+
+productModel.getBiddingProducts = async (user_id) => {
+	return await db('biddings')
+		.leftJoin('products', 'biddings.product_id', 'products.product_id')
+		.where('biddings.user_id', user_id)
+		.andWhere('products.is_sold', 0)
+		.select('products.*')
+		.distinct();
+};
+
+productModel.getHasWonProducts = async function (user_id) {
+	return await db('products').where('buyer_id', user_id).andWhere('is_sold', 1).select('products.*');
 };
 
 export default productModel;
