@@ -1,5 +1,5 @@
 import httpStatus from 'http-status-codes';
-import { BAD_DELETE, BAD_REQUEST, NOT_FOUND_CATEGORY, UNEXPECTED_ERROR, SUB_ENTITY_EXIST } from '../helpers/constants/errors';
+import { BAD_REQUEST, NOT_FOUND_CATEGORY, UNEXPECTED_ERROR, RELATED_ENTITY } from '../helpers/constants/errors';
 import { CategoryModel } from '../models';
 import { getIO } from '../helpers/constants/socketIO';
 
@@ -16,6 +16,10 @@ export default {
 	getCategory: async (req, res) => {
 		try {
 			const category = await CategoryModel.findById(req.params.id);
+
+			if (category === null) {
+				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_CATEGORY);
+			}
 			return res.status(httpStatus.OK).send(category);
 		} catch (err) {
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
@@ -59,14 +63,14 @@ export default {
 			return res.status(httpStatus.OK).send(category);
 		} catch (err) {
 			if (err.errno === 1452) {
-				return res.status(httpStatus.BAD_REQUEST).send(BAD_REQUEST);
+				return res.status(httpStatus.BAD_REQUEST).send(RELATED_ENTITY);
 			}
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
 		}
 	},
 
 	deleteCategory: async (req, res) => {
-		// can delete if not have product or child category
+		// Can delete if does not have product or child category
 		try {
 			const id = req.params.id;
 			// Check if category exist
@@ -75,10 +79,6 @@ export default {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_CATEGORY);
 			}
 
-			const childCategory = await CategoryModel.getAllChildCategory(id);
-			if (childCategory.length !== 0) {
-				return res.status(httpStatus.BAD_REQUEST).send(SUB_ENTITY_EXIST);
-			}
 			await CategoryModel.removeById(id);
 
 			// socket emit
@@ -89,9 +89,8 @@ export default {
 
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
-			console.log(err);
 			if (err.errno === 1451) {
-				return res.status(httpStatus.BAD_REQUEST).send(BAD_DELETE);
+				return res.status(httpStatus.BAD_REQUEST).send(RELATED_ENTITY);
 			}
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
 		}
