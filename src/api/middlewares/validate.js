@@ -1,6 +1,7 @@
 import Ajv from 'ajv';
 import httpStatus from 'http-status-codes';
 import { VALIDATION_ERROR } from '../helpers/constants/errors';
+import addFormats from 'ajv-formats';
 
 function parseErrors(validationErrors) {
 	let errors = [];
@@ -23,6 +24,7 @@ export default (schema) => (req, res, next) => {
 	ajv.addFormat('string-of-int', {
 		validate: (string) => !isNaN(string),
 	});
+	addFormats(ajv);
 	const valid = ajv.validate(schema, req.body);
 	if (!valid) {
 		const errorParse = parseErrors(ajv.errors);

@@ -1,26 +1,34 @@
 const router = require('express').Router();
-import productController from '../controllers/productController.js';
+import { ProductController } from '../controllers';
 import validate from '../middlewares/validate.js';
-import {schema as productUpdateSchema} from '../schemas/productUpdate';
-import {schema as productDescriptionSchema} from '../schemas/productDescription';
-import {schema as productPostSchema} from '../schemas/productPost';
+import { schema as productUpdateSchema } from '../schemas/productUpdate';
+import { schema as productDescriptionSchema } from '../schemas/productDescription';
+import { schema as productPostSchema } from '../schemas/productPost';
+import { schema as watchSchema } from '../schemas/watch';
 import { uploadAvatar, uploadImage } from '../helpers/constants/multer.js';
+import isBidder from '../middlewares/isBidder';
+import isSeller from '../middlewares/isSeller';
 
 // upload type multipart/form
-router.post('/:id/image',uploadImage.single('image'),productController.uploadImage);
-router.post('/',uploadAvatar.single('avatar'),validate(productPostSchema), productController.addProduct);
-router.put('/:id',uploadAvatar.single('avatar'),validate(productUpdateSchema),productController.updateProduct);
+router.post('/:id/image', uploadImage.single('image'), ProductController.uploadImage);
+router.post('/', uploadAvatar.single('avatar'), validate(productPostSchema), ProductController.addProduct);
+router.put('/:id', uploadAvatar.single('avatar'), validate(productUpdateSchema), ProductController.updateProduct);
 
 // json type
-router.delete('/:id',productController.deleteProduct);
-router.post('/:id/description', validate(productDescriptionSchema),productController.addDescription);
-router.delete('/:id/description/:descriptionId',productController.deleteDescription);
-router.delete('/:id/image/:imageId',productController.deleteImage);
+router.delete('/:id', ProductController.deleteProduct);
+router.post('/:id/description', validate(productDescriptionSchema), ProductController.addDescription);
+router.delete('/:id/description/:descriptionId', ProductController.deleteDescription);
+router.delete('/:id/image/:imageId', ProductController.deleteImage);
 
-router.get('/won',productController.productsWon);
-router.get('/bidding',productController.productsBidding);
-router.get('/active',productController.productsActive);
-router.get('/inactive',productController.productsInActive);
+// Per bidder
+router.get('/ongoingBids', isBidder, ProductController.getBiddingProducts);
+router.get('/completedBids', isBidder, ProductController.getHasWonProducts);
+router.get('/watchlist', isBidder, ProductController.getWatchList);
+router.post('/watchlist', isBidder, validate(watchSchema), ProductController.addWatch);
+router.delete('/watchlist', isBidder, validate(watchSchema), ProductController.deleteWatch);
 
+// Per seller
+router.get('/ongoingProducts', isSeller, ProductController.productsActive);
+router.get('/soldProducts', isSeller, ProductController.productsInActive);
 
 export default router;
