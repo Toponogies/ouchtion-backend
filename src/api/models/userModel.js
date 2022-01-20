@@ -143,4 +143,8 @@ userModel.getAllRequestSeller = async function () {
 	return await db('upgrage_seller_request');
 };
 
+userModel.deleteRequestSeller = async function (user_id) {
+	return await db('upgrage_seller_request').where("user_id",user_id).del();
+};
+
 export default userModel;

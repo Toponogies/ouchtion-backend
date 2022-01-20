@@ -5,9 +5,9 @@ const schema = {
 		password: { type: 'string' },
 		dob: {
 			type: 'string',
-			format: 'date',
 		},
 		address: { type: 'string', maxLength: 100 },
+		email: {type: 'string'},
 		newPassword: { type: 'string' },
 	},
 	additionalProperties: false,
