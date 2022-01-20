@@ -524,14 +524,4 @@ export default {
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
 		}
 	},
-
-	getTopEnding: async (req, res) => {
-		try {
-			const products = await ProductModel.getTopEnding();
-			return res.status(httpStatus.OK).send(products[0]);
-		} catch (err) {
-			console.log(err);
-			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
-		}
-	},
 };
