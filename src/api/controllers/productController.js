@@ -498,9 +498,9 @@ export default {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
 			}
 
-			const finishedProduct = await ProductModel.checkFinishedProduct(req.params.id);
+			const finishedProduct = await ProductModel.getFinishedProduct(req.params.id);
 
-			if (finishedProduct.length !== 0) {
+			if (finishedProduct.length !== 1) {
 				return res.status(httpStatus.BAD_REQUEST).send(PRODUCT_NOT_END);
 			}
 

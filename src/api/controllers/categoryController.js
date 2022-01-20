@@ -38,7 +38,7 @@ export default {
 		try {
 			let id = req.params.id;
 			let category = req.body;
-			CategoryModel.patch(id, category);
+			await CategoryModel.patch(id, category);
 			category.category_id = id;
 
 			// // socket emit
