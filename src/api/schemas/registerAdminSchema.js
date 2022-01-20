@@ -5,10 +5,11 @@ const schema = {
 		password: { type: 'string' },
 		full_name: { type: 'string' },
 		address: { type: 'string' },
+		dob: { type: 'string' },
 		is_active: { format: 'string-of-int' },
-		role: { format: 'string' },
+		role: { type: 'string' },
 	},
-	required: ['email', 'password', 'full_name', 'address', 'role'],
+	required: ['email', 'password', 'full_name', 'address', 'dob'],
 	additionalProperties: false,
 };
 

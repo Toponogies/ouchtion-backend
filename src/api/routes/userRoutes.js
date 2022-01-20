@@ -27,8 +27,9 @@ router.post('/requestSeller', isBidder, validate(UpgradeSellerRequestSchema), Us
 router.get('/', isAdmin, UserController.getUsers);
 router.post('/', isAdmin, validate(RegisterAdminSchema), UserController.addUser);
 router.delete('/:id', isAdmin, UserController.deleteUser);
-router.put('/role', isAdmin, validate(UpdateRoleSchema), UserController.updateRole);
-router.get('/request', isAdmin, UserController.getAllRequest);
+router.put('/admin/role', isAdmin, validate(UpdateRoleSchema), UserController.updateRole);
+router.get('/admin/request', isAdmin, UserController.getAllRequest);
+router.delete('/admin/request/:id', isAdmin, UserController.rejectRequest);
 
 // rate
 router.get('/rate', UserController.getAllRate);
