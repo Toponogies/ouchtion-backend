@@ -1,6 +1,7 @@
 const router = require('express').Router();
 import { ProductController } from '../controllers';
 import validate from '../middlewares/validate.js';
+import validateQuery from '../middlewares/validateQuery';
 import { WatchSchema, ProductUpdateSchema, ProductPostSchema, ProductDescriptionSchema, ProductSearchSchema } from '../schemas';
 import { uploadAvatar, uploadImage } from '../helpers/constants/multer.js';
 import isBidder from '../middlewares/isBidder';

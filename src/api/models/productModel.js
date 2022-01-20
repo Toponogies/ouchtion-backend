@@ -271,4 +271,10 @@ productModel.getRate = async (product_id) => {
 	return await db('rates').select('rates.*').where('product_id', product_id);
 };
 
+productModel.getTopEnding = async () => {
+	return await db.raw(
+		'SELECT *, (end_at - now()) as timeLeft FROM ouchtion.products where end_at > now() and is_sold = 0 order by timeLeft asc '
+	);
+};
+
 export default productModel;
