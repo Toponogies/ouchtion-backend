@@ -513,26 +513,9 @@ export default {
 	},
 
 	getTopEnding: async (req, res) => {
+		// TODO: Fix this
 		try {
 			const products = ProductModel.search(null, 'time_desc', 1, null, 8);
-			return res.status(httpStatus.OK).send(products);
-		} catch (err) {
-			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
-		}
-	},
-
-	getTopPrice: async (req, res) => {
-		try {
-			const products = ProductModel.search(null, 'price_desc', 1, null, 8);
-			return res.status(httpStatus.OK).send(products);
-		} catch (err) {
-			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
-		}
-	},
-
-	getTopBiddingCount: async (req, res) => {
-		try {
-			const products = ProductModel.search(null, 'bidding_desc', 1, null, 8);
 			return res.status(httpStatus.OK).send(products);
 		} catch (err) {
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);

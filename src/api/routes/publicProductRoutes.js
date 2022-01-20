@@ -13,8 +13,6 @@ router.get('/:id/rate', ProductController.getRate);
 
 // Get tops
 router.get('/tops/ending', ProductController.getTopEnding);
-router.get('/tops/biddingCount', ProductController.getTopBiddingCount);
-router.get('/tops/price', ProductController.getTopPrice);
 
 // TODO: may remove this
 router.post('/seller', validate(ProductSellerSchema), ProductController.getAllProductBySellerId);

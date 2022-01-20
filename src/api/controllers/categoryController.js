@@ -13,6 +13,15 @@ export default {
 		}
 	},
 
+	getCategory: async (req, res) => {
+		try {
+			const category = await CategoryModel.findById(req.params.id);
+			return res.status(httpStatus.OK).send(category);
+		} catch (err) {
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
+	},
+
 	addCategory: async (req, res) => {
 		try {
 			let category = req.body;
