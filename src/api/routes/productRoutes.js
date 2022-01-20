@@ -8,17 +8,29 @@ import { schema as watchSchema } from '../schemas/watch';
 import { uploadAvatar, uploadImage } from '../helpers/constants/multer.js';
 import isBidder from '../middlewares/isBidder';
 import isSeller from '../middlewares/isSeller';
+import isAdmin from '../middlewares/isSeller';
+import isProductOwner from '../middlewares/isProductOwner.js';
 
+// Per seller
 // upload type multipart/form
-router.post('/:id/image', uploadImage.single('image'), ProductController.uploadImage);
-router.post('/', uploadAvatar.single('avatar'), validate(productPostSchema), ProductController.addProduct);
-router.put('/:id', uploadAvatar.single('avatar'), validate(productUpdateSchema), ProductController.updateProduct);
+router.post('/:id/image', isSeller, isProductOwner, uploadImage.single('image'), ProductController.uploadImage);
+router.post('/', isSeller, uploadAvatar.single('avatar'), validate(productPostSchema), ProductController.addProduct);
+router.put(
+	'/:id',
+	isSeller,
+	isProductOwner,
+	uploadAvatar.single('avatar'),
+	validate(productUpdateSchema),
+	ProductController.updateProduct
+);
 
 // json type
-router.delete('/:id', ProductController.deleteProduct);
-router.post('/:id/description', validate(productDescriptionSchema), ProductController.addDescription);
-router.delete('/:id/description/:descriptionId', ProductController.deleteDescription);
-router.delete('/:id/image/:imageId', ProductController.deleteImage);
+router.post('/:id/description', isSeller, isProductOwner, validate(productDescriptionSchema), ProductController.addDescription);
+router.delete('/:id/description/:descriptionId', isSeller, isProductOwner, ProductController.deleteDescription);
+router.delete('/:id/image/:imageId', isSeller, isProductOwner, ProductController.deleteImage);
+
+// Per admin
+router.delete('/:id', isAdmin, ProductController.deleteProduct);
 
 // Per bidder
 router.get('/ongoingBids', isBidder, ProductController.getBiddingProducts);
