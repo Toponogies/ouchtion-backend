@@ -1,6 +1,7 @@
 get:
-  operationId: getCategorys
-  summary: Get all category.(public endpoint)
+  operationId: getCategories
+  summary: Get all category.
+  security: []
   responses:
     "200":
       description: An array of category.
@@ -10,14 +11,10 @@ get:
             type: array
             items:
               $ref: "../../schemas/Category.yaml"
-    "500":
-      $ref: "../../responses/Error.yaml"
-    default:
-      $ref: "../../responses/Error.yaml"
   tags:
-    - categorys
+    - categories
 post:
-  operationId: postCategory (only admin user)
+  operationId: addCategory
   summary: Add a category.
   requestBody:
     required: true
@@ -26,18 +23,11 @@ post:
         schema:
           $ref: "../../schemas/CategoryPost.yaml"
   responses:
-    "204":
+    "201":
       description: Added a category.
-    "400":
-      description: Can't find parent category id.
-      $ref: "../../responses/Error.yaml"
-    "401":
-      description: If user not login or not a admin.
-    "422":
-      $ref: "../../responses/ValidationError.yaml"
-    "500":
-      $ref: "../../responses/Error.yaml"
-    default:
-      $ref: "../../responses/Error.yaml"
+      content:
+        application/json:
+          schema:
+            $ref: "../../schemas/Category.yaml"
   tags:
-    - categorys
+    - categories

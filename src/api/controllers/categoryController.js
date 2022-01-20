@@ -1,5 +1,5 @@
 import httpStatus from 'http-status-codes';
-import { BAD_DELETE, BAD_REQUEST, NOT_FOUND_CATEGORY, UNEXPECTED_ERROR, NOT_PERMISSION } from '../helpers/constants/errors';
+import { BAD_DELETE, BAD_REQUEST, NOT_FOUND_CATEGORY, UNEXPECTED_ERROR, SUB_ENTITY_EXIST } from '../helpers/constants/errors';
 import categoryModel from '../models/categoryModel';
 import { getIO } from '../helpers/constants/socketIO';
 
@@ -66,6 +66,10 @@ export default {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_CATEGORY);
 			}
 
+			const childCategory = await categoryModel.getAllChildCategory(id);
+			if (childCategory.length !== 0) {
+				return res.status(httpStatus.BAD_REQUEST).send(SUB_ENTITY_EXIST);
+			}
 			await categoryModel.removeById(id);
 
 			// socket emit

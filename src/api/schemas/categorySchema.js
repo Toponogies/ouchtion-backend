@@ -4,7 +4,7 @@ const schema = {
 		parent_category_id: { format: 'string-of-int' },
 		name: { type: 'string' },
 	},
-	required: ['name'],
+	required: ['name', 'parent_category_id'],
 	additionalProperties: false,
 };
 

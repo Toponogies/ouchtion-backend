@@ -56,11 +56,9 @@ paths:
   /auth/resent:
     $ref: "./resources/auth/resent.yaml"
 
-  /categorys:
+  /categories:
     $ref: "./resources/category/_index.yaml"
-  /categorys/{id}/childcategory:
-    $ref: "./resources/category/categoryId/childcategory.yaml"
-  /categorys/{id}:
+  /categories/{id}:
     $ref: "./resources/category/categoryId/_index.yaml"
 
   /biddings:

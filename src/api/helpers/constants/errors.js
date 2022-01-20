@@ -159,3 +159,8 @@ export const PRODUCT_NOT_END = {
 	title: 'PRODUCT_NOT_END',
 	detail: 'Product bidding not finish',
 };
+
+export const SUB_ENTITY_EXIST = {
+	title: 'SUB_ENTITY_EXIST',
+	detail: 'There are child categories.',
+};
