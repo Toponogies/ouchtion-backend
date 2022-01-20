@@ -18,7 +18,7 @@ import isBidder from '../middlewares/isBidder';
 router.get('/:id', isPermittedToUser, UserController.getUser);
 router.put('/:id', isPermittedToUser, validate(UpdateUserSchema), UserController.updateUser);
 router.put('/:id/changePassword', isPermittedToUser, validate(ChangePasswordSchema), UserController.changePassword);
-router.post('/:id/email', validate(SendNewEmailSchema), UserController.sendNewEmail); // send token to new email
+router.post('/:id/email', isPermittedToUser, validate(SendNewEmailSchema), UserController.sendNewEmail); // send token to new email
 
 // Per bidder
 router.post('/requestSeller', isBidder, validate(UpgradeSellerRequestSchema), UserController.sendUpgrageSellerRequest);
