@@ -8,6 +8,7 @@ import {
 	RegisterAdminSchema,
 	UpdateRoleSchema,
 	RateSchema,
+	ChangePasswordSchema,
 } from '../schemas';
 import isPermittedToUser from '../middlewares/isPermittedToUser';
 import isAdmin from '../middlewares/isAdmin';
@@ -16,9 +17,8 @@ import isBidder from '../middlewares/isBidder';
 // User management for user and admin
 router.get('/:id', isPermittedToUser, UserController.getUser);
 router.put('/:id', isPermittedToUser, validate(UpdateUserSchema), UserController.updateUser);
-
-// Per user
-router.post('/email', validate(SendNewEmailSchema), UserController.sendNewEmail); // send token to new email
+router.put('/:id/changePassword', isPermittedToUser, validate(ChangePasswordSchema), UserController.changePassword);
+router.post('/:id/email', validate(SendNewEmailSchema), UserController.sendNewEmail); // send token to new email
 
 // Per bidder
 router.post('/requestSeller', isBidder, validate(UpgradeSellerRequestSchema), UserController.sendUpgrageSellerRequest);

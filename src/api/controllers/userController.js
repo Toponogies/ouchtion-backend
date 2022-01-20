@@ -7,7 +7,7 @@ import {
 	BAD_DELETE,
 	DB_QUERY_ERROR,
 	EXPIRED_VERIFYTOKEN,
-	INVAILD_VERIFYTOKEN,
+	INVALID_VERIFYTOKEN,
 	IS_EXIST,
 	NOT_FOUND_USER,
 	NOT_PERMISSION,
@@ -64,21 +64,8 @@ export default {
 				}
 			}
 
-			if (req.body.newPassword) {
-				req.body.password = req.body.newPassword;
-				delete req.body.newPassword;
-				req.body.password = bcrypt.hashSync(req.body.password, 10);
-			} else {
-				delete req.body.password;
-			}
-
 			// Update user
 			await UserModel.patch(user_id, req.body);
-
-			// Get the user
-			const newUser = await UserModel.findById(user_id);
-			delete user.password;
-			delete user.is_active;
 
 			// socket emit
 			// getIO().emit('updateUser', {
@@ -86,7 +73,47 @@ export default {
 			// 	data: newUser,
 			// });
 
-			return res.status(httpStatus.OK).send(newUser);
+			return res.status(httpStatus.NO_CONTENT).send();
+		} catch (err) {
+			console.log(err);
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
+	},
+
+	changePassword: async (req, res) => {
+		try {
+			// Get user id
+			const user_id = req.params.id;
+
+			// Get user by id
+			const user = await UserModel.findById(user_id);
+
+			// Check user exist
+			if (user === null) {
+				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
+			}
+
+			if (req.accessTokenPayload.userRole !== 'admin') {
+				// Check password
+				if (bcrypt.compareSync(req.body.old_password, user.password) === false) {
+					return res.status(httpStatus.UNAUTHORIZED).send(WRONG_PASSWORD);
+				}
+			}
+
+			const payload = {
+				password: bcrypt.hashSync(req.body.new_password, 10),
+			};
+
+			// Update user
+			await UserModel.patch(user_id, payload);
+
+			// socket emit
+			// getIO().emit('updateUser', {
+			// 	message: 'User update',
+			// 	data: newUser,
+			// });
+
+			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
 			console.log(err);
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
@@ -98,7 +125,7 @@ export default {
 			const email = req.body.email;
 
 			// Get user id from token
-			const user_id = req.accessTokenPayload.userId;
+			const user_id = req.params.id;
 
 			// Find user by email
 			const userByEmail = await UserModel.findByEmail(email);
@@ -112,9 +139,11 @@ export default {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
 			}
 
-			// Check password
-			if (!bcrypt.compareSync(req.body.password, user.password)) {
-				return res.status(httpStatus.UNAUTHORIZED).send(WRONG_PASSWORD);
+			if (req.accessTokenPayload.userRole !== 'admin') {
+				// Check password
+				if (!bcrypt.compareSync(req.body.password, user.password)) {
+					return res.status(httpStatus.UNAUTHORIZED).send(WRONG_PASSWORD);
+				}
 			}
 
 			// Create new token
@@ -193,7 +222,7 @@ export default {
 			// Add user
 			user = await UserModel.add(req.body);
 
-			return res.json({user_id:user[0]});
+			return res.json({ user_id: user[0] });
 		} catch (err) {
 			if (err.sqlState === '23000') {
 				return res.status(httpStatus.CONFLICT).send(DB_QUERY_ERROR);
@@ -378,7 +407,7 @@ export default {
 
 	updateEmail: async (req, res) => {
 		try {
-			const token = req.query.token;
+			const token = req.body.token;
 			// 2 temp variable
 			var _userId = -1;
 			var _email = '';
@@ -391,12 +420,10 @@ export default {
 			} catch (err) {
 				console.log(err);
 				if (err.name === 'TokenExpiredError') return res.status(httpStatus.UNAUTHORIZED).send(EXPIRED_VERIFYTOKEN);
-				else return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_VERIFYTOKEN);
+				else return res.status(httpStatus.UNAUTHORIZED).send(INVALID_VERIFYTOKEN);
 			}
 
 			await UserModel.patch(_userId, { email: _email });
-
-			const newUser = await UserModel.findById(_userId);
 
 			// socket emit
 			// getIO().emit('updateEmail', {
