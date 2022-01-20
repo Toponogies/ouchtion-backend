@@ -83,6 +83,11 @@ export const NOT_PERMISSION = {
 	detail: 'Not permission access endpoint',
 };
 
+export const MISSING_HEADER = {
+	title: 'MISSING_HEADER',
+	detail: 'Missing Authorization Header.',
+};
+
 export function VALIDATION_ERROR(validate_err) {
 	return {
 		title: 'VALIDATION_ERROR',
@@ -153,4 +158,9 @@ export const BAD_REQUEST = {
 export const PRODUCT_NOT_END = {
 	title: 'PRODUCT_NOT_END',
 	detail: 'Product bidding not finish',
+};
+
+export const SUB_ENTITY_EXIST = {
+	title: 'SUB_ENTITY_EXIST',
+	detail: 'There are child categories.',
 };

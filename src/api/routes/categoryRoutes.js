@@ -1,14 +1,11 @@
 const router = require('express').Router();
 import validate from '../middlewares/validate.js';
-import {schema as categorySchema} from '../schemas/category';
-import auth from '../middlewares/auth';
-import categoryController from '../controllers/categoryController.js';
+import { CategorySchema } from '../schemas';
+import isAdmin from '../middlewares/isAdmin';
+import { CategoryController } from '../controllers';
 
-router.get('/', categoryController.getAllCategory);
-router.get('/:id/childcategory' , categoryController.getAllChildCategory);
-
-// only admin can use
-router.post('/',auth ,validate(categorySchema), categoryController.addCategory);
-router.delete('/:id',auth, categoryController.deleteCategory);
+router.post('/', isAdmin, validate(CategorySchema), CategoryController.addCategory);
+router.put('/:id', isAdmin, validate(CategorySchema), CategoryController.updateCategory);
+router.delete('/:id', isAdmin, CategoryController.deleteCategory);
 
 export default router;

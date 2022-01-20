@@ -1,22 +1,30 @@
+put:
+  operationId: updateCategory
+  summary: Update a category.
+  parameters:
+    - $ref: "../../../parameters/path/id.yaml"
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../../../schemas/CategoryPost.yaml"
+  responses:
+    "200":
+      description: Updated category.
+      content:
+        application/json:
+          schema:
+            $ref: "../../../schemas/Category.yaml"
+  tags:
+    - categories
 delete:
-  operationId: deleteCategorys
-  summary: Delete a category. (only delete if category not have product or category child) (only admin user)
+  operationId: deleteCategory
+  summary: Delete a category. (only delete if category not have product or category child)
   parameters:
     - $ref: "../../../parameters/path/id.yaml"
   responses:
     "204":
       description: Deleted category.
-    "400":
-      description: Have child category.
-      $ref: "../../../responses/Error.yaml"
-    "401":
-      description: If user not login or not a admin.
-    "404":
-      description: Not found this category.
-      $ref: "../../../responses/Error.yaml"
-    "500":
-      $ref: "../../../responses/Error.yaml"
-    default:
-      $ref: "../../../responses/Error.yaml"
   tags:
-    - categorys
+    - categories
