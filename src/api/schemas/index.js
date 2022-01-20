@@ -6,3 +6,4 @@ export { default as ResetPasswordEmailSchema } from './resetPasswordEmailSchema'
 export { default as RegisterSchema } from './registerSchema';
 export { default as VerifySchema } from './verifySchema';
 export { default as ResentSchema } from './resentSchema';
+export { default as CategorySchema } from './categorySchema';

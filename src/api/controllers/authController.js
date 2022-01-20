@@ -42,7 +42,6 @@ export default {
 		// Add user to database
 		try {
 			userIds = await userModel.add(user);
-			console.log(user);
 		} catch (err) {
 			if (err.sqlState === '23000') {
 				return res.status(httpStatus.CONFLICT).send(DB_QUERY_ERROR);
@@ -90,7 +89,6 @@ export default {
 			});
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
-			console.log(err);
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
 		}
 	},
@@ -188,7 +186,6 @@ export default {
 				return res.status(httpStatus.UNAUTHORIZED).send(INVALID_REFRESHTOKEN);
 			}
 		} catch (err) {
-			console.log(err);
 			if (err.name === 'TokenExpiredError') {
 				return res.status(httpStatus.UNAUTHORIZED).send(EXPIRED_REFRESHTOKEN);
 			}
@@ -202,7 +199,6 @@ export default {
 				return res.status(httpStatus.UNAUTHORIZED).send(INVALID_REFRESHTOKEN);
 			}
 		} catch (err) {
-			console.log(err);
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
 		}
 
@@ -258,7 +254,6 @@ export default {
 			});
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
-			console.log(err);
 			return res.status(httpStatus.UNAUTHORIZED).send(INVALID_TOKEN);
 		}
 	},

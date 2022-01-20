@@ -1,3 +1,4 @@
-export { default as userModel } from './userModel';
-export { default as productModel } from './productModel';
-export { default as biddingModel } from './biddingModel';
+export { default as CategoryModel } from './categoryModel';
+export { default as UserModel } from './userModel';
+export { default as ProductModel } from './productModel';
+export { default as BiddingModel } from './biddingModel';

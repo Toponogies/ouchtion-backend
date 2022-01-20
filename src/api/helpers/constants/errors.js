@@ -83,6 +83,11 @@ export const NOT_PERMISSION = {
 	detail: 'Not permission access endpoint',
 };
 
+export const MISSING_HEADER = {
+	title: 'MISSING_HEADER',
+	detail: 'Missing Authorization Header.',
+};
+
 export function VALIDATION_ERROR(validate_err) {
 	return {
 		title: 'VALIDATION_ERROR',

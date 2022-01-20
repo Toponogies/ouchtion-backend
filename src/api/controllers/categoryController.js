@@ -4,78 +4,76 @@ import categoryModel from '../models/categoryModel';
 import { getIO } from '../helpers/constants/socketIO';
 
 export default {
-	getAllCategory: async (req, res) => {
+	getCategories: async (_req, res) => {
 		try {
-			const categorys = await categoryModel.findAll();
-			return res.json(categorys);
+			const categories = await categoryModel.findAll();
+			return res.status(httpStatus.OK).send(categories);
 		} catch (err) {
-			console.log(err);
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
 		}
 	},
-	getAllChildCategory: async (req, res) => {
-		try {
-			// check category exist
-			const category = await categoryModel.findById(req.params.id);
-			if (category === null) {
-				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_CATEGORY);
-			}
 
-			const categorys = await categoryModel.getAllChildCategory(req.params.id);
-			return res.json(categorys);
-		} catch (err) {
-			console.log(err);
-			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
-		}
-	},
 	addCategory: async (req, res) => {
 		try {
-			// check role of admin
-			if (req.accessTokenPayload.role !== 'admin') {
-				return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
-			}
+			let category = req.body;
+			let categoryIds = await categoryModel.add(category);
+			category.category_id = categoryIds[0];
 
-			var categoryId = await categoryModel.add(req.body);
-			categoryId = categoryId[0];
+			// // socket emit
+			// getIO().emit('addCategory', {
+			// 	message: 'new category add',
+			// 	data: category,
+			// });
 
-			const category = await categoryModel.findById(categoryId);
-
-			// socket emit
-			getIO().emit('addCategory', {
-				message: 'new category add',
-				data: category,
-			});
-			return res.status(httpStatus.NO_CONTENT).send();
+			return res.status(httpStatus.CREATED).send(category);
 		} catch (err) {
-			console.log(err);
 			if (err.errno === 1452) {
 				return res.status(httpStatus.BAD_REQUEST).send(BAD_REQUEST);
 			}
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
 		}
 	},
+
+	updateCategory: async (req, res) => {
+		try {
+			let id = req.params.id;
+			let category = req.body;
+			categoryModel.patch(id, category);
+			category.category_id = id;
+
+			// // socket emit
+			// getIO().emit('addCategory', {
+			// 	message: 'new category add',
+			// 	data: category,
+			// });
+
+			return res.status(httpStatus.OK).send(category);
+		} catch (err) {
+			if (err.errno === 1452) {
+				return res.status(httpStatus.BAD_REQUEST).send(BAD_REQUEST);
+			}
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
+	},
+
 	deleteCategory: async (req, res) => {
 		// can delete if not have product or child category
 		try {
-			// check role of admin
-			if (req.accessTokenPayload.role !== 'admin') {
-				return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
-			}
-
-			// check category exist
-			const category = await categoryModel.findById(req.params.id);
-			console.log(category);
+			const id = req.params.id;
+			// Check if category exist
+			const category = await categoryModel.findById(id);
 			if (category === null) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_CATEGORY);
 			}
 
-			await categoryModel.removeById(req.params.id);
+			await categoryModel.removeById(id);
 
 			// socket emit
-			getIO().emit('deleteCategory', {
-				message: 'delete category',
-				data: category,
-			});
+			// getIO().emit('deleteCategory', {
+			// 	message: 'delete category',
+			// 	data: category,
+			// });
+
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
 			console.log(err);
