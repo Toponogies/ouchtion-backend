@@ -18,33 +18,34 @@ import {
 } from '../helpers/constants/errors';
 
 import sendEmail from '../helpers/classes/sendEmail';
-import { biddingModel, userModel } from '../models';
+import { BiddingModel, UserModel } from '../models';
 import { getIO } from '../helpers/constants/socketIO';
 
 export default {
 	getPoint: async (req, res) => {
 		try {
 			// get user by id
-			const user = await userModel.findById(req.params.id);
+			const user = await UserModel.findById(req.params.id);
 
 			// check product exist
 			if (user === null) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
 			}
 
-			const result = await userModel.getPoint(req.params.id);
+			const result = await UserModel.getPoint(req.params.id);
 			res.json(result);
 		} catch (err) {
 			console.log(err);
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
 		}
 	},
+
 	getUser: async (req, res) => {
 		try {
 			// get user id from token
-			const user_id = req.accessTokenPayload.userId;
+			const user_id = req.params.id;
 			// get user by id
-			const user = await userModel.findById(user_id);
+			const user = await UserModel.findById(user_id);
 
 			// check product exist
 			if (user === null) {
@@ -60,19 +61,20 @@ export default {
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
 		}
 	},
+
 	getAllBidding: async (req, res) => {
 		try {
 			// get user id from token
 			const user_id = req.accessTokenPayload.userId;
 			// get user by id
-			const user = await userModel.findById(user_id);
+			const user = await UserModel.findById(user_id);
 
 			// check product exist
 			if (user === null) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
 			}
 
-			const biddings = await biddingModel.getAllBiddingUser(user_id);
+			const biddings = await BiddingModel.getAllBiddingUser(user_id);
 			res.json(biddings);
 		} catch (err) {
 			console.log(err);
@@ -84,7 +86,7 @@ export default {
 			// get user id from token
 			const user_id = req.accessTokenPayload.userId;
 			// get user by id
-			const user = await userModel.findById(user_id);
+			const user = await UserModel.findById(user_id);
 
 			// check product exist
 			if (user === null) {
@@ -104,12 +106,12 @@ export default {
 				delete req.body.password;
 			}
 
-			const n = await userModel.patch(user_id, req.body);
+			const n = await UserModel.patch(user_id, req.body);
 			if (n === 0) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
 			}
 
-			const newUser = await userModel.findById(user_id);
+			const newUser = await UserModel.findById(user_id);
 
 			// socket emit
 			getIO().emit('updateUser', {
@@ -127,7 +129,7 @@ export default {
 		try {
 			const user_id = req.accessTokenPayload.userId;
 			// get user by id
-			const user = await userModel.findById(user_id);
+			const user = await UserModel.findById(user_id);
 
 			// check product exist
 			if (user === null) {
@@ -135,12 +137,12 @@ export default {
 			}
 			req.body.user_id = user_id;
 
-			const check = await userModel.isHaveUpgrageSellerRequest(user_id);
+			const check = await UserModel.isHaveUpgrageSellerRequest(user_id);
 			if (check === true) {
 				return res.status(httpStatus.BAD_REQUEST).send(SEND_REQUEST_EXIST);
 			}
 
-			await userModel.sendUpgrageSellerRequest(req.body);
+			await UserModel.sendUpgrageSellerRequest(req.body);
 
 			// socket emit
 			getIO().emit('addRequestUpgrage', {
@@ -160,7 +162,7 @@ export default {
 				return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
 			}
 
-			const requestSellers = await userModel.getAllRequestSeller();
+			const requestSellers = await UserModel.getAllRequestSeller();
 			return res.json(requestSellers);
 		} catch (err) {
 			console.log(err);
@@ -177,14 +179,14 @@ export default {
 			}
 
 			// get user by id
-			var user = await userModel.findById(user_id);
+			var user = await UserModel.findById(user_id);
 
 			// check product exist
 			if (user === null) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
 			}
 
-			const n = await userModel.patch(user_id, req.body);
+			const n = await UserModel.patch(user_id, req.body);
 			if (n === 0) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
 			}
@@ -206,7 +208,7 @@ export default {
 			if (req.accessTokenPayload.role !== 'admin') {
 				return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
 			}
-			const users = await userModel.findAll();
+			const users = await UserModel.findAll();
 			return res.json(users);
 		} catch (err) {
 			console.log(err);
@@ -220,12 +222,12 @@ export default {
 			const user_id = req.accessTokenPayload.userId;
 
 			//find user by email
-			const userEmail = await userModel.findByEmail(email);
+			const userEmail = await UserModel.findByEmail(email);
 			if (userEmail !== null) {
 				return res.status(httpStatus.BAD_REQUEST).send(IS_EXIST);
 			}
 
-			const user = await userModel.findById(user_id);
+			const user = await UserModel.findById(user_id);
 			// check user exist
 			if (user === null) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
@@ -281,9 +283,9 @@ export default {
 				else return res.status(httpStatus.UNAUTHORIZED).send(INVAILD_VERIFYTOKEN);
 			}
 
-			await userModel.patch(_userId, { email: _email });
+			await UserModel.patch(_userId, { email: _email });
 
-			const newUser = await userModel.findById(_userId);
+			const newUser = await UserModel.findById(_userId);
 
 			// socket emit
 			getIO().emit('updateEmail', {
@@ -302,13 +304,13 @@ export default {
 			// get user id from token
 			const user_id = req.accessTokenPayload.userId;
 			// get user by id
-			const user = await userModel.findById(user_id);
+			const user = await UserModel.findById(user_id);
 			// check product exist
 			if (user === null) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
 			}
 
-			const rates = await userModel.getAllRate(user_id);
+			const rates = await UserModel.getAllRate(user_id);
 			return res.send(rates);
 		} catch (err) {
 			console.log(err);
@@ -320,7 +322,7 @@ export default {
 			// get user id from token
 			const user_id = req.accessTokenPayload.userId;
 			// get user by id
-			const user = await userModel.findById(user_id);
+			const user = await UserModel.findById(user_id);
 
 			// check product exist
 			if (user === null) {
@@ -329,13 +331,13 @@ export default {
 
 			// check if user is bidder
 			if (req.accessTokenPayload.role === 'bidder') {
-				const products = await userModel.getAllProductBidderNotRate(user_id);
+				const products = await UserModel.getAllProductBidderNotRate(user_id);
 				return res.send(products);
 			}
 
 			//check if user is seller
 			if (req.accessTokenPayload.role === 'seller') {
-				const products = await userModel.getAllProductSellerNotRate(user_id);
+				const products = await UserModel.getAllProductSellerNotRate(user_id);
 				return res.send(products);
 			}
 			return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
@@ -349,14 +351,14 @@ export default {
 			// get user id from token
 			const user_id = req.accessTokenPayload.userId;
 			// get user by id
-			const user = await userModel.findById(user_id);
+			const user = await UserModel.findById(user_id);
 
 			// check product exist
 			if (user === null) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
 			}
 
-			const watchlist = await userModel.getWatchList(user_id);
+			const watchlist = await UserModel.getWatchList(user_id);
 			return res.send(watchlist);
 		} catch (err) {
 			console.log(err);
@@ -368,7 +370,7 @@ export default {
 			// get user id from token
 			const user_id = req.accessTokenPayload.userId;
 			// get user by id
-			const user = await userModel.findById(user_id);
+			const user = await UserModel.findById(user_id);
 
 			// check product exist
 			if (user === null) {
@@ -378,20 +380,20 @@ export default {
 			// if user is bidder
 			if (req.accessTokenPayload.role === 'bidder') {
 				// check product finish
-				const isCanRate = await userModel.isBidderCanRate(user_id, req.body.product_id);
+				const isCanRate = await UserModel.isBidderCanRate(user_id, req.body.product_id);
 				if (!isCanRate) {
 					return res.status(httpStatus.BAD_REQUEST).send(PRODUCT_NOT_END);
 				}
 
 				// check rate exist
-				const isInRate = await userModel.isBidderInRate(user_id, req.body.product_id);
+				const isInRate = await UserModel.isBidderInRate(user_id, req.body.product_id);
 				if (isInRate) {
 					return res.status(httpStatus.BAD_REQUEST).send(IS_EXIST);
 				}
 
 				// add rate
 				req.body.type = 'BUYER-SELLER';
-				await userModel.postRate(req.body);
+				await UserModel.postRate(req.body);
 
 				// socket emit
 				getIO().emit('newRate', {
@@ -405,20 +407,20 @@ export default {
 			//if user is seller
 			if (req.accessTokenPayload.role === 'seller') {
 				// check product finish
-				const isCanRate = await userModel.isSellerCanRate(user_id, req.body.product_id);
+				const isCanRate = await UserModel.isSellerCanRate(user_id, req.body.product_id);
 				if (!isCanRate) {
 					return res.status(httpStatus.BAD_REQUEST).send(PRODUCT_NOT_END);
 				}
 
 				// check rate exist
-				const isInRate = await userModel.isSellerInRate(user_id, req.body.product_id);
+				const isInRate = await UserModel.isSellerInRate(user_id, req.body.product_id);
 				if (isInRate) {
 					return res.status(httpStatus.BAD_REQUEST).send(IS_EXIST);
 				}
 
 				// add rate
 				req.body.type = 'SELLER-BUYER';
-				await userModel.postRate(req.body);
+				await UserModel.postRate(req.body);
 
 				// socket emit
 				getIO().emit('newRate', {
@@ -438,7 +440,7 @@ export default {
 			// get user id from token
 			const user_id = req.accessTokenPayload.userId;
 			// get user by id
-			const user = await userModel.findById(user_id);
+			const user = await UserModel.findById(user_id);
 
 			// check product exist
 			if (user === null) {
@@ -446,11 +448,11 @@ export default {
 			}
 
 			// check watch exist
-			const isInWatchList = await userModel.isInWatchList(user_id, req.body.product_id);
+			const isInWatchList = await UserModel.isInWatchList(user_id, req.body.product_id);
 			if (isInWatchList) {
 				return res.status(httpStatus.BAD_REQUEST).send(IS_EXIST);
 			}
-			await userModel.addWatch(user_id, req.body.product_id);
+			await UserModel.addWatch(user_id, req.body.product_id);
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
 			console.log(err);
@@ -462,14 +464,14 @@ export default {
 			// get user id from token
 			const user_id = req.accessTokenPayload.userId;
 			// get user by id
-			const user = await userModel.findById(user_id);
+			const user = await UserModel.findById(user_id);
 
 			// check product exist
 			if (user === null) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
 			}
 
-			const n = await userModel.deleteWatch(user_id, req.body.product_id);
+			const n = await UserModel.deleteWatch(user_id, req.body.product_id);
 			if (n === 0) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_WATCH);
 			}
@@ -492,7 +494,7 @@ export default {
 
 			// Add user
 			try {
-				user = await userModel.add(req.body);
+				user = await UserModel.add(req.body);
 			} catch (err) {
 				if (err.sqlState === '23000')
 					// conflict email
@@ -521,7 +523,7 @@ export default {
 				req.body.password = bcrypt.hashSync(req.body.password, 10);
 			}
 
-			const n = await userModel.patch(user_id, req.body);
+			const n = await UserModel.patch(user_id, req.body);
 			if (n === 0) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
 			}
@@ -542,7 +544,7 @@ export default {
 			// get user id from param
 			const user_id = req.params.id;
 
-			const n = await userModel.removeById(user_id);
+			const n = await UserModel.removeById(user_id);
 			if (n === 0) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
 			}
