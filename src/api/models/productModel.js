@@ -2,43 +2,53 @@ import db from '../connection/db.js';
 import generate from './generic.model.js';
 
 let productModel = generate('products', 'product_id');
-productModel.findBySellerId = async function (seller_id) {
+
+productModel.findBySellerId = async (seller_id) => {
 	const row = await db('products').where('seller_id', seller_id);
 	return row;
 };
-productModel.search = async function (query, sort, page, category, number_product) {
+
+productModel.search = async (query, sort, page, category, number_product) => {
 	let SQLquery = db('products')
 		.leftJoin('biddings', 'biddings.product_id', 'products.product_id')
 		.groupBy('biddings.product_id')
 		.count('biddings.product_id as bidding_count')
 		.select('products.*');
-	// search query
+
+	// Search query
 	if (query) {
 		SQLquery = SQLquery.whereRaw(`match(name) against('${query}')`);
 	}
-	// filter category
+
+	// Filter category
 	if (category) {
 		SQLquery = SQLquery.where('category_id', category);
 	}
-	//sort
+
+	// Sort
 	if (sort) {
 		if (sort === 'time_desc') SQLquery = SQLquery.orderBy('end_at', 'desc');
 		if (sort === 'price_asc') SQLquery = SQLquery.orderBy('current_price', 'asc');
 		if (sort === 'bidding_desc') SQLquery = SQLquery.orderBy('bidding_count', 'desc');
 	}
+
+	// Products per page
 	if (number_product) {
 		SQLquery = SQLquery.limit(number_product);
 	}
-	// page
+
+	// Page
 	if (page) {
-		//if have page but not have number product default 6
+		// If have page but not have number product is default to 6
 		SQLquery = number_product ? SQLquery.offset(page * number_product) : SQLquery.offset(page * 6).limit(6);
 	}
+
 	// excute
 	const row = await SQLquery;
 	return row;
 };
-productModel.getProduct = async function (product_id) {
+
+productModel.getProduct = async (product_id) => {
 	let SQLquery = db('products')
 		.leftJoin('biddings', 'biddings.product_id', 'products.product_id')
 		.groupBy('products.product_id')
@@ -46,8 +56,11 @@ productModel.getProduct = async function (product_id) {
 		.select('products.*')
 		.where('products.product_id', product_id)
 		.andWhere('is_valid', 1);
+
 	const row = await SQLquery;
-	if (row.length === 0) return null;
+	if (row.length === 0) {
+		return null;
+	}
 
 	return row[0];
 };
@@ -75,13 +88,16 @@ productModel.isInBidding = async function (product_id) {
 	if (row && row.length > 0) return true;
 	return false;
 };
+
 productModel.getImages = async function (product_id) {
 	const row = await db('product_images').where('product_id', product_id).select('product_image_id', 'path', 'is_primary');
 	return row;
 };
+
 productModel.removeProduct = async function (product_id) {
 	await db('products').where('product_id', product_id).del();
 };
+
 productModel.getDescriptions = async function (product_id) {
 	const row = await db('product_descriptions')
 		.where('product_id', product_id)
@@ -89,6 +105,7 @@ productModel.getDescriptions = async function (product_id) {
 		.select('product_description_id', 'description', 'upload_date');
 	return row;
 };
+
 productModel.addImage = async function (product_id, path_image, is_primary) {
 	const entity = {
 		product_id: product_id,

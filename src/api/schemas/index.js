@@ -7,3 +7,5 @@ export { default as RegisterSchema } from './registerSchema';
 export { default as VerifySchema } from './verifySchema';
 export { default as ResentSchema } from './resentSchema';
 export { default as CategorySchema } from './categorySchema';
+export { default as ProductSearchSchema } from './productSearchSchema';
+export { default as ProductSellerSchema } from './productSellerSchema';
