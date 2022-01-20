@@ -1,4 +1,4 @@
-export const schema = {
+const schema = {
 	type: 'object',
 	properties: {
 		product_id: { format: 'string-of-int' },
@@ -8,3 +8,5 @@ export const schema = {
 	required: ['product_id'],
 	additionalProperties: false,
 };
+
+export default schema;

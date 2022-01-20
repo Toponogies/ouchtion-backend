@@ -1,36 +1,38 @@
 const router = require('express').Router();
 import { UserController } from '../controllers';
 import validate from '../middlewares/validate.js';
-import { schema as updateRoleSchema } from '../schemas/updateRole';
-import { schema as upgrageSellerRequestSchema } from '../schemas/upgrageSellerRequest';
-import { schema as rateSchema } from '../schemas/rate';
-import { schema as sendNewEmailSchema } from '../schemas/sendNewEmail';
-import { schema as updateUserSchema } from '../schemas/updateUser';
-import { schema as registerUserAdminSchema } from '../schemas/registerAdmin';
+import {
+	UpdateUserSchema,
+	SendNewEmailSchema,
+	UpgradeSellerRequestSchema,
+	RegisterAdminSchema,
+	UpdateRoleSchema,
+	RateSchema,
+} from '../schemas';
 import isPermittedToUser from '../middlewares/isPermittedToUser';
 import isAdmin from '../middlewares/isAdmin';
 import isBidder from '../middlewares/isBidder';
 
 // User management for user and admin
 router.get('/:id', isPermittedToUser, UserController.getUser);
-router.put('/:id', isPermittedToUser, validate(updateUserSchema), UserController.updateUser);
+router.put('/:id', isPermittedToUser, validate(UpdateUserSchema), UserController.updateUser);
 
 // Per user
-router.post('/email', validate(sendNewEmailSchema), UserController.sendNewEmail); // send token to new email
+router.post('/email', validate(SendNewEmailSchema), UserController.sendNewEmail); // send token to new email
 
 // Per bidder
-router.post('/requestSeller', isBidder, validate(upgrageSellerRequestSchema), UserController.sendUpgrageSellerRequest);
+router.post('/requestSeller', isBidder, validate(UpgradeSellerRequestSchema), UserController.sendUpgrageSellerRequest);
 
 // Per admin
 router.get('/', isAdmin, UserController.getUsers);
-router.post('/', isAdmin, validate(registerUserAdminSchema), UserController.addUser);
+router.post('/', isAdmin, validate(RegisterAdminSchema), UserController.addUser);
 router.delete('/:id', isAdmin, UserController.deleteUser);
-router.put('/role', isAdmin, validate(updateRoleSchema), UserController.updateRole);
+router.put('/role', isAdmin, validate(UpdateRoleSchema), UserController.updateRole);
 router.get('/request', isAdmin, UserController.getAllRequest);
 
 // rate
 router.get('/rate', UserController.getAllRate);
-router.post('/rate', validate(rateSchema), UserController.postRate);
+router.post('/rate', validate(RateSchema), UserController.postRate);
 
 // TODO: Remove this
 router.get('/productCanRate', UserController.getAllProductNotRate); // all product user can rate but no rate

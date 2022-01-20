@@ -1,4 +1,4 @@
-export const schema = {
+const schema = {
 	type: 'object',
 	properties: {
 		user_id: { format: 'string-of-int' },
@@ -7,3 +7,5 @@ export const schema = {
 	required: ['user_id', 'role'],
 	additionalProperties: false,
 };
+
+export default schema;

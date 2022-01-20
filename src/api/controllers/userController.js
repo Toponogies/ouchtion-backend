@@ -9,7 +9,6 @@ import {
 	INVAILD_VERIFYTOKEN,
 	IS_EXIST,
 	NOT_FOUND_USER,
-	NOT_FOUND_WATCH,
 	NOT_PERMISSION,
 	PRODUCT_NOT_END,
 	SEND_REQUEST_EXIST,
@@ -18,7 +17,7 @@ import {
 } from '../helpers/constants/errors';
 
 import sendEmail from '../helpers/classes/sendEmail';
-import { BiddingModel, ProductModel, UserModel } from '../models';
+import { UserModel } from '../models';
 import { getIO } from '../helpers/constants/socketIO';
 
 export default {
@@ -47,7 +46,7 @@ export default {
 	updateUser: async (req, res) => {
 		try {
 			// Get user id
-			const user_id = req.accessTokenPayload.userId;
+			const user_id = req.params.id;
 
 			// Get user by id
 			const user = await UserModel.findById(user_id);
@@ -57,9 +56,11 @@ export default {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
 			}
 
-			// Check password
-			if (bcrypt.compareSync(req.body.password, user.password) === false) {
-				return res.status(httpStatus.UNAUTHORIZED).send(WRONG_PASSWORD);
+			if (req.accessTokenPayload.userRole !== 'admin') {
+				// Check password
+				if (bcrypt.compareSync(req.body.password, user.password) === false) {
+					return res.status(httpStatus.UNAUTHORIZED).send(WRONG_PASSWORD);
+				}
 			}
 
 			if (req.body.newPassword) {
@@ -86,6 +87,7 @@ export default {
 
 			return res.status(httpStatus.OK).send(newUser);
 		} catch (err) {
+			console.log(err);
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
 		}
 	},
@@ -290,7 +292,7 @@ export default {
 			}
 
 			// if user is bidder
-			if (req.accessTokenPayload.role === 'bidder') {
+			if (req.accessTokenPayload.userRole === 'bidder') {
 				// check product finish
 				const isCanRate = await UserModel.isBidderCanRate(user_id, req.body.product_id);
 				if (!isCanRate) {
@@ -317,7 +319,7 @@ export default {
 			}
 
 			//if user is seller
-			if (req.accessTokenPayload.role === 'seller') {
+			if (req.accessTokenPayload.userRole === 'seller') {
 				// check product finish
 				const isCanRate = await UserModel.isSellerCanRate(user_id, req.body.product_id);
 				if (!isCanRate) {

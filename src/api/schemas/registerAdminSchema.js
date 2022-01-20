@@ -1,4 +1,4 @@
-export const schema = {
+const schema = {
 	type: 'object',
 	properties: {
 		email: { type: 'string' },
@@ -11,3 +11,5 @@ export const schema = {
 	required: ['email', 'password', 'full_name', 'address', 'role'],
 	additionalProperties: false,
 };
+
+export default schema;
