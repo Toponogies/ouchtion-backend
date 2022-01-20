@@ -1,7 +1,7 @@
 const router = require('express').Router();
 import { ProductController } from '../controllers';
 import validate from '../middlewares/validate.js';
-import { WatchSchema, ProductUpdateSchema, ProductPostSchema, ProductDescriptionSchema } from '../schemas';
+import { WatchSchema, ProductUpdateSchema, ProductPostSchema, ProductDescriptionSchema, ProductSearchSchema } from '../schemas';
 import { uploadAvatar, uploadImage } from '../helpers/constants/multer.js';
 import isBidder from '../middlewares/isBidder';
 import isSeller from '../middlewares/isSeller';
@@ -27,6 +27,7 @@ router.delete('/:id/descriptions/:descriptionId', isSeller, isProductOwner, Prod
 router.delete('/:id/images/:imageId', isSeller, isProductOwner, ProductController.deleteImage);
 
 // Per admin
+router.get('/admin/products', isAdmin, validateQuery(ProductSearchSchema), ProductController.getProductsForAdmin);
 router.delete('/:id', isAdmin, ProductController.deleteProduct);
 
 // Per bidder
