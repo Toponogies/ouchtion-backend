@@ -20,7 +20,10 @@ biddingModel.addBidding = async function (body) {
 	biddingId = biddingId[0];
 
 	// update time product end
-	await productModel.updateTimeWhenBidding(product.product_id);
+	// Check is extendable
+	if (product.is_extendable === '1') {
+		await productModel.updateTimeWhenBidding(product.product_id);
+	}
 
 	product.current_max_price =
 		product.current_max_price > product.current_price ? product.current_max_price : product.current_price;

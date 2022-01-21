@@ -160,12 +160,12 @@ export const PRODUCT_NOT_END = {
 	detail: 'Product bidding not finish',
 };
 
-export const SUB_ENTITY_EXIST = {
-	title: 'SUB_ENTITY_EXIST',
-	detail: 'There are child categories.',
+export const RELATED_ENTITY = {
+	title: 'RELATED_ENTITY',
+	detail: 'There are related entities.',
 };
 
 export const INVALID_AUCTION_END_DATE = {
-  title: 'INVALID_AUCTION_END_DATE',
-  detail: 'End auction date must be after start date',
-}
+	title: 'INVALID_AUCTION_END_DATE',
+	detail: 'End auction date must be after start date',
+};

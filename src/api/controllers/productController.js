@@ -14,8 +14,6 @@ import { formatDate } from '../helpers/constants/ISOtoDate';
 import removeFile from '../helpers/constants/removeFile';
 import { ProductModel, UserModel } from '../models';
 import { getIO } from '../helpers/constants/socketIO';
-import res from 'express/lib/response';
-import productModel from '../models/productModel';
 
 export default {
 	searchProduct: async (req, res) => {
@@ -181,6 +179,21 @@ export default {
 				return res.status(httpStatus.BAD_REQUEST).send(BAD_DELETE);
 			}
 			console.log(err);
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
+	},
+
+	getProductsForAdmin: async (req, res) => {
+		try {
+			const products = await ProductModel.searchForAdmin(
+				req.query.query,
+				req.query.sort,
+				req.query.page,
+				req.query.category,
+				req.query.number
+			);
+			return res.status(httpStatus.OK).send(products);
+		} catch (err) {
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
 		}
 	},
@@ -507,33 +520,6 @@ export default {
 			const rates = await ProductModel.getRate(req.params.id);
 
 			return res.status(httpStatus.OK).send(rates);
-		} catch (err) {
-			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
-		}
-	},
-
-	getTopEnding: async (req, res) => {
-		try {
-			const products = ProductModel.search(null, 'time_desc', 1, null, 8);
-			return res.status(httpStatus.OK).send(products);
-		} catch (err) {
-			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
-		}
-	},
-
-	getTopPrice: async (req, res) => {
-		try {
-			const products = ProductModel.search(null, 'price_desc', 1, null, 8);
-			return res.status(httpStatus.OK).send(products);
-		} catch (err) {
-			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
-		}
-	},
-
-	getTopBiddingCount: async (req, res) => {
-		try {
-			const products = ProductModel.search(null, 'bidding_desc', 1, null, 8);
-			return res.status(httpStatus.OK).send(products);
 		} catch (err) {
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
 		}

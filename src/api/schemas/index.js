@@ -20,3 +20,4 @@ export { default as ProductPostSchema } from './productPostSchema';
 export { default as WatchSchema } from './watchSchema';
 export { default as ProductDescriptionSchema } from './productDescriptionSchema';
 export { default as ProductUpdateSchema } from './productUpdateSchema';
+export { default as ChangePasswordSchema } from './changePasswordSchema';
