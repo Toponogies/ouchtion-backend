@@ -8,6 +8,7 @@ import {
 	NOT_FOUND_BIDDING,
 	NOT_FOUND_PRODUCT,
 	NOT_PERMISSION,
+	PROCESSING_REQUEST,
 	UNEXPECTED_ERROR,
 } from '../helpers/constants/errors';
 dotenv.config();
@@ -116,9 +117,9 @@ export default {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
 			}
 
-			const check = await BiddingModel.isHaveBiddingRequest(req.body);
-			if (check === true) {
-				return res.status(httpStatus.BAD_REQUEST).send(IS_EXIST);
+			const list = await BiddingModel.isHaveBiddingRequest(req.body);
+			if (list.length === 1) {
+				return res.status(httpStatus.BAD_REQUEST).send(REQUEST_SENT);
 			}
 
 			await BiddingModel.addBiddingRequest(req.body);
@@ -138,7 +139,16 @@ export default {
 
 	getBiddingRequests: async (req, res) => {
 		try {
-			const biddingRequests = await BiddingModel.getBiddingRequests(req.accessTokenPayload.userId);
+			const product = await ProductModel.findById(req.body.product_id);
+			if (product === null) {
+				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
+			}
+
+			if (req.accessTokenPayload.userId !== product.seller_id) {
+				return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
+			}
+
+			const biddingRequests = await BiddingModel.getBiddingRequests(req.body.product_id);
 			return res.json(biddingRequests);
 		} catch (err) {
 			console.log(err);
@@ -146,7 +156,7 @@ export default {
 		}
 	},
 
-	permissionBidding: async (req, res) => {
+	updatePermission: async (req, res) => {
 		try {
 			// get product with id and check the seller
 			const product = await ProductModel.findById(req.body.product_id);
@@ -273,6 +283,23 @@ export default {
 			if (!check) {
 				return res.status(httpStatus.BAD_REQUEST).send(FORBIDDEN_BIDDING);
 			}
+
+			return res.status(httpStatus.NO_CONTENT).send();
+		} catch (err) {
+			console.log(err);
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
+	},
+
+	updateRequest: async (req, res) => {
+		try {
+			await BiddingModel.patch(req.params.id, req.body);
+
+			// socket emit
+			getIO().emit('rejectBiddingRequest', {
+				message: 'reject bidding request',
+				data: req.body,
+			});
 
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {

@@ -174,3 +174,8 @@ export const FORBIDDEN_BIDDING = {
 	title: 'FORBIDDEN_BIDDING',
 	detail: 'User cannot bid for this product.',
 };
+
+export const REQUEST_SENT = {
+	title: 'PROCESSING_SENT',
+	detail: 'You can only send request once.',
+};

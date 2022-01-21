@@ -71,7 +71,7 @@ biddingModel.findAllUserId = async function (product_id) {
 
 biddingModel.isHaveBiddingRequest = async function (body) {
 	const list = await db('bidding_approval_requests').where('user_id', body.user_id).andWhere('product_id', body.product_id);
-	return list.length !== 0;
+	return list;
 };
 
 biddingModel.isBiddingPermission = async function (body) {
@@ -89,16 +89,16 @@ biddingModel.isBiddingPermission = async function (body) {
 };
 
 biddingModel.addBiddingRequest = async function (body) {
-	body.is_processed = true;
+	body.is_processed = false;
 	await db('bidding_approval_requests').insert(body);
 };
 
-biddingModel.getBiddingRequests = async function (seller_id) {
+biddingModel.getBiddingRequests = async function (product_id) {
 	return await db('bidding_approval_requests')
-		.join('products', 'products.product_id', 'bidding_approval_requests.product_id')
-		.where('seller_id', seller_id)
-		.andWhere('is_processed', 1)
-		.select('bidding_approval_requests.*');
+		.leftJoin('products', 'products.product_id', 'bidding_approval_requests.product_id')
+		.leftJoin('users', 'users.user_id', 'bidding_approval_requests.user_id')
+		.where('bidding_approval_requests.product_id', product_id)
+		.andWhere('is_processed', 0);
 };
 
 biddingModel.permissionBidding = async function (body) {
@@ -110,18 +110,11 @@ biddingModel.permissionBidding = async function (body) {
 	await db('bidding_approval_requests')
 		.where('user_id', body.user_id)
 		.andWhere('product_id', body.product_id)
-		.update({ is_processed: 0 });
+		.update({ is_processed: 1 });
 };
 
 biddingModel.getBiddingPermissionProduct = async function (product_id) {
 	return await db('bidding_permissions').where('product_id', product_id);
-};
-
-biddingModel.notAllowBidding = async function (body) {
-	await db('bidding_approval_requests')
-		.where('user_id', body.user_id)
-		.andWhere('product_id', body.product_id)
-		.update({ is_processed: 0 });
 };
 
 biddingModel.getAllAutoBiddingValid = async function () {
