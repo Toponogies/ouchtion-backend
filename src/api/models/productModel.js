@@ -14,7 +14,51 @@ productModel.search = async (query, sort, page, category, number_product) => {
 		.groupBy('biddings.product_id')
 		.count('biddings.product_id as bidding_count')
 		.select('products.*')
-		.where('is_sold', 0);
+		.where('is_sold', 0)
+		.andWhereRaw('end_at > now()');
+
+	// Search query
+	if (query) {
+		SQLquery = SQLquery.whereRaw(`match(name) against('${query}')`);
+	}
+
+	// Filter category
+	if (category) {
+		SQLquery = SQLquery.where('category_id', category);
+	}
+
+	// Sort
+	if (sort) {
+		if (sort === 'time_asc') SQLquery = SQLquery.orderBy('end_at', 'asc');
+		if (sort === 'time_desc') SQLquery = SQLquery.orderBy('end_at', 'desc');
+		if (sort === 'price_asc') SQLquery = SQLquery.orderBy('current_price', 'asc');
+		if (sort === 'price_desc') SQLquery = SQLquery.orderBy('current_price', 'desc');
+		if (sort === 'bidding_asc') SQLquery = SQLquery.orderBy('bidding_count', 'asc');
+		if (sort === 'bidding_desc') SQLquery = SQLquery.orderBy('bidding_count', 'desc');
+	}
+
+	// Products per page
+	if (number_product) {
+		SQLquery = SQLquery.limit(number_product);
+	}
+
+	// Page
+	if (page) {
+		// If have page but not have number product is default to 6
+		SQLquery = number_product ? SQLquery.offset(page * number_product) : SQLquery.offset(page * 6).limit(6);
+	}
+
+	// excute
+	const row = await SQLquery;
+	return row;
+};
+
+productModel.searchForAdmin = async (query, sort, page, category, number_product) => {
+	let SQLquery = db('products')
+		.leftJoin('biddings', 'biddings.product_id', 'products.product_id')
+		.groupBy('biddings.product_id')
+		.count('biddings.product_id as bidding_count')
+		.select('products.*');
 
 	// Search query
 	if (query) {

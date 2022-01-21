@@ -4,7 +4,7 @@ const schema = {
 		email: { type: 'string' },
 		password: { type: 'string' },
 	},
-	required: ['email', 'password'],
+	required: ['email'],
 	additionalProperties: false,
 };
 

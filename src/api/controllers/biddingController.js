@@ -1,6 +1,6 @@
 import httpStatus from 'http-status-codes';
 import dotenv from 'dotenv';
-import { biddingModel, productModel } from '../models';
+import { BiddingModel, ProductModel } from '../models';
 import {
 	BAD_BIDDING,
 	IS_EXIST,
@@ -16,7 +16,7 @@ export default {
 	addAutoBidding: async (req, res) => {
 		try {
 			// check product exist
-			const product = await productModel.findById(req.body.product_id);
+			const product = await ProductModel.findById(req.body.product_id);
 			if (product === null) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
 			}
@@ -29,12 +29,12 @@ export default {
 				return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
 			}
 
-			const checkBiddingPermission = await biddingModel.isBiddingPermission(req.body);
+			const checkBiddingPermission = await BiddingModel.isBiddingPermission(req.body);
 			if (checkBiddingPermission === false) {
 				return res.status(httpStatus.BAD_REQUEST).send(BAD_BIDDING);
 			}
 
-			await biddingModel.add(req.body);
+			await BiddingModel.add(req.body);
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
 			console.log(err);
@@ -45,7 +45,7 @@ export default {
 		try {
 			// get user id from token
 			const user_id = req.accessTokenPayload.userId;
-			await biddingModel.disableAutoBiddingByUserIdBiddingId(user_id, req.params.id);
+			await BiddingModel.disableAutoBiddingByUserIdBiddingId(user_id, req.params.id);
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
 			console.log(err);
@@ -61,18 +61,18 @@ export default {
 			}
 
 			// check product exist
-			const product = await productModel.findById(req.body.product_id);
+			const product = await ProductModel.findById(req.body.product_id);
 			if (product === null) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
 			}
 
-			const check = await biddingModel.addBidding(req.body);
+			const check = await BiddingModel.addBidding(req.body);
 			if (check === false) {
 				return res.status(httpStatus.BAD_REQUEST).send(BAD_BIDDING);
 			}
 
-			const bidding = await biddingModel.findById(check);
-			const users = await biddingModel.findAllUserId(product.product_id);
+			const bidding = await BiddingModel.findById(check);
+			const users = await BiddingModel.findAllUserId(product.product_id);
 
 			// socket emit
 			getIO().emit('addBidding', {
@@ -98,12 +98,12 @@ export default {
 			}
 
 			// check product exist
-			const product = await productModel.findById(req.body.product_id);
+			const product = await ProductModel.findById(req.body.product_id);
 			if (product === null) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
 			}
 
-			const check = await biddingModel.buyNowProduct(req.body);
+			const check = await BiddingModel.buyNowProduct(req.body);
 			if (check === false) {
 				return res.status(httpStatus.BAD_REQUEST).send(BAD_BIDDING);
 			}
@@ -122,17 +122,17 @@ export default {
 			}
 
 			// check product exist
-			const product = await productModel.findById(req.body.product_id);
+			const product = await ProductModel.findById(req.body.product_id);
 			if (product === null) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
 			}
 
-			const check = await biddingModel.isHaveBiddingRequest(req.body);
+			const check = await BiddingModel.isHaveBiddingRequest(req.body);
 			if (check === true) {
 				return res.status(httpStatus.BAD_REQUEST).send(IS_EXIST);
 			}
 
-			await biddingModel.addBiddingRequest(req.body);
+			await BiddingModel.addBiddingRequest(req.body);
 
 			// socket emit
 			getIO().emit('addBiddingRequest', {
@@ -153,7 +153,7 @@ export default {
 				return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
 			}
 
-			const biddingRequests = await biddingModel.getBiddingRequests(req.accessTokenPayload.userId);
+			const biddingRequests = await BiddingModel.getBiddingRequests(req.accessTokenPayload.userId);
 			return res.json(biddingRequests);
 		} catch (err) {
 			console.log(err);
@@ -168,7 +168,7 @@ export default {
 			}
 
 			// get product with id and check the seller
-			const product = await productModel.findById(req.body.product_id);
+			const product = await ProductModel.findById(req.body.product_id);
 			if (product === null) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
 			}
@@ -176,7 +176,7 @@ export default {
 				return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
 			}
 
-			await biddingModel.permissionBidding(req.body);
+			await BiddingModel.permissionBidding(req.body);
 
 			// socket emit
 			getIO().emit('addBiddingPermission', {
@@ -193,12 +193,12 @@ export default {
 	getBiddingPermissionProduct: async (req, res) => {
 		try {
 			// get product with id and check the seller
-			const product = await productModel.findById(req.body.product_id);
+			const product = await ProductModel.findById(req.body.product_id);
 			if (product === null) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
 			}
 
-			const biddingPermissions = await biddingModel.getBiddingPermissionProduct(req.body.product_id);
+			const biddingPermissions = await BiddingModel.getBiddingPermissionProduct(req.body.product_id);
 			return res.json(biddingPermissions);
 		} catch (err) {
 			console.log(err);
@@ -213,7 +213,7 @@ export default {
 			}
 
 			// get product with id and check the seller
-			const product = await productModel.findById(req.body.product_id);
+			const product = await ProductModel.findById(req.body.product_id);
 			if (product === null) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
 			}
@@ -221,7 +221,7 @@ export default {
 				return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
 			}
 
-			await biddingModel.notAllowBidding(req.body);
+			await BiddingModel.notAllowBidding(req.body);
 
 			// socket emit
 			getIO().emit('rejectBiddingRequest', {
@@ -242,13 +242,13 @@ export default {
 				return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
 			}
 
-			const bidding = await biddingModel.findById(req.params.id);
+			const bidding = await BiddingModel.findById(req.params.id);
 			if (bidding === null) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_BIDDING);
 			}
 
 			// get product with id and check the seller
-			const product = await productModel.findById(bidding.product_id);
+			const product = await ProductModel.findById(bidding.product_id);
 			if (product === null) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
 			}
@@ -257,7 +257,7 @@ export default {
 			}
 
 			// if product end check = false
-			const check = await biddingModel.rejectBidding(bidding.bidding_id);
+			const check = await BiddingModel.rejectBidding(bidding.bidding_id);
 			if (check === false) {
 				return res.status(httpStatus.BAD_REQUEST).send(NOT_PERMISSION);
 			}

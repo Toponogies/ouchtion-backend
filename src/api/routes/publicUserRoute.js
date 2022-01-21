@@ -1,9 +1,9 @@
 const router = require('express').Router();
 import { UserController } from '../controllers';
-import validateQuery from '../middlewares/validateQuery.js';
-import { UpdateEmailSchema } from '../schemas';
+import validate from '../middlewares/validateQuery.js';
+import { VerifySchema } from '../schemas';
 
 router.get('/:id/point', UserController.getPoint);
-router.put('/email', validateQuery(UpdateEmailSchema), UserController.updateEmail); // update email
+router.put('/email', validate(VerifySchema), UserController.updateEmail); // update email
 
 export default router;
