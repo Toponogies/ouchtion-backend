@@ -11,7 +11,7 @@ export default async function sendMail(mailOptions) {
     });
 
     // send mail
-    transporter.sendMail(mailOptions, (err) => {
+    await transporter.sendMail(mailOptions, (err) => {
         if (err) {
             console.log(err);
             return console.log('Error send email');
