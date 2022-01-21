@@ -8,6 +8,7 @@ import {
 	BiddingRequestPostSchema,
 	BiddingPermissionSchema,
 	BiddingRequestSchema,
+	BiddingRequestPutSchema,
 } from '../schemas';
 import isBidder from '../middlewares/isBidder.js';
 import isSeller from '../middlewares/isSeller.js';
@@ -25,11 +26,11 @@ router.post('/bidders/biddingRequest', isBidder, validate(BiddingRequestPostSche
 router.get('/bidders/biddingPermission', isBidder, validate(BiddingRequestPostSchema), BiddingController.getPermission);
 
 // Per seller
-router.delete('/rejectBidding/:id', isSeller, BiddingController.rejectBidding);
-router.get('/sellers/biddingRequest', isSeller, BiddingController.getBiddingRequests);
-router.delete('/sellers/biddingRequest', isSeller, validate(BiddingRequestSchema), BiddingController.notAllowBidding);
+router.post('/rejectBidding/:id', isSeller, BiddingController.rejectBidding);
+router.get('/sellers/biddingRequests', isSeller, validate(BiddingRequestPostSchema), BiddingController.getBiddingRequests);
+router.put('/sellers/biddingRequests/:id', isSeller, validate(BiddingRequestPutSchema), BiddingController.updateRequest);
 
 router.post('/sellers/biddingPermission', isSeller, BiddingController.getBiddingPermissionProduct);
-router.put('/sellers/biddingPermission', isSeller, validate(BiddingPermissionSchema), BiddingController.permissionBidding);
+router.put('/sellers/biddingPermission', isSeller, validate(BiddingPermissionSchema), BiddingController.updatePermission);
 
 export default router;

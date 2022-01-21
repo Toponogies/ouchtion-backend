@@ -27,3 +27,4 @@ export { default as BuyProductSchema } from './buyProductSchema';
 export { default as BiddingRequestPostSchema } from './biddingRequestPostSchema';
 export { default as BiddingPermissionSchema } from './biddingPermissionSchema';
 export { default as BiddingRequestSchema } from './biddingRequestSchema';
+export { default as BiddingRequestPutSchema } from './biddingRequestPutSchema';

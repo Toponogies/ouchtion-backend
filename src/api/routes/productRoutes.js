@@ -6,7 +6,7 @@ import { WatchSchema, ProductUpdateSchema, ProductPostSchema, ProductDescription
 import { uploadAvatar, uploadImage } from '../helpers/constants/multer.js';
 import isBidder from '../middlewares/isBidder';
 import isSeller from '../middlewares/isSeller';
-import isAdmin from '../middlewares/isSeller';
+import isAdmin from '../middlewares/isAdmin';
 import isProductOwner from '../middlewares/isProductOwner.js';
 
 // Per seller

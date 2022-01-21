@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `ouchtion` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
-USE `ouchtion`;
 -- MariaDB dump 10.19  Distrib 10.6.5-MariaDB, for Linux (x86_64)
 --
 -- Host: localhost    Database: ouchtion
@@ -28,7 +26,6 @@ CREATE TABLE `bidding_permissions` (
   `user_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
   `type` enum('APPROVE','DENY') NOT NULL,
-  `reason` varchar(200) NOT NULL,
   PRIMARY KEY (`user_id`,`product_id`),
   KEY `BINDDINGPERMISS_PRODUCT_idx` (`product_id`),
   CONSTRAINT `BINDDINGPERMISS_PRODUCT` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`),
@@ -42,7 +39,7 @@ CREATE TABLE `bidding_permissions` (
 
 LOCK TABLES `bidding_permissions` WRITE;
 /*!40000 ALTER TABLE `bidding_permissions` DISABLE KEYS */;
-INSERT INTO `bidding_permissions` VALUES (1,1,'APPROVE','accept'),(1,2,'DENY','bad rating'),(1,3,'APPROVE','accept'),(1,4,'DENY','bad rating'),(5,1,'APPROVE','accept'),(5,2,'DENY','bad rating'),(6,1,'APPROVE','accept'),(6,12,'DENY','bad rating'),(7,17,'APPROVE','accept'),(8,5,'DENY','bad rating'),(8,6,'DENY','bad rating');
+INSERT INTO `bidding_permissions` VALUES (1,1,'APPROVE'),(1,2,'DENY'),(1,3,'APPROVE'),(1,4,'DENY'),(5,1,'APPROVE'),(5,2,'DENY'),(6,1,'APPROVE'),(6,12,'DENY'),(7,17,'APPROVE'),(8,5,'DENY'),(8,6,'DENY');
 /*!40000 ALTER TABLE `bidding_permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -55,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-01-21  6:37:33
+-- Dump completed on 2022-01-22  1:29:04

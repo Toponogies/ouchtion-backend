@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `ouchtion` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
-USE `ouchtion`;
 -- MariaDB dump 10.19  Distrib 10.6.5-MariaDB, for Linux (x86_64)
 --
 -- Host: localhost    Database: ouchtion
@@ -25,14 +23,16 @@ DROP TABLE IF EXISTS `bidding_approval_requests`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `bidding_approval_requests` (
-  `user_id` int(11) NOT NULL,
+  `request_id` int(11) NOT NULL AUTO_INCREMENT,
   `product_id` int(11) NOT NULL,
-  `is_processed` tinyint(4) DEFAULT 1,
-  PRIMARY KEY (`user_id`,`product_id`),
-  KEY `BIDDINGAPPROVALREQ_PRODUCT_idx` (`product_id`),
-  CONSTRAINT `BIDDINGAPPROVALREQ_PRODUCT` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`),
-  CONSTRAINT `BIDDINGAPPROVALREQ_USER` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `user_id` int(11) NOT NULL,
+  `is_processed` int(11) DEFAULT NULL,
+  PRIMARY KEY (`request_id`),
+  KEY `product_id` (`product_id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `bidding_approval_requests_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`),
+  CONSTRAINT `bidding_approval_requests_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +41,7 @@ CREATE TABLE `bidding_approval_requests` (
 
 LOCK TABLES `bidding_approval_requests` WRITE;
 /*!40000 ALTER TABLE `bidding_approval_requests` DISABLE KEYS */;
-INSERT INTO `bidding_approval_requests` VALUES (1,1,1),(1,2,1),(1,3,1),(1,4,1),(1,5,0),(5,1,1),(5,2,1),(5,3,0),(6,1,1),(6,3,0),(6,12,1),(7,17,1),(7,18,0),(7,19,0),(8,5,1),(8,6,1),(8,7,0);
+INSERT INTO `bidding_approval_requests` VALUES (29,1,1,1),(30,1,2,1),(31,1,3,1),(32,1,4,1),(33,1,5,1),(34,5,1,1),(35,5,2,1),(36,5,3,0),(37,6,1,1),(38,6,3,0),(39,8,5,1),(40,8,6,1),(41,8,7,0);
 /*!40000 ALTER TABLE `bidding_approval_requests` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -54,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-01-21  6:37:33
+-- Dump completed on 2022-01-22  1:29:04
