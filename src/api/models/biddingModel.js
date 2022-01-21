@@ -16,7 +16,7 @@ biddingModel.addBidding = async function (body) {
 	const product = await productModel.getProductUseAutoBidding(body.product_id);
 
 	// get bidding id bidding add
-	var biddingId = await biddingModel.add(body);
+	let biddingId = await biddingModel.add(body);
 	biddingId = biddingId[0];
 
 	// update time product end
@@ -36,7 +36,7 @@ biddingModel.addBidding = async function (body) {
 	if (product !== null) {
 		// find seller and bidder
 		const seller = await userModel.findById(product.seller_id);
-		const price_hoder = await userModel.findById(product.buyer_id);
+		const price_holder = await userModel.findById(product.buyer_id);
 		const bidder = await userModel.findById(body.user_id);
 
 		let mailSellerOptions = {
@@ -46,25 +46,25 @@ biddingModel.addBidding = async function (body) {
 			subject: 'Product have new bidding',
 			text: `Your product name ${product.name} has new bidding from user id ${body.user_id}`,
 		};
-		sendEmail(mailSellerOptions);
+		await sendEmail(mailSellerOptions);
 
 		let mailBidderOptions = {
 			// mail to bidding's bidder
 			from: 'norely@gmail.com',
 			to: bidder.email,
 			subject: 'Bidding success',
-			text: `Your bididng of product name ${product.name} has success`,
+			text: `Your bidding of product name ${product.name} has success`,
 		};
-		sendEmail(mailBidderOptions);
-		if (price_hoder) {
-			let mailPriceHoderOptions = {
+		await sendEmail(mailBidderOptions);
+		if (price_holder) {
+			let mailPriceHolderOptions = {
 				// mail to current price buyer
 				from: 'norely@gmail.com',
-				to: price_hoder.email,
+				to: price_holder.email,
 				subject: 'Product have new bidding',
 				text: `Product name ${product.name} has new bidding`,
 			};
-			sendEmail(mailPriceHoderOptions);
+			await sendEmail(mailPriceHolderOptions);
 		}
 	}
 	return biddingId;
@@ -77,9 +77,7 @@ biddingModel.findAllUserId = async function (product_id) {
 
 biddingModel.isHaveBiddingRequest = async function (body) {
 	const list = await db('bidding_approval_requests').where('user_id', body.user_id).andWhere('product_id', body.product_id);
-	if (list.length === 0) return false;
-
-	return true;
+	return list.length !== 0;
 };
 
 biddingModel.isBiddingPermission = async function (body) {
@@ -96,11 +94,9 @@ biddingModel.isBiddingPermission = async function (body) {
 	const list = await db('bidding_permissions').where('user_id', body.user_id).andWhere('product_id', body.product_id);
 	if (list.length === 0) {
 		const { full_name, point } = await userModel.getPoint(body.user_id);
-		if (point > 8) return true;
-		return false;
+		return point > 8;
 	}
-	if (list[0].type === 'APPROVE') return true;
-	return false;
+	return list[0].type === 'APPROVE';
 };
 
 biddingModel.addBiddingRequest = async function (body) {
@@ -198,9 +194,9 @@ biddingModel.rejectBidding = async function (bidding_id) {
 		from: 'norely@gmail.com',
 		to: user.email,
 		subject: 'Bidding reject',
-		text: `All your bididng of product name ${product.name} has deny, you can't bidding in this product`,
+		text: `All your bidding of product name ${product.name} has deny, you can't bidding in this product`,
 	};
-	sendEmail(mailBidderOptions);
+	await sendEmail(mailBidderOptions);
 
 	if (product.buyer_id === bidding.user_id) {
 		//disable autobidding with userid
