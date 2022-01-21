@@ -65,6 +65,8 @@ export default {
 				}
 			}
 
+			delete req.body.password;
+
 			// Update user
 			await UserModel.patch(user_id, req.body);
 
@@ -157,7 +159,7 @@ export default {
 				expiresIn: process.env.EXPIRED_VERIFYTOKEN,
 			};
 
-			const token = jwt.sign(payload, process.env.SERET_KEY, optsAccess);
+			const token = jwt.sign(payload, process.env.SECRET_KEY, optsAccess);
 
 			let mailOptions = {
 				// update text if have frontend
@@ -170,6 +172,7 @@ export default {
 			sendEmail(mailOptions);
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
+			console.log(err);
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
 		}
 	},
@@ -415,7 +418,7 @@ export default {
 
 			// verify token and get user id
 			try {
-				const { userId, email } = jwt.verify(token, process.env.SERET_KEY);
+				const { userId, email } = jwt.verify(token, process.env.SECRET_KEY);
 				_userId = userId;
 				_email = email;
 			} catch (err) {
