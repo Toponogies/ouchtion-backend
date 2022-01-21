@@ -8,11 +8,6 @@ let biddingModel = generate('biddings', 'bidding_id');
 
 // add one bidding
 biddingModel.addBidding = async function (body) {
-	const checkBiddingPermission = await biddingModel.isBiddingPermission(body);
-	if (checkBiddingPermission === false) {
-		return false;
-	}
-
 	const product = await productModel.getProductUseAutoBidding(body.product_id);
 
 	// get bidding id bidding add
@@ -67,7 +62,6 @@ biddingModel.addBidding = async function (body) {
 			await sendEmail(mailPriceHolderOptions);
 		}
 	}
-	return biddingId;
 };
 
 biddingModel.findAllUserId = async function (product_id) {
@@ -86,14 +80,9 @@ biddingModel.isBiddingPermission = async function (body) {
 		return false;
 	}
 
-	// check bid_price with step price and current price, excluding autobidding
-	if (!body.max_price && body.bid_price < product.step_price + product.current_price) {
-		return false;
-	}
-
 	const list = await db('bidding_permissions').where('user_id', body.user_id).andWhere('product_id', body.product_id);
 	if (list.length === 0) {
-		const { full_name, point } = await userModel.getPoint(body.user_id);
+		const { point } = await userModel.getPoint(body.user_id);
 		return point > 8;
 	}
 	return list[0].type === 'APPROVE';
