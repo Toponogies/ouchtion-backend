@@ -1,5 +1,5 @@
 const router = require('express').Router();
-import biddingController from '../controllers/biddingController.js';
+import { BiddingController } from '../controllers';
 import validate from '../middlewares/validate.js';
 import {
 	BiddingSchema,
@@ -11,20 +11,25 @@ import {
 } from '../schemas';
 import isBidder from '../middlewares/isBidder.js';
 import isSeller from '../middlewares/isSeller.js';
+import isPermittedToBid from '../middlewares/isPermittedToBid';
 
 // Per bidder
-router.post('/', isBidder, validate(BiddingSchema), biddingController.addBidding);
-router.post('/autoBidding', isBidder, validate(AutoBiddingSchema), biddingController.addAutoBidding);
-router.delete('/autoBidding/:id', biddingController.disableAutoBidding);
-router.post('/buyProduct', isBidder, validate(BuyProductSchema), biddingController.buyNowProduct);
-router.post('/biddingRequest', isBidder, validate(BiddingRequestPostSchema), biddingController.addBiddingRequest);
+router.post('/', isBidder, isPermittedToBid, validate(BiddingSchema), BiddingController.addBidding);
+router.post('/autoBidding', isBidder, isPermittedToBid, validate(AutoBiddingSchema), BiddingController.addAutoBidding);
+
+// TODO: what if it is banned
+router.delete('/autoBidding/:id', BiddingController.disableAutoBidding);
+
+router.post('/buyProduct', isBidder, validate(BuyProductSchema), BiddingController.buyNowProduct);
+router.post('/bidders/biddingRequest', isBidder, validate(BiddingRequestPostSchema), BiddingController.addBiddingRequest);
+router.get('/bidders/biddingPermission', isBidder, validate(BiddingRequestPostSchema), BiddingController.getPermission);
 
 // Per seller
-router.delete('/rejectBidding/:id', isSeller, biddingController.rejectBidding);
-router.get('/biddingRequest', isSeller, biddingController.getBiddingRequests);
-router.delete('/biddingRequest', isSeller, validate(BiddingRequestSchema), biddingController.notAllowBidding);
+router.delete('/rejectBidding/:id', isSeller, BiddingController.rejectBidding);
+router.get('/sellers/biddingRequest', isSeller, BiddingController.getBiddingRequests);
+router.delete('/sellers/biddingRequest', isSeller, validate(BiddingRequestSchema), BiddingController.notAllowBidding);
 
-router.post('/biddingPermission', isSeller, biddingController.getBiddingPermissionProduct);
-router.put('/biddingPermission', isSeller, validate(BiddingPermissionSchema), biddingController.permissionBidding);
+router.post('/sellers/biddingPermission', isSeller, BiddingController.getBiddingPermissionProduct);
+router.put('/sellers/biddingPermission', isSeller, validate(BiddingPermissionSchema), BiddingController.permissionBidding);
 
 export default router;

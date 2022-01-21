@@ -169,3 +169,8 @@ export const INVALID_AUCTION_END_DATE = {
 	title: 'INVALID_AUCTION_END_DATE',
 	detail: 'End auction date must be after start date',
 };
+
+export const FORBIDDEN_BIDDING = {
+	title: 'FORBIDDEN_BIDDING',
+	detail: 'User cannot bid for this product.',
+};
