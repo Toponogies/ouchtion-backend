@@ -10,7 +10,7 @@ const schema = {
 		init_price: { format: 'string-of-int' },
 		step_price: { format: 'string-of-int' },
 		buy_price: { format: 'string-of-int' },
-		is_extendable: { enum: [0, 1] },
+		is_extendable: { enum: ['0', '1'] },
 	},
 	required: ['category_id', 'name', 'end_at', 'init_price', 'is_extendable'],
 	additionalProperties: false,
