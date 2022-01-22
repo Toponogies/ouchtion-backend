@@ -101,6 +101,10 @@ biddingModel.getBiddingRequests = async function (product_id) {
 		.andWhere('is_processed', 0);
 };
 
+biddingModel.getBiddingRequest = async function (user_id, product_id) {
+	return await db('bidding_approval_requests').where('product_id', product_id).andWhere('user_id', user_id);
+};
+
 biddingModel.permissionBidding = async function (body) {
 	try {
 		await db('bidding_permissions').insert(body);
