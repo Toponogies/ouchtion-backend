@@ -217,7 +217,7 @@ export default {
 			// use try catch because this is async function
 			try {
 				// add image to database
-				var imageId = await ProductModel.addImage(req.params.id, path, req.query.is_primary);
+				var imageId = await ProductModel.addImage(req.params.id, path);
 				imageId = imageId[0];
 
 				const image = await ProductModel.findImage(product.product_id, imageId);

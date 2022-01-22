@@ -139,7 +139,7 @@ productModel.isInBidding = async function (product_id) {
 };
 
 productModel.getImages = async function (product_id) {
-	const row = await db('product_images').where('product_id', product_id).select('product_image_id', 'path', 'is_primary');
+	const row = await db('product_images').where('product_id', product_id).select('product_image_id', 'path');
 	return row;
 };
 
@@ -155,14 +155,11 @@ productModel.getDescriptions = async function (product_id) {
 	return row;
 };
 
-productModel.addImage = async function (product_id, path_image, is_primary) {
+productModel.addImage = async function (product_id, path_image) {
 	const entity = {
 		product_id: product_id,
 		path: path_image,
 	};
-	if (is_primary) {
-		entity.is_primary = is_primary;
-	}
 	return await db('product_images').insert(entity);
 };
 

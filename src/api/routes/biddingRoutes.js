@@ -9,6 +9,7 @@ import {
 	BiddingPermissionSchema,
 	BiddingRequestSchema,
 	BiddingRequestPutSchema,
+	AutoBiddingDisableSchema,
 } from '../schemas';
 import isBidder from '../middlewares/isBidder.js';
 import isSeller from '../middlewares/isSeller.js';
@@ -19,7 +20,7 @@ router.post('/', isBidder, isPermittedToBid, validate(BiddingSchema), BiddingCon
 router.post('/autoBidding', isBidder, isPermittedToBid, validate(AutoBiddingSchema), BiddingController.addAutoBidding);
 
 // TODO: what if it is banned
-router.delete('/autoBidding/:id', BiddingController.disableAutoBidding);
+router.delete('/autoBidding',validate(AutoBiddingDisableSchema) , BiddingController.disableAutoBidding);
 
 router.post('/buyProduct', isBidder, validate(BuyProductSchema), BiddingController.buyNowProduct);
 router.post('/bidders/biddingRequest', isBidder, validate(BiddingRequestPostSchema), BiddingController.addBiddingRequest);
