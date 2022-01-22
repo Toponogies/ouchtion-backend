@@ -102,7 +102,14 @@ biddingModel.getBiddingRequests = async function (product_id) {
 };
 
 biddingModel.getBiddingRequest = async function (user_id, product_id) {
-	return await db('bidding_approval_requests').where('product_id', product_id).andWhere('user_id', user_id);
+	return await db.raw(
+		`select bidding_approval_requests.request_id, bidding_approval_requests.is_processed, bidding_permissions.type
+        from bidding_approval_requests
+        left join bidding_permissions
+        on bidding_approval_requests.product_id = bidding_permissions.product_id and bidding_approval_requests.user_id = bidding_permissions.user_id
+        where bidding_approval_requests.user_id = ${user_id}
+        and bidding_approval_requests.product_id = ${product_id};`
+	);
 };
 
 biddingModel.permissionBidding = async function (body) {
