@@ -158,6 +158,21 @@ export default {
 		}
 	},
 
+	getBiddingRequest: async (req, res) => {
+		try {
+			const product = await ProductModel.findById(req.body.product_id);
+			if (product === null) {
+				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
+			}
+
+			const biddingRequest = await BiddingModel.getBiddingRequest(req.accessTokenPayload.userId, req.body.product_id);
+			return res.status(httpStatus.OK).send(biddingRequest);
+		} catch (err) {
+			console.log(err);
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
+	},
+
 	updatePermission: async (req, res) => {
 		try {
 			// get product with id and check the seller

@@ -24,6 +24,7 @@ router.delete('/autoBidding',validate(AutoBiddingDisableSchema) , BiddingControl
 
 router.post('/buyProduct', isBidder, validate(BuyProductSchema), BiddingController.buyNowProduct);
 router.post('/bidders/biddingRequest', isBidder, validate(BiddingRequestPostSchema), BiddingController.addBiddingRequest);
+router.get('/bidders/biddingRequest', isBidder, validate(BiddingRequestPostSchema), BiddingController.getBiddingRequest);
 router.get('/bidders/biddingPermission', isBidder, validate(BiddingRequestPostSchema), BiddingController.getPermission);
 
 // Per seller
