@@ -1,5 +1,7 @@
 import { BiddingModel, ProductModel } from '../models';
 import { getIO } from '../helpers/constants/socketIO';
+import userModel from '../models/userModel';
+import sendEmail from '../helpers/classes/sendEmail';
 
 export default async function autoBidding() {
 	try {
@@ -44,6 +46,42 @@ export default async function autoBidding() {
 							bid_price: price_need,
 						},
 					});
+
+					//send email
+					if (product !== null) {
+						// find seller and bidder
+						const seller = await userModel.findById(product.seller_id);
+						const price_holder = await userModel.findById(product.buyer_id);
+						const bidder = await userModel.findById(autoBidding.user_id);
+
+						let mailSellerOptions = {
+							// mail to seller
+							from: 'norely@gmail.com',
+							to: seller.email,
+							subject: 'Product have new bidding',
+							text: `Your product name ${product.name} has new bidding from user id ${autoBidding.user_id}`,
+						};
+						await sendEmail(mailSellerOptions);
+
+						let mailBidderOptions = {
+							// mail to bidding's bidder
+							from: 'norely@gmail.com',
+							to: bidder.email,
+							subject: 'Bidding success',
+							text: `Your bidding of product name ${product.name} has success`,
+						};
+						await sendEmail(mailBidderOptions);
+						if (price_holder) {
+							let mailPriceHolderOptions = {
+								// mail to current price buyer
+								from: 'norely@gmail.com',
+								to: price_holder.email,
+								subject: 'Product have new bidding',
+								text: `Product name ${product.name} has new bidding`,
+							};
+							await sendEmail(mailPriceHolderOptions);
+						}
+					}
 				} else {
 					await BiddingModel.disableOneAutoBidding(autoBidding.bidding_id);
 				}
@@ -70,6 +108,42 @@ export default async function autoBidding() {
 							bid_price: price_need,
 						},
 					});
+
+					//send email
+					if (product !== null) {
+						// find seller and bidder
+						const seller = await userModel.findById(product.seller_id);
+						const price_holder = await userModel.findById(product.buyer_id);
+						const bidder = await userModel.findById(autoBidding.user_id);
+
+						let mailSellerOptions = {
+							// mail to seller
+							from: 'norely@gmail.com',
+							to: seller.email,
+							subject: 'Product have new bidding',
+							text: `Your product name ${product.name} has new bidding from user id ${autoBidding.user_id}`,
+						};
+						await sendEmail(mailSellerOptions);
+
+						let mailBidderOptions = {
+							// mail to bidding's bidder
+							from: 'norely@gmail.com',
+							to: bidder.email,
+							subject: 'Bidding success',
+							text: `Your bidding of product name ${product.name} has success`,
+						};
+						await sendEmail(mailBidderOptions);
+						if (price_holder) {
+							let mailPriceHolderOptions = {
+								// mail to current price buyer
+								from: 'norely@gmail.com',
+								to: price_holder.email,
+								subject: 'Product have new bidding',
+								text: `Product name ${product.name} has new bidding`,
+							};
+							await sendEmail(mailPriceHolderOptions);
+						}
+					}
 				}
 			}
 		});
