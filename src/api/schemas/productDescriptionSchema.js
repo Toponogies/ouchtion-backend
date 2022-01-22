@@ -4,7 +4,7 @@ const schema = {
 		description: { type: 'string', maxLength: 9000 },
 		upload_date: { type: 'string' },
 	},
-	required: ['description', 'upload_date'],
+	required: ['description'],
 	additionalProperties: false,
 };
 
