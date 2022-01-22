@@ -43,7 +43,8 @@ export default {
 		try {
 			// get user id from token
 			const user_id = req.accessTokenPayload.userId;
-			await BiddingModel.disableAutoBiddingByUserIdBiddingId(user_id, req.params.id);
+			console.log(user_id,req.body)
+			await BiddingModel.disableAutoBidding(user_id, req.body.product_id);
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
 			console.log(err);
@@ -61,14 +62,14 @@ export default {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
 			}
 
-			if (body.bid_price < product.step_price + product.current_price) {
+			if (req.body.bid_price < product.step_price + product.current_price) {
 				return res.status(httpStatus.BAD_REQUEST).send(BAD_BIDDING);
 			}
 
 			await BiddingModel.addBidding(req.body);
 
-			const bidding = await BiddingModel.findById(check);
-			const users = await BiddingModel.findAllUserId(product.product_id);
+			//const bidding = await BiddingModel.findById(check);
+			//const users = await BiddingModel.findAllUserId(product.product_id);
 
 			// socket emit
 			// getIO().emit('addBidding', {
@@ -89,6 +90,7 @@ export default {
 	buyNowProduct: async (req, res) => {
 		try {
 			req.body.user_id = req.accessTokenPayload.userId;
+			console.log(req.body);
 
 			// check product exist
 			const product = await ProductModel.findById(req.body.product_id);

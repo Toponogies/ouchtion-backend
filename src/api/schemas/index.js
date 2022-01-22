@@ -23,6 +23,7 @@ export { default as ProductUpdateSchema } from './productUpdateSchema';
 export { default as ChangePasswordSchema } from './changePasswordSchema';
 export { default as BiddingSchema } from './biddingSchema';
 export { default as AutoBiddingSchema } from './autoBiddingSchema';
+export { default as AutoBiddingDisableSchema } from './autoBiddingDisableSchema';
 export { default as BuyProductSchema } from './buyProductSchema';
 export { default as BiddingRequestPostSchema } from './biddingRequestPostSchema';
 export { default as BiddingPermissionSchema } from './biddingPermissionSchema';

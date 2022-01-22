@@ -1,9 +1,10 @@
 import httpStatus from 'http-status-codes';
 import dotenv from 'dotenv';
 import { NOT_PERMISSION } from '../helpers/constants/errors';
+import BiddingModel from '../models/biddingModel';
 dotenv.config();
 
-export default function isPermittedToBid(req, res, next) {
+export default async function isPermittedToBid(req, res, next) {
 	let userId = req.accessTokenPayload.userId;
 
 	const body = {
