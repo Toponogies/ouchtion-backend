@@ -11,7 +11,7 @@ productModel.findBySellerId = async (seller_id) => {
 productModel.search = async (query, sort, page, category, number_product) => {
 	let SQLquery = db('products')
 		.leftJoin('biddings', 'biddings.product_id', 'products.product_id')
-		.groupBy('biddings.product_id')
+		.groupBy('products.product_id')
 		.count('biddings.product_id as bidding_count')
 		.select('products.*')
 		.where('is_sold', 0)
@@ -56,7 +56,7 @@ productModel.search = async (query, sort, page, category, number_product) => {
 productModel.searchForAdmin = async (query, sort, page, category, number_product) => {
 	let SQLquery = db('products')
 		.leftJoin('biddings', 'biddings.product_id', 'products.product_id')
-		.groupBy('biddings.product_id')
+		.groupBy('products.product_id')
 		.count('biddings.product_id as bidding_count')
 		.select('products.*');
 
@@ -102,8 +102,7 @@ productModel.getProduct = async (product_id) => {
 		.groupBy('products.product_id')
 		.count('products.product_id as bidding_count')
 		.select('products.*')
-		.where('products.product_id', product_id)
-		.andWhere('is_valid', 1);
+		.where('products.product_id', product_id);
 
 	const row = await SQLquery;
 	if (row.length === 0) {
@@ -192,7 +191,7 @@ productModel.deleteImage = async function (product_id, image_id) {
 productModel.productsBidding = async function (user_id) {
 	return await db('products')
 		.leftJoin('biddings', 'biddings.product_id', 'products.product_id')
-		.groupBy('biddings.product_id')
+		.groupBy('products.product_id')
 		.count('biddings.product_id as bidding_count')
 		.select('products.*')
 		.where('user_id', user_id)
@@ -202,7 +201,7 @@ productModel.productsBidding = async function (user_id) {
 productModel.productsActive = async function (user_id) {
 	return await db('products')
 		.leftJoin('biddings', 'biddings.product_id', 'products.product_id')
-		.groupBy('biddings.product_id')
+		.groupBy('products.product_id')
 		.count('biddings.product_id as bidding_count')
 		.select('products.*')
 		.where('seller_id', user_id)
@@ -212,7 +211,7 @@ productModel.productsActive = async function (user_id) {
 productModel.productsInActive = async function (user_id) {
 	return await db('products')
 		.leftJoin('biddings', 'biddings.product_id', 'products.product_id')
-		.groupBy('biddings.product_id')
+		.groupBy('products.product_id')
 		.count('biddings.product_id as bidding_count')
 		.select('products.*')
 		.where('seller_id', user_id)
