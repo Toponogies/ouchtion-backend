@@ -471,4 +471,25 @@ export default {
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
 		}
 	},
+
+	getUpgradeRequest: async (req, res) => {
+		try {
+			// get user id from token
+			const user_id = req.accessTokenPayload.userId;
+			// get user by id
+			const user = await UserModel.findById(user_id);
+
+			// check user exist
+			if (user === null) {
+				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
+			}
+
+			const requests = await UserModel.getUpgradeRequest(user_id);
+
+			return res.status(httpStatus.OK).send(requests);
+		} catch (err) {
+			console.log(err);
+			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
+		}
+	},
 };

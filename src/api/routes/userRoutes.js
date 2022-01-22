@@ -22,6 +22,7 @@ router.post('/:id/email', isPermittedToUser, validate(SendNewEmailSchema), UserC
 
 // Per bidder
 router.post('/requestSeller', isBidder, validate(UpgradeSellerRequestSchema), UserController.sendUpgrageSellerRequest);
+router.get('/requestSeller', isBidder, UserController.getUpgradeRequest);
 
 // Per admin
 router.get('/', isAdmin, UserController.getUsers);
