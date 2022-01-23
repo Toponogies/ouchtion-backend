@@ -20,6 +20,9 @@ import redisClient from '../connection/redisClient';
 import userModel from '../models/userModel';
 import sendEmail from '../helpers/classes/sendEmail';
 
+import { getIO } from '../helpers/constants/socketIO';
+import { AUTH_REGISTER } from '../helpers/constants/keyConstant';
+
 const optsAccess = {
 	expiresIn: process.env.EXPIRED_ACCESSTOKEN,
 };
@@ -64,6 +67,8 @@ export default {
 			text: `Link verify token : ${process.env.URL_FRONTEND}/verify?token=${verifyToken}`,
 		};
 		sendEmail(mailOptions);
+
+		getIO().emit(AUTH_REGISTER, null);
 
 		return res.status(httpStatus.NO_CONTENT).send();
 	},

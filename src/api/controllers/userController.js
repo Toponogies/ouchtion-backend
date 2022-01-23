@@ -21,6 +21,7 @@ import {
 import sendEmail from '../helpers/classes/sendEmail';
 import { UserModel } from '../models';
 import { getIO } from '../helpers/constants/socketIO';
+import { USER_DELETE, USER_RATE, USER_UPDATE, USER_UPDATE_ROLE, USER_UPGRADE_REQUEST } from '../helpers/constants/keyConstant';
 
 export default {
 	getUser: async (req, res) => {
@@ -71,10 +72,9 @@ export default {
 			await UserModel.patch(user_id, req.body);
 
 			// socket emit
-			// getIO().emit('updateUser', {
-			// 	message: 'User update',
-			// 	data: newUser,
-			// });
+			getIO().emit(USER_UPDATE, {
+				user_id: user_id,
+			});
 
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
@@ -198,10 +198,7 @@ export default {
 			await UserModel.sendUpgrageSellerRequest(req.body);
 
 			// socket emit
-			// getIO().emit('addRequestUpgrage', {
-			// 	message: 'new request upgrade seller add',
-			// 	data: req.body,
-			// });
+			getIO().emit(USER_UPGRADE_REQUEST, null);
 
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
@@ -246,6 +243,9 @@ export default {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
 			}
 
+			// socket emit
+			getIO().emit(USER_DELETE, null);
+
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
 			if (err.errno >= 1450 && err.errno <= 1460) {
@@ -283,10 +283,9 @@ export default {
 			sendEmail(mailOptions);
 
 			// socket emit
-			// getIO().emit('updateRole', {
-			// 	message: 'new role update',
-			// 	data: req.body,
-			// });
+			getIO().emit(USER_UPDATE_ROLE, {
+				user_id: user_id,
+			});
 
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
@@ -363,10 +362,7 @@ export default {
 				await UserModel.postRate(req.body);
 
 				// socket emit
-				// getIO().emit('newRate', {
-				// 	message: 'new rate add',
-				// 	data: req.body,
-				// });
+				getIO().emit(USER_RATE, null);
 
 				return res.status(httpStatus.NO_CONTENT).send();
 			}
@@ -390,10 +386,7 @@ export default {
 				await UserModel.postRate(req.body);
 
 				// socket emit
-				// getIO().emit('newRate', {
-				// 	message: 'new rate add',
-				// 	data: req.body,
-				// });
+				getIO().emit(USER_RATE, null);
 
 				return res.status(httpStatus.NO_CONTENT).send();
 			}

@@ -1,5 +1,8 @@
 import sendEmail from '../helpers/classes/sendEmail';
+import { PRODUCT_WON } from '../helpers/constants/keyConstant';
 import { ProductModel, UserModel } from '../models';
+
+import { getIO } from '../helpers/constants/socketIO';
 
 export default async function checkWon() {
 	try {
@@ -29,6 +32,9 @@ export default async function checkWon() {
 				};
 				sendEmail(mailBidderOptions);
 			}
+
+			// socket emit
+			getIO().emit(PRODUCT_WON, null);
 		});
 	} catch (err) {
 		console.log(err);
