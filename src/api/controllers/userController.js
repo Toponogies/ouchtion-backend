@@ -279,7 +279,7 @@ export default {
 				subject: 'Update role user from ouchtion website',
 				text: `You have update role to role: ${req.body.role}`,
 			};
-			// send email to yser
+			// send email to user
 			sendEmail(mailOptions);
 
 			// socket emit
