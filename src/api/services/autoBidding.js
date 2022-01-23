@@ -2,6 +2,7 @@ import { BiddingModel, ProductModel } from '../models';
 import { getIO } from '../helpers/constants/socketIO';
 import userModel from '../models/userModel';
 import sendEmail from '../helpers/classes/sendEmail';
+import { BIDDING_ADD_AUTO } from '../helpers/constants/keyConstant';
 
 export default async function autoBidding() {
 	try {
@@ -38,13 +39,13 @@ export default async function autoBidding() {
 					// update time product end
 					await ProductModel.updateTimeWhenBidding(product.product_id);
 
+					// get list user bidding this product
+					const users = await BiddingModel.findAllUserId(product.product_id);
+
 					// socket emit
-					getIO().emit('autoBiddingUpdatePrice', {
-						message: 'Auto bidding update price',
-						data: {
-							bidding_id: autoBidding.bidding_id,
-							bid_price: price_need,
-						},
+					getIO().emit(BIDDING_ADD_AUTO, {
+						product_id:product.product_id,
+						users:users,
 					});
 
 					//send email
@@ -99,14 +100,13 @@ export default async function autoBidding() {
 					// update time product end
 					await ProductModel.updateTimeWhenBidding(product.product_id);
 
+					// get list user bidding this product
+					const users = await BiddingModel.findAllUserId(product.product_id);
+
 					// socket emit
-					getIO().emit('autoBiddingUpdatePrice', {
-						message: 'Auto bidding update price',
-						data: {
-							bidding_id: autoBidding.bidding_id,
-							product_id: autoBidding.product_id,
-							bid_price: price_need,
-						},
+					getIO().emit(BIDDING_ADD_AUTO, {
+						product_id:product.product_id,
+						users:users,
 					});
 
 					//send email

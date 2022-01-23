@@ -14,6 +14,7 @@ import { formatDate } from '../helpers/constants/ISOtoDate';
 import removeFile from '../helpers/constants/removeFile';
 import { ProductModel, UserModel } from '../models';
 import { getIO } from '../helpers/constants/socketIO';
+import { PRODUCT_ADD, PRODUCT_ADD_WATCHLIST, PRODUCT_APPEND_DESCRIPTION, PRODUCT_DELETE, PRODUCT_DELETE_WATCHLIST } from '../helpers/constants/keyConstant';
 
 export default {
 	searchProduct: async (req, res) => {
@@ -93,10 +94,7 @@ export default {
 			const product = await ProductModel.findById(product_id);
 
 			// socket emit
-			// getIO().emit('addProduct', {
-			// 	message: 'new product add',
-			// 	data: product,
-			// });
+			getIO().emit(PRODUCT_ADD, null);
 
 			return res.json(product);
 		} catch (err) {
@@ -168,10 +166,9 @@ export default {
 			}
 
 			// socket emit
-			// getIO().emit('deleteProduct', {
-			// 	message: 'Delete product',
-			// 	data: product,
-			// });
+			getIO().emit(PRODUCT_DELETE, {
+				product_id:req.params.id,
+			});
 
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
@@ -274,8 +271,12 @@ export default {
 	addDescription: async (req, res) => {
 		try {
 			// get product by id
-			// const product = await ProductModel.findById(req.params.id);
-			const product = req.product;
+			const product = await ProductModel.findById(req.params.id);
+
+			// check product exist
+			if (product === null) {
+				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
+			}
 
 			// create entity
 			const entity = {
@@ -287,14 +288,10 @@ export default {
 			var descriptionId = await ProductModel.addDescription(entity);
 			descriptionId = descriptionId[0];
 
-			//find description
-			const description = await ProductModel.findDescription(product.product_id, descriptionId);
-
 			// socket emit
-			// getIO().emit('newProductDescription', {
-			// 	message: 'New product description',
-			// 	data: description,
-			// });
+			getIO().emit(PRODUCT_APPEND_DESCRIPTION, {
+				product_id:req.params.id,
+			});
 
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
@@ -456,6 +453,12 @@ export default {
 				return res.status(httpStatus.BAD_REQUEST).send(IS_EXIST);
 			}
 			await UserModel.addWatch(user_id, req.body.product_id);
+
+			// socket emit
+			getIO().emit(PRODUCT_ADD_WATCHLIST, {
+				user_id:user_id,
+			});
+
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
@@ -478,6 +481,12 @@ export default {
 			if (n === 0) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_WATCH);
 			}
+
+			// socket emit
+			getIO().emit(PRODUCT_DELETE_WATCHLIST, {
+				user_id:user_id,
+			});
+
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);

@@ -13,6 +13,7 @@ import {
 } from '../helpers/constants/errors';
 dotenv.config();
 import { getIO } from '../helpers/constants/socketIO';
+import { BIDDING_ADD, BIDDING_BUY, BIDDING_PERMISSION_UPDATE, BIDDING_REJECT, BIDDING_REQUEST_ADD } from '../helpers/constants/keyConstant';
 
 export default {
 	addAutoBidding: async (req, res) => {
@@ -68,17 +69,13 @@ export default {
 
 			await BiddingModel.addBidding(req.body);
 
-			//const bidding = await BiddingModel.findById(check);
-			//const users = await BiddingModel.findAllUserId(product.product_id);
+			const users = await BiddingModel.findAllUserId(product.product_id);
 
 			// socket emit
-			// getIO().emit('addBidding', {
-			// 	message: 'new bidding add',
-			// 	data: {
-			// 		bidding: bidding,
-			// 		users: users,
-			// 	},
-			// });
+			getIO().emit(BIDDING_ADD, {
+				product_id: product.product_id,
+				users: users,
+			});
 
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
@@ -102,6 +99,12 @@ export default {
 			if (check === false) {
 				return res.status(httpStatus.BAD_REQUEST).send(BAD_BIDDING);
 			}
+
+			// socket emit
+			getIO().emit(BIDDING_BUY, {
+				product_id: product.product_id,
+			});
+
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
 			console.log(err);
@@ -127,10 +130,7 @@ export default {
 			await BiddingModel.addBiddingRequest(req.body);
 
 			// socket emit
-			getIO().emit('addBiddingRequest', {
-				message: 'new bidding request',
-				data: req.body,
-			});
+			getIO().emit(BIDDING_REQUEST_ADD, null);
 
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
@@ -187,9 +187,9 @@ export default {
 			await BiddingModel.permissionBidding(req.body);
 
 			// socket emit
-			getIO().emit('addBiddingPermission', {
-				message: 'new bidding permission',
-				data: req.body,
+			getIO().emit(BIDDING_PERMISSION_UPDATE, {
+				product_id: req.body.product_id,
+				user_id: req.body.user_id,
 			});
 
 			return res.status(httpStatus.NO_CONTENT).send();
@@ -269,9 +269,9 @@ export default {
 			}
 
 			// socket emit
-			getIO().emit('rejectBidding', {
-				message: 'reject bidding this product',
-				data: bidding,
+			getIO().emit(BIDDING_REJECT, {
+				product_id: bidding.product_id,
+				user_id: bidding.user_id,
 			});
 
 			return res.status(httpStatus.NO_CONTENT).send();
