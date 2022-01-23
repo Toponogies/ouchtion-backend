@@ -8,7 +8,13 @@ let biddingModel = generate('biddings', 'bidding_id');
 
 // add one bidding
 biddingModel.addBidding = async function (body) {
-	const product = await productModel.getProductUseAutoBidding(body.product_id);
+	var product = await productModel.getProductUseAutoBidding(body.product_id);
+	if (product === null) {
+		product = await productModel.findById(body.product_id);
+	}
+
+	// max all autobidding
+	product.current_max_price = product.current_max_price && product.current_max_price !== null ? product.current_max_price : 0;
 
 	// get bidding id bidding add
 	let biddingId = await biddingModel.add(body);
