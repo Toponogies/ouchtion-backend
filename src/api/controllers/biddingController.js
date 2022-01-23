@@ -234,10 +234,10 @@ export default {
 			await BiddingModel.notAllowBidding(req.body);
 
 			// socket emit
-			getIO().emit('rejectBiddingRequest', {
-				message: 'reject bidding request',
-				data: req.body,
-			});
+			// getIO().emit('rejectBiddingRequest', {
+			// 	message: 'reject bidding request',
+			// 	data: req.body,
+			// });
 
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {

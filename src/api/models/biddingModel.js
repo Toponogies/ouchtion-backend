@@ -178,7 +178,7 @@ biddingModel.rejectBidding = async function (bidding_id) {
 		return false;
 	}
 	const user = await userModel.findById(bidding.user_id);
-	await db('biddings').where('user_id', bidding.user_id).update({
+	await db('biddings').where('user_id', bidding.user_id).andWhere('product_id', bidding.product_id).update({
 		is_valid: 0,
 	});
 
@@ -214,7 +214,6 @@ biddingModel.rejectBidding = async function (bidding_id) {
 			type: 'DENY',
 			user_id: bidding.user_id,
 			product_id: product.product_id,
-			reason: 'Deny bidding this product',
 		};
 
 		try {
