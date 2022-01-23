@@ -170,6 +170,7 @@ export default {
 			};
 
 			sendEmail(mailOptions);
+
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
 			console.log(err);
@@ -271,6 +272,15 @@ export default {
 			if (n === 0) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
 			}
+
+			let mailOptions = {
+				from: 'norely@gmail.com',
+				to: user.email,
+				subject: 'Update role user from ouchtion website',
+				text: `You have update role to role: ${req.body.role}`,
+			};
+			// send email to yser
+			sendEmail(mailOptions);
 
 			// socket emit
 			// getIO().emit('updateRole', {
