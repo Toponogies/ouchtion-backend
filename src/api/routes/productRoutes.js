@@ -36,7 +36,7 @@ router.get('/bidders/ongoingBids', isBidder, ProductController.getBiddingProduct
 router.get('/bidders/completedBids', isBidder, ProductController.getHasWonProducts);
 router.get('/bidders/watchlist', isBidder, ProductController.getWatchList);
 router.post('/bidders/watchlist', isBidder, validate(WatchSchema), ProductController.addWatch);
-router.delete('/biddlers/watchlist', isBidder, validate(WatchSchema), ProductController.deleteWatch);
+router.delete('/bidders/watchlist', isBidder, validate(WatchSchema), ProductController.deleteWatch);
 
 // Per seller
 router.get('/sellers/ongoingProducts', isSeller, ProductController.productsActive);

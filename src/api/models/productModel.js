@@ -115,7 +115,7 @@ productModel.getProduct = async (product_id) => {
 // use in autobidding get product uniclude one bidding
 productModel.getProductUseAutoBidding = async function (product_id, bidding_id = null) {
 	let SQLquery = db('products')
-		.join('biddings', 'biddings.product_id', 'products.product_id')
+		.leftJoin('biddings', 'biddings.product_id', 'products.product_id')
 		.groupBy('products.product_id')
 		.max('biddings.max_price as current_max_price')
 		.max('biddings.bid_price as current_max_bid_price')

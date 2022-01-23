@@ -141,7 +141,7 @@ export default {
 
 	getBiddingRequests: async (req, res) => {
 		try {
-			const product = await ProductModel.findById(req.body.product_id);
+			const product = await ProductModel.findById(req.params.id);
 			if (product === null) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
 			}
@@ -150,7 +150,8 @@ export default {
 				return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
 			}
 
-			const biddingRequests = await BiddingModel.getBiddingRequests(req.body.product_id);
+			const biddingRequests = await BiddingModel.getBiddingRequests(req.params.id);
+
 			return res.json(biddingRequests);
 		} catch (err) {
 			console.log(err);
@@ -160,13 +161,13 @@ export default {
 
 	getBiddingRequest: async (req, res) => {
 		try {
-			const product = await ProductModel.findById(req.body.product_id);
+			const product = await ProductModel.findById(req.params.id);
 			if (product === null) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
 			}
 
-			const biddingRequest = await BiddingModel.getBiddingRequest(req.accessTokenPayload.userId, req.body.product_id);
-			return res.status(httpStatus.OK).send(biddingRequest);
+			const biddingRequest = await BiddingModel.getBiddingRequest(req.accessTokenPayload.userId, req.params.id);
+			return res.status(httpStatus.OK).send(biddingRequest[0]);
 		} catch (err) {
 			console.log(err);
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
@@ -284,7 +285,7 @@ export default {
 	getPermission: async (req, res) => {
 		try {
 			// get product with id
-			const product = await ProductModel.findById(req.body.product_id);
+			const product = await ProductModel.findById(req.params.id);
 			if (product === null) {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
 			}
@@ -293,7 +294,7 @@ export default {
 
 			const body = {
 				user_id: userId,
-				product_id: req.body.product_id,
+				product_id: req.params.id,
 			};
 
 			let check = await BiddingModel.isBiddingPermission(body);
