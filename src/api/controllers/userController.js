@@ -19,7 +19,7 @@ import {
 } from '../helpers/constants/errors';
 
 import sendEmail from '../helpers/classes/sendEmail';
-import { ProductModel, UserModel } from '../models';
+import { UserModel } from '../models';
 import { getIO } from '../helpers/constants/socketIO';
 import { USER_DELETE, USER_RATE, USER_UPDATE, USER_UPDATE_ROLE, USER_UPGRADE_REQUEST } from '../helpers/constants/keyConstant';
 
@@ -343,14 +343,6 @@ export default {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_USER);
 			}
 
-			// get product by id
-			const product = await ProductModel.findById(req.params.id);
-
-			// check product exist
-			if (product === null) {
-				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
-			}
-
 			// if user is bidder
 			if (req.accessTokenPayload.userRole === 'bidder') {
 				// check product finish
@@ -370,10 +362,7 @@ export default {
 				await UserModel.postRate(req.body);
 
 				// socket emit
-				getIO().emit(USER_RATE, {
-					bidder_id: user_id,
-					seller_id: product.seller_id,
-				});
+				getIO().emit(USER_RATE, null);
 
 				return res.status(httpStatus.NO_CONTENT).send();
 			}

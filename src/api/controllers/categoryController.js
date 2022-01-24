@@ -2,7 +2,7 @@ import httpStatus from 'http-status-codes';
 import { BAD_REQUEST, NOT_FOUND_CATEGORY, UNEXPECTED_ERROR, RELATED_ENTITY } from '../helpers/constants/errors';
 import { CategoryModel } from '../models';
 import { getIO } from '../helpers/constants/socketIO';
-import { CATEGORY_LIST_UPDATE } from '../helpers/constants/keyConstant';
+import { CATEGORY_ADD, CATEGORY_DELETE, CATEGORY_UPDATE } from '../helpers/constants/keyConstant';
 
 export default {
 	getCategories: async (_req, res) => {
@@ -34,7 +34,7 @@ export default {
 			category.category_id = categoryIds[0];
 
 			// socket emit
-			getIO().emit(CATEGORY_LIST_UPDATE, null);
+			getIO().emit(CATEGORY_ADD, null);
 
 			return res.status(httpStatus.CREATED).send(category);
 		} catch (err) {
@@ -53,7 +53,7 @@ export default {
 			category.category_id = id;
 
 			// socket emit
-			getIO().emit(CATEGORY_LIST_UPDATE, null);
+			getIO().emit(CATEGORY_UPDATE, null);
 
 			return res.status(httpStatus.OK).send(category);
 		} catch (err) {
@@ -77,7 +77,7 @@ export default {
 			await CategoryModel.removeById(id);
 
 			// socket emit
-			getIO().emit(CATEGORY_LIST_UPDATE, null);
+			getIO().emit(CATEGORY_DELETE, null);
 
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {

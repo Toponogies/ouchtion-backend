@@ -2,7 +2,6 @@ import httpStatus from 'http-status-codes';
 import {
 	BAD_DELETE,
 	INVALID_AUCTION_END_DATE,
-	IS_EXIST,
 	NOT_FOUND_FILE,
 	NOT_FOUND_IMAGE,
 	NOT_FOUND_PRODUCT,
@@ -95,9 +94,7 @@ export default {
 			const product = await ProductModel.findById(product_id);
 
 			// socket emit
-			getIO().emit(PRODUCT_ADD, {
-				user_id: req.body.seller_id,
-			});
+			getIO().emit(PRODUCT_ADD, null);
 
 			return res.json(product);
 		} catch (err) {
@@ -171,7 +168,6 @@ export default {
 			// socket emit
 			getIO().emit(PRODUCT_DELETE, {
 				product_id:req.params.id,
-				user_id:product.seller_id,
 			});
 
 			return res.status(httpStatus.NO_CONTENT).send();
@@ -465,7 +461,6 @@ export default {
 
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
-			console.log(err);
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);
 		}
 	},
