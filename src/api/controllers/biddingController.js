@@ -130,7 +130,9 @@ export default {
 			await BiddingModel.addBiddingRequest(req.body);
 
 			// socket emit
-			getIO().emit(BIDDING_REQUEST_ADD, null);
+			getIO().emit(BIDDING_REQUEST_ADD, {
+				product_id:req.body.product_id,
+			});
 
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
