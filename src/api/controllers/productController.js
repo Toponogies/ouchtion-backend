@@ -152,11 +152,6 @@ export default {
 				return res.status(httpStatus.NOT_FOUND).send(NOT_FOUND_PRODUCT);
 			}
 
-			// check role only admin can delete
-			if (req.accessTokenPayload.role !== 'admin') {
-				return res.status(httpStatus.UNAUTHORIZED).send(NOT_PERMISSION);
-			}
-
 			const inBidding = await ProductModel.isInBidding(req.params.id);
 			if (inBidding === true) {
 				return res.status(httpStatus.BAD_REQUEST).send(BAD_DELETE);

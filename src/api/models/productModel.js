@@ -142,10 +142,6 @@ productModel.getImages = async function (product_id) {
 	return row;
 };
 
-productModel.removeProduct = async function (product_id) {
-	await db('products').where('product_id', product_id).del();
-};
-
 productModel.getDescriptions = async function (product_id) {
 	const row = await db('product_descriptions')
 		.where('product_id', product_id)
@@ -166,8 +162,8 @@ productModel.addDescription = async function (entity) {
 	return await db('product_descriptions').insert(entity);
 };
 
-productModel.deleteDescription = async function (product_id, description_id) {
-	return await db('product_descriptions').where('product_id', product_id).where('product_description_id', description_id).del();
+productModel.deleteDescription = async function (product_id) {
+	return await db('product_descriptions').where('product_id', product_id).del();
 };
 
 productModel.findImage = async function (product_id, image_id) {
@@ -184,8 +180,14 @@ productModel.findDescription = async function (product_id, description_id) {
 	return list[0];
 };
 
-productModel.deleteImage = async function (product_id, image_id) {
-	return await db('product_images').where('product_id', product_id).where('product_image_id', image_id).del();
+productModel.deleteImage = async function (product_id) {
+	return await db('product_images').where('product_id', product_id).del();
+};
+
+productModel.removeProduct = async function (product_id) {
+	await productModel.deleteDescription(product_id);
+	await productModel.deleteImage(product_id);
+	await db('products').where('product_id', product_id).del();
 };
 
 productModel.productsBidding = async function (user_id) {

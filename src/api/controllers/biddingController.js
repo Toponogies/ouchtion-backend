@@ -13,7 +13,7 @@ import {
 } from '../helpers/constants/errors';
 dotenv.config();
 import { getIO } from '../helpers/constants/socketIO';
-import { BIDDING_ADD, BIDDING_BUY, BIDDING_PERMISSION_UPDATE, BIDDING_REJECT, BIDDING_REQUEST_ADD } from '../helpers/constants/keyConstant';
+import { BIDDING_ADD, BIDDING_ADD_AUTO, BIDDING_BUY, BIDDING_PERMISSION_UPDATE, BIDDING_REJECT, BIDDING_REQUEST_ADD } from '../helpers/constants/keyConstant';
 
 export default {
 	addAutoBidding: async (req, res) => {
@@ -32,7 +32,14 @@ export default {
 				return res.status(httpStatus.BAD_REQUEST).send(BAD_BIDDING);
 			}
 
+			const users = await BiddingModel.findAllUserId(product.product_id);
+
 			await BiddingModel.add(req.body);
+			
+			getIO().emit(BIDDING_ADD_AUTO, {
+				product_id: product.product_id,
+				users: users,
+			});
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
 			console.log(err);
