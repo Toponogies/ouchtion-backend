@@ -36,6 +36,7 @@ export default async function checkWon() {
 			// socket emit
 			getIO().emit(PRODUCT_WON, {
 				product:product.product_id,
+				user_id:product.buyer_id,
 			});
 		});
 	} catch (err) {
