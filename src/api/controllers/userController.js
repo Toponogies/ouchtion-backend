@@ -371,7 +371,7 @@ export default {
 
 				// socket emit
 				getIO().emit(USER_RATE, {
-					bidder_id: user_id,
+					bidder_id: product.buyer_id,
 					seller_id: product.seller_id,
 				});
 
@@ -397,7 +397,10 @@ export default {
 				await UserModel.postRate(req.body);
 
 				// socket emit
-				getIO().emit(USER_RATE, null);
+				getIO().emit(USER_RATE, {
+					bidder_id: product.buyer_id,
+					seller_id: product.seller_id,
+				});
 
 				return res.status(httpStatus.NO_CONTENT).send();
 			}
