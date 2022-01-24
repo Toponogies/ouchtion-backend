@@ -344,7 +344,7 @@ export default {
 			}
 
 			// get product by id
-			const product = await ProductModel.findById(req.params.id);
+			const product = await ProductModel.findById(req.body.product_id);
 
 			// check product exist
 			if (product === null) {
