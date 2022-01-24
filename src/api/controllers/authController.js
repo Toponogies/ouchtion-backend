@@ -21,7 +21,7 @@ import userModel from '../models/userModel';
 import sendEmail from '../helpers/classes/sendEmail';
 
 import { getIO } from '../helpers/constants/socketIO';
-import { AUTH_REGISTER } from '../helpers/constants/keyConstant';
+import { AUTH_REGISTER, AUTH_VERIFY } from '../helpers/constants/keyConstant';
 
 const optsAccess = {
 	expiresIn: process.env.EXPIRED_ACCESSTOKEN,
@@ -92,6 +92,7 @@ export default {
 			await userModel.patch(_userId, {
 				is_active: true,
 			});
+			getIO().emit(AUTH_VERIFY, null);
 			return res.status(httpStatus.NO_CONTENT).send();
 		} catch (err) {
 			return res.status(httpStatus.INTERNAL_SERVER_ERROR).send(UNEXPECTED_ERROR);

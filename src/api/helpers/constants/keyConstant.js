@@ -1,4 +1,5 @@
 export const AUTH_REGISTER = "AUTH_REGISTER";
+export const AUTH_VERIFY = "AUTH_VERIFY";
 
 export const USER_UPDATE = "USER_UPDATE";
 export const USER_DELETE = "USER_DELETE";
