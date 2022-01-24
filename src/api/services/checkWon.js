@@ -34,7 +34,9 @@ export default async function checkWon() {
 			}
 
 			// socket emit
-			getIO().emit(PRODUCT_WON, null);
+			getIO().emit(PRODUCT_WON, {
+				product:product.product_id,
+			});
 		});
 	} catch (err) {
 		console.log(err);
