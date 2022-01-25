@@ -208,26 +208,26 @@ biddingModel.rejectBidding = async function (bidding_id) {
 				buyer_id: null,
 				current_price: product.init_price,
 			});
-			return true;
-		}
-		// if have second bidding
-		await productModel.patch(product.product_id, {
-			buyer_id: secondBidding.user_id,
-			current_price: secondBidding.bid_price,
-		});
-
-		const body = {
-			type: 'DENY',
-			user_id: bidding.user_id,
-			product_id: product.product_id,
-		};
-
-		try {
-			await db('bidding_permissions').insert(body);
-		} catch (err) {
-			await db('bidding_permissions').where('user_id', body.user_id).andWhere('product_id', body.product_id).update(body);
+		} else {
+            // if have second bidding
+            await productModel.patch(product.product_id, {
+                buyer_id: secondBidding.user_id,
+                current_price: secondBidding.bid_price,
+            });
 		}
 	}
+	
+	const body = {
+        type: 'DENY',
+        user_id: bidding.user_id,
+        product_id: product.product_id,
+    };
+
+    try {
+        await db('bidding_permissions').insert(body);
+    } catch (err) {
+        await db('bidding_permissions').where('user_id', body.user_id).andWhere('product_id', body.product_id).update(body);
+    }
 
 	return true;
 };
@@ -255,5 +255,11 @@ biddingModel.buyNowProduct = async function (body) {
 biddingModel.getAllBiddingUser = async function (user_id) {
 	return await db('biddings').where('user_id', user_id);
 };
+
+biddingModel.getPermissionUserProduct = async function (user_id, product_id) {
+    return await db('bidding_permissions')
+        .where('user_id', user_id)
+        .andWhere('product_id', product_id);
+}
 
 export default biddingModel;
