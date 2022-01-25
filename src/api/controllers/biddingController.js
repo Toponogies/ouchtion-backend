@@ -308,7 +308,14 @@ export default {
 
 			let check = await BiddingModel.isBiddingPermission(body);
 			if (!check) {
-				return res.status(httpStatus.BAD_REQUEST).send(FORBIDDEN_BIDDING);
+                // is the bidder completely denied?
+                let secondCheck = await BiddingModel.getPermissionUserProduct(userId, req.params.id)
+                
+                if (secondCheck.length === 0) {
+                    return res.status(httpStatus.BAD_REQUEST).send(FORBIDDEN_BIDDING);
+                } else {
+                    return res.status(httpStatus.BAD_REQUEST).send(secondCheck);
+                }
 			}
 
 			return res.status(httpStatus.NO_CONTENT).send();
